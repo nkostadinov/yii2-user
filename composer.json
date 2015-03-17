@@ -1,8 +1,8 @@
 {
-    "name": "nkostadinov/yii2-user-rbac",
-    "description": "User management functionalities with RBAC support.",
+    "name": "nkostadinov/yii2-user",
+    "description": "User management functionalities.",
     "type": "yii2-extension",
-    "keywords": ["yii2","extension","user","rbac"],
+    "keywords": ["yii2","extension","user"],
     "license": "Apache-2.0",
     "authors": [
         {
