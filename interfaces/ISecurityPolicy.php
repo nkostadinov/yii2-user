@@ -7,7 +7,6 @@
 
 namespace nkostadinov\user\interfaces;
 
-interface IUserSecurity {
+interface ISecurityPolicy {
     public function hasAccess($resource, $params = []);
-    public function hasRole($role, $params = []);
 }

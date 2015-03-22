@@ -8,22 +8,20 @@
 namespace nkostadinov\user\components;
 
 
-use nkostadinov\user\interfaces\IUserSecurity;
+use nkostadinov\user\interfaces\ISecurityPolicy;
 
-class Security implements IUserSecurity {
+class Security implements ISecurityPolicy
+{
+    const USER_ADMINISTRATION = 'user.admin';
 
     public function hasAccess($resource, $params = [])
     {
         switch($resource) {
-            case 'user.admin':
+            case self::USER_ADMINISTRATION:
                 return !\Yii::$app->user->isGuest;
             default:
                 return true;
         }
     }
 
-    public function hasRole($role, $params = [])
-    {
-        // TODO: Implement hasRole() method.
-    }
 }

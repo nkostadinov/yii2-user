@@ -2,7 +2,7 @@
 
 namespace nkostadinov\user;
 
-use nkostadinov\user\interfaces\IUserSecurity;
+use nkostadinov\user\interfaces\ISecurityPolicy;
 use yii\base\InvalidConfigException;
 
 class Module extends \yii\base\Module
@@ -15,7 +15,7 @@ class Module extends \yii\base\Module
     public $allowRegistration = true;
 
     /**
-     * @var IUserSecurity the security policy implementation
+     * @var ISecurityPolicy the security policy implementation
      */
     public $security = 'nkostadinov\user\components\Security';
 
@@ -32,7 +32,7 @@ class Module extends \yii\base\Module
     {
         if(!isset($this->_components['security'])) {
             $this->_components['security'] = \Yii::createObject($this->security);
-            if(!$this->_components['security'] instanceof IUserSecurity)
+            if(!$this->_components['security'] instanceof ISecurityPolicy)
                 throw new InvalidConfigException();
         }
         return $this->_components['security'];

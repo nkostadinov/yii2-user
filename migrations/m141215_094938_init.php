@@ -1,7 +1,8 @@
 <?php
 
-namespace nkostadinov\user\migrations;
+//namespace nkostadinov\user\migrations;
 
+use nkostadinov\user\migrations\Migration;
 use yii\db\Schema;
 
 class m141215_094938_init extends Migration
@@ -10,7 +11,7 @@ class m141215_094938_init extends Migration
     {
         $this->createTable('{{%user}}', [
             'id' => Schema::TYPE_PK,
-            'username' => Schema::TYPE_STRING . ' NOT NULL',
+            'username' => Schema::TYPE_STRING,
             'auth_key' => Schema::TYPE_STRING . '(32) NOT NULL',
             'password_hash' => Schema::TYPE_STRING . ' NOT NULL',
             'password_reset_token' => Schema::TYPE_STRING,
@@ -39,7 +40,7 @@ class m141215_094938_init extends Migration
             'token_create_time' => Schema::TYPE_INTEGER,
             'client_id' => Schema::TYPE_BIGINT . ' NOT NULL',
             'created_at' => Schema::TYPE_TIMESTAMP . ' DEFAULT CURRENT_TIMESTAMP',
-            'updated_at' => Schema::TYPE_TIMESTAMP . ' DEFAULT 0 ON UPDATE CURRENT_TIMESTAMP',
+            'updated_at' => Schema::TYPE_TIMESTAMP,
         ], $this->getTableOptions());
         //FK to user
         $this->addForeignKey('fk_useraccount_user', '{{%user_account}}', 'user_id', '{{%user}}', 'id');
