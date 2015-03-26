@@ -28,11 +28,7 @@ class SecurityController extends BaseController
 
     public function actionLogin()
     {
-//        if (!\Yii::$app->user->isGuest) {
-//            return $this->goHome();
-//        }
-
-        $model = new LoginForm();
+        $model = \Yii::createObject(Yii::$app->user->loginForm);
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
             return $this->goBack();
         } else {

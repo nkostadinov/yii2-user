@@ -2,7 +2,6 @@
 
 namespace nkostadinov\user\controllers;
 
-use nkostadinov\user\models\forms\SignupForm;
 use Yii;
 use yii\helpers\ArrayHelper;
 use yii\web\NotFoundHttpException;
@@ -20,7 +19,7 @@ class RegistrationController extends BaseController
             throw new NotFoundHttpException("Registration disabled!");
         }
 
-        $model = new SignupForm();
+        $model = Yii::createObject(Yii::$app->user->registerForm);
 
         $data = [];
         $account = null;

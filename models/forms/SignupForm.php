@@ -2,7 +2,6 @@
 
 namespace nkostadinov\user\models\forms;
 
-use app\models\UserAccount;
 use nkostadinov\user\models\User;
 use yii\base\Model;
 use Yii;
@@ -15,7 +14,6 @@ class SignupForm extends Model
     public $username;
     public $email;
     public $password;
-    public $time_zone;
 
     /**
      * @inheritdoc
@@ -35,28 +33,21 @@ class SignupForm extends Model
 
             ['password', 'required'],
             ['password', 'string', 'min' => 6],
-
-            ['time_zone', 'required']
         ];
     }
 
     /**
      * Signs user up.
      *
-     * @param UserAccount $account linked account from which comes the registration
      * @return User|null the saved model or null if saving fails
      */
-    public function signup($account = null)
+    public function signup()
     {
         if ($this->validate()) {
-            $user = new User();
-            $user->username = $this->username;
-            $user->email = $this->email;
-            $user->time_zone = $this->time_zone;
+            $user = Yii::createObject(Yii::$app->user->identityClass);
+            $user->attributes = $this->attributes;
             $user->setPassword($this->password);
-            $user->generateAuthKey();
-            if(isset($account))
-                $user->register_provider_id = $account->user_provider_id;
+            //TODO: add token genration for confirmation
             $user->save();
 
             //update account's user id

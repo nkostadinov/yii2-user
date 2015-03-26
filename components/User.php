@@ -15,10 +15,13 @@ class User extends BaseUser
 {
     public $identityClass = 'nkostadinov\user\models\User';
 
+    public $loginForm = 'nkostadinov\user\models\forms\LoginForm';
+    public $registerForm = 'nkostadinov\user\models\forms\SignupForm';
+
     public function listUsers($params)
     {
         $searchModel = new UserSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider = $searchModel->search(\Yii::$app->request->queryParams);
         return $dataProvider;
     }
 }
