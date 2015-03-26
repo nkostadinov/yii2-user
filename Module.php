@@ -13,6 +13,15 @@ class Module extends \yii\base\Module
      * @var bool Whether to allow new user to register.
      */
     public $allowRegistration = true;
+    /**
+     * @var bool Whether to allow new user to register.
+     */
+    public $allowPasswordRecovery = true;
+
+    public $views = [
+        'register' => '@vendor/nkostadinov/yii2-user/views/registration/signup',
+        'login' => '@vendor/nkostadinov/yii2-user/views/security/login',
+    ];
 
     /**
      * @var ISecurityPolicy the security policy implementation
@@ -28,6 +37,10 @@ class Module extends \yii\base\Module
         // custom initialization code goes here
     }
 
+    /**
+     * @return ISecurityPolicy The security policy implementation
+     * @throws InvalidConfigException
+     */
     public function getSecurity()
     {
         if(!isset($this->_components['security'])) {

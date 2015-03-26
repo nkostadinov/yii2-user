@@ -7,7 +7,7 @@ use Yii;
 use yii\helpers\ArrayHelper;
 use yii\web\NotFoundHttpException;
 
-class RegistrationController extends \yii\web\Controller
+class RegistrationController extends BaseController
 {
     public function actionConfirm()
     {
@@ -47,7 +47,7 @@ class RegistrationController extends \yii\web\Controller
             }
         }
 
-        return $this->render('signup', [
+        return $this->render($this->module->views['register'], [
             'model' => $model,
             'account' => $account,
         ]);

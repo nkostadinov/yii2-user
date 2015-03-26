@@ -1,5 +1,6 @@
 <?php
 
+use nkostadinov\user\models\User;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
@@ -12,9 +13,12 @@ use yii\widgets\ActiveForm;
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'role')->textInput() ?>
-
-    <?= $form->field($model, 'status')->textInput() ?>
+    <?= $form->field($model, 'username')->textInput() ?>
+    <?= $form->field($model, 'email')->textInput() ?>
+    <?= $form->field($model, 'status')->dropDownList([
+        User::STATUS_ACTIVE => Yii::t('app.users', 'Active'),
+        User::STATUS_DELETED => Yii::t('app.users', 'Deleted'),
+    ]); ?>
 
     <div class="form-group">
         <?= Html::submitButton($model->isNewRecord ? Yii::t('app.users', 'Create') : Yii::t('app.users', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>

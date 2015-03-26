@@ -16,9 +16,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 <h3 class="panel-title"><?= Html::encode($this->title) ?></h3>
             </div>
             <div class="panel-body">
-
-                <p>Please fill out the following fields to signup:</p>
-
                 <?php $form = ActiveForm::begin([
                     'id' => 'form-signup',
                     'options' => ['class' => 'form-vertical'],

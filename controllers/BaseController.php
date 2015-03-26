@@ -11,4 +11,15 @@ namespace nkostadinov\user\controllers;
 use yii\web\Controller;
 
 class BaseController extends Controller {
+
+    public $viewPathOverride;
+
+    public function getViewPath()
+    {
+        if(!isset($this->viewPathOverride))
+            return parent::getViewPath();
+        else
+            return $this->viewPathOverride . DIRECTORY_SEPARATOR . $this->id;
+    }
+
 }

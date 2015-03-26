@@ -2,11 +2,11 @@
 
 namespace nkostadinov\user\controllers;
 
+use nkostadinov\user\components\Security;
 use Yii;
 use nkostadinov\user\models\user;
 use nkostadinov\user\models\UserSearch;
 use yii\filters\AccessControl;
-use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
@@ -22,8 +22,12 @@ class AdminController extends BaseController
                 'class' => AccessControl::className(),
                 'rules' => [
                     [
-                        'allow' => $this->module->getSecurity()->hasAccess('user.admin'),
-                        //'roles' => ['@'],
+                        'allow' => $this->module->getSecurity()->hasAccess(Security::USER_ADMINISTRATION_EDIT),
+                        'actions' => ['update'],
+                    ],
+                    [
+                        'allow' => $this->module->getSecurity()->hasAccess(Security::USER_ADMINISTRATION),
+                        'roles' => ['@'],
                     ],
                 ],
             ],

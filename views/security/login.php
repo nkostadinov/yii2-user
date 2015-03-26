@@ -1,10 +1,12 @@
 <?php
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
+use yii\helpers\Url;
 
 /* @var $this yii\web\View */
 /* @var $form yii\bootstrap\ActiveForm */
-/* @var $model app\models\LoginForm */
+/* @var $model nkostadinov\user\models\forms\LoginForm */
+/* @var $module nkostadinov\user\Module */
 
 $this->title = 'Login';
 $this->params['breadcrumbs'][] = $this->title;
@@ -13,28 +15,17 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class="col-md-4 col-md-offset-4">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h2 class="panel-title"><?= Html::encode($this->title) ?></h2>
+                <h3 class="panel-title"><?= Html::encode($this->title) ?></h3>
             </div>
             <div class="panel-body">
-
-                <p>Please fill out the following fields to login:</p>
-
                 <?php $form = ActiveForm::begin([
                     'id' => 'login-form',
                     'options' => ['class' => 'form-vertical'],
-                    'fieldConfig' => [
-                        // 'template' => "{label}\n<div class=\"col-lg-3\">{input}</div>\n<div class=\"col-lg-8\">{error}</div>",
-                        // 'labelOptions' => ['class' => 'col-lg-1 control-label'],
-                    ],
                 ]); ?>
 
                 <?= $form->field($model, 'username', ['inputOptions' => ['autofocus' => 'autofocus', 'class' => 'form-control',]]) ?>
-
-                <?= $form->field($model, 'password')->passwordInput() ?>
-
-                <?= $form->field($model, 'rememberMe', [
-                    //'template' => "<div class=\"col-lg-offset-1 col-lg-3\">{input}</div>\n<div class=\"col-lg-8\">{error}</div>",
-                ])->checkbox() ?>
+                <?= $form->field($model, 'password')->passwordInput()->label(Yii::t('user', 'Password') . ($module->allowPasswordRecovery ? ' (' . Html::a(Yii::t('user', 'Forgot password?'), ['/user/recovery/request'], ['tabindex' => '5']) . ')' : '')) ?>
+                <?= $form->field($model, 'rememberMe')->checkbox() ?>
 
                 <div class="form-group">
                     <?= Html::submitButton('Login', ['class' => 'btn btn-primary btn-block', 'name' => 'login-button']) ?>
@@ -43,6 +34,20 @@ $this->params['breadcrumbs'][] = $this->title;
                 <?php ActiveForm::end(); ?>
             </div>
         </div>
+
+        <?php if ($module->allowRegistration): ?>
+            <p class="text-center">
+                <?= Html::a(Yii::t('user', 'Don\'t have an account yet? Sign up!'), ['/user/registration/register']) ?>
+            </p>
+        <?php endif ?>
+
+        <?php if (Yii::$app->get("authClientCollection", false)): ?>
+            <div>
+                <?= yii\authclient\widgets\AuthChoice::widget([
+                    'baseAuthUrl' => ['/user/auth/login']
+                ]) ?>
+            </div>
+        <?php endif; ?>
 
     </div>
 </div>
