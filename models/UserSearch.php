@@ -18,8 +18,8 @@ class UserSearch extends user
     public function rules()
     {
         return [
-            [['id', 'role', 'status', 'created_at', 'updated_at', 'confirmed_on', 'register_provider_id'], 'integer'],
-            [['username', 'auth_key', 'password_hash', 'password_reset_token', 'email', 'time_zone'], 'safe'],
+            [['id', 'role', 'status', 'created_at', 'updated_at', 'confirmed_on'], 'integer'],
+            [['username', 'auth_key', 'password_hash', 'password_reset_token', 'email'], 'safe'],
         ];
     }
 
@@ -62,16 +62,21 @@ class UserSearch extends user
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'confirmed_on' => $this->confirmed_on,
-            'register_provider_id' => $this->register_provider_id,
         ]);
 
         $query->andFilterWhere(['like', 'username', $this->username])
             ->andFilterWhere(['like', 'auth_key', $this->auth_key])
             ->andFilterWhere(['like', 'password_hash', $this->password_hash])
             ->andFilterWhere(['like', 'password_reset_token', $this->password_reset_token])
-            ->andFilterWhere(['like', 'email', $this->email])
-            ->andFilterWhere(['like', 'time_zone', $this->time_zone]);
+            ->andFilterWhere(['like', 'email', $this->email]);
 
         return $dataProvider;
+    }
+
+    public function findUserByEmail($email)
+    {
+        return static::findOne([
+           'email' => $email,
+        ]);
     }
 }

@@ -37,7 +37,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
         <?php if ($module->allowRegistration): ?>
             <p class="text-center">
-                <?= Html::a(Yii::t('user', 'Don\'t have an account yet? Sign up!'), ['/user/registration/register']) ?>
+                <?= Html::a(Yii::t('user', 'Don\'t have an account yet? Sign up!'), ['/user/registration/signup']) ?>
             </p>
         <?php endif ?>
 

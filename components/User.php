@@ -8,6 +8,7 @@
 namespace nkostadinov\user\components;
 
 
+use nkostadinov\user\models\User as UserModel;
 use nkostadinov\user\models\UserSearch;
 use yii\web\User as BaseUser;
 
@@ -17,11 +18,21 @@ class User extends BaseUser
 
     public $loginForm = 'nkostadinov\user\models\forms\LoginForm';
     public $registerForm = 'nkostadinov\user\models\forms\SignupForm';
+    public $recoveryForm = 'nkostadinov\user\models\forms\RecoveryForm';
+
+    public $enableConfirmation = true;
 
     public function listUsers($params)
     {
         $searchModel = new UserSearch();
-        $dataProvider = $searchModel->search(\Yii::$app->request->queryParams);
+        $dataProvider = $searchModel->search($params);
         return $dataProvider;
+    }
+
+    public function findUserByEmail($email)
+    {
+        return UserModel::findOne([
+            'email' => $email,
+        ]);
     }
 }

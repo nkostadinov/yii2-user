@@ -2,7 +2,6 @@
 
 namespace nkostadinov\user\controllers;
 
-use nkostadinov\user\models\forms\LoginForm;
 use Yii;
 use yii\filters\AccessControl;
 

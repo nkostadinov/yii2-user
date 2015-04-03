@@ -6,6 +6,7 @@ use yii\base\NotSupportedException;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
+use yii\web\NotFoundHttpException;
 
 /**
  * User model
@@ -116,7 +117,7 @@ class User extends ActiveRecord implements IdentityInterface
         }
         $expire = Yii::$app->params['user.passwordResetTokenExpire'];
         $parts = explode('_', $token);
-        $timestamp = (int) end($parts);
+        $timestamp = (int)end($parts);
         return $timestamp + $expire >= time();
     }
 
@@ -192,5 +193,64 @@ class User extends ActiveRecord implements IdentityInterface
     public function getUserAccounts()
     {
         return $this->hasMany(UserAccount::className(), ['user_id' => 'id']);
+    }
+
+    public function register()
+    {
+        if ($this->getIsNewRecord() == false) {
+            throw new \RuntimeException('Calling "' . __CLASS__ . '::' . __METHOD__ . '" on existing user');
+        }
+
+        if (Yii::$app->user->enableConfirmation == false) {
+            $this->confirmed_on = time();
+        }
+//        if ($this->module->enableGeneratingPassword) {
+//            $this->password = Password::generate(8);
+//        }
+//        $this->trigger(self::USER_REGISTER_INIT);
+        if ($this->save()) {
+//            $this->trigger(self::USER_REGISTER_DONE);
+            if (Yii::$app->user->enableConfirmation) {
+                $token = \Yii::createObject([
+                    'class' => Token::className(),
+                    'type' => Token::TYPE_CONFIRMATION,
+                ]);
+                $token->link('user', $this);
+                //$this->mailer->sendConfirmationMessage($this, $token);
+            } else {
+                \Yii::$app->user->login($this);
+            }
+//            if ($this->module->enableGeneratingPassword) {
+//                $this->mailer->sendWelcomeMessage($this);
+//            }
+//            \Yii::$app->session->setFlash('info', $this->getFlashMessage());
+//            \Yii::getLogger()->log('User has been registered', Logger::LEVEL_INFO);
+            return true;
+        }
+//        \Yii::getLogger()->log('An error occurred while registering user account', Logger::LEVEL_ERROR);
+        return false;
+
+    }
+
+    public function confirm($code)
+    {
+        $token = Token::findOne([
+            'code' => $code,
+            'type' => Token::TYPE_CONFIRMATION,
+            'user_id' => $this->id,
+        ]);
+
+        if (!isset($token) or $token->isExpired)
+            throw new NotFoundHttpException("Confirmation code not found or expired!");
+        else {
+            $token->delete();
+            $this->confirmed_on = time();
+            return $this->save(false);
+        }
+    }
+
+    public function getIsConfirmed()
+    {
+        return isset($this->confirmed_on);
     }
 }

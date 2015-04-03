@@ -39,8 +39,6 @@ $this->params['breadcrumbs'][] = $this->title;
             'created_at',
             'updated_at',
             'confirmed_on',
-            'time_zone',
-            'register_provider_id',
         ],
     ]) ?>
 

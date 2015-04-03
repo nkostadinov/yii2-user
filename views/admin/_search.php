@@ -37,10 +37,6 @@ use yii\widgets\ActiveForm;
 
     <?php // echo $form->field($model, 'confirmed_on') ?>
 
-    <?php // echo $form->field($model, 'time_zone') ?>
-
-    <?php // echo $form->field($model, 'register_provider_id') ?>
-
     <div class="form-group">
         <?= Html::submitButton(Yii::t('app.users', 'Search'), ['class' => 'btn btn-primary']) ?>
         <?= Html::resetButton(Yii::t('app.users', 'Reset'), ['class' => 'btn btn-default']) ?>

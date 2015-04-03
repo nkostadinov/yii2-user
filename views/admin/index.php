@@ -38,7 +38,6 @@ $this->params['breadcrumbs'][] = $this->title;
             'updated_at:datetime',
             'confirmed_on',
 //            'time_zone',
-//            'register_provider_id',
 
             ['class' => 'yii\grid\ActionColumn'],
         ],

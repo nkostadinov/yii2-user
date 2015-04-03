@@ -2,53 +2,36 @@
 
 namespace nkostadinov\user\controllers;
 
+use nkostadinov\user\models\User;
 use Yii;
-use yii\helpers\ArrayHelper;
 use yii\web\NotFoundHttpException;
 
 class RegistrationController extends BaseController
 {
-    public function actionConfirm()
+    public function actionConfirm($user_id, $code)
     {
-        return $this->render('confirm');
+        $user = User::findOne($user_id);
+        $user->confirm($code);
+        return $this->render($this->module->views['confirm']);
     }
 
     public function actionSignup()
     {
-        if (!$this->module->allowRegistration) {
+        if (!$this->module->allowRegistration)
             throw new NotFoundHttpException("Registration disabled!");
-        }
 
         $model = Yii::createObject(Yii::$app->user->registerForm);
 
-        $data = [];
-        $account = null;
-        if(Yii::$app->session->has('registration'))
-        {
-            $session = Yii::$app->getSession()->get('registration');
-            $account = UserAccount::findOne($session['auth_account_id']);
-            $attributes = json_decode($account->attributes);
-
-            $data['SignupForm'] = [
-                'username' => $attributes->name,
-                'email' => $attributes->email,
-            ];
-            Yii::$app->getSession()->remove('registration');
-        } elseif(isset($_POST['UserAccount']))
-            $account = UserAccount::findOne($_POST['UserAccount']['id']);
-
-        if ($model->load(ArrayHelper::merge(Yii::$app->request->post(), $data))) {
-            if ($user = $model->signup($account)) {
-                if (Yii::$app->getUser()->login($user)) {
-                    Yii::$app->getSession()->remove('registration');
-                    return $this->goHome();
-                }
+        if ($model->load(Yii::$app->request->post())) {
+            if ($user = $model->signup()) {
+                if(Yii::$app->user->enableConfirmation)
+                    return $this->renderContent(\Yii::t('app.user', 'Confirmation mail has been sent to {0}.', [ $model->email ]));
+                return $this->goHome();
             }
         }
 
         return $this->render($this->module->views['register'], [
             'model' => $model,
-            'account' => $account,
         ]);
     }
 
