@@ -16,10 +16,10 @@ install:
 before_script:
   - travis_retry composer self-update
   - travis_retry composer install --no-interaction --prefer-source --dev
-  - ~/.composer/vendor/bin/codecept build
+  - codecept build
 
 script:
-  - ~/.composer/vendor/bin/codecept run
+  - run
 
 after_script:
   - php vendor/bin/ocular code-coverage:upload --format=php-clover coverage.clover
