@@ -19,7 +19,7 @@ before_script:
   - ~/.composer/vendor/bin/codecept build
 
 script:
-  - codecept run
+  - ~/.composer/vendor/bin/codecept run
 
 after_script:
   - php vendor/bin/ocular code-coverage:upload --format=php-clover coverage.clover
