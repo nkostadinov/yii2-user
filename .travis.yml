@@ -10,6 +10,8 @@ install:
   - composer self-update
   - composer global require "fxp/composer-asset-plugin:1.0.0"
   - composer install
+  # codeception
+  - travis_retry composer global require "codeception/codeception=2.0.*" "codeception/specify=*" "codeception/verify=*"
 
 before_script:
   - travis_retry composer self-update
@@ -17,7 +19,7 @@ before_script:
   - ~/.composer/vendor/bin/codecept build
 
 script:
-  - ~/.composer/vendor/bin/codecept run
+  - codecept run
 
 after_script:
   - php vendor/bin/ocular code-coverage:upload --format=php-clover coverage.clover
