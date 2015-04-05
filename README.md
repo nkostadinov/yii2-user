@@ -1,5 +1,5 @@
-Yii2 User module 
-==========================
+# Yii2 User module 
+
 Just another user module management functionalities.
 
 * Optional self registration via front end
