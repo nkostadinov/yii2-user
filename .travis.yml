@@ -19,8 +19,8 @@ before_script:
 #  - codecept build
 
 script:
-  - php vendor/bin/codecept build
-  - php vendor/bin/codecept run
+  - php vendor/codeception/codeception/codecept build
+  - php vendor/codeception/codeception/codecept run
 
 after_script:
   - php vendor/bin/ocular code-coverage:upload --format=php-clover coverage.clover
