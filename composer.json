@@ -1,21 +1,28 @@
 {
-    "name": "nkostadinov/yii2-user",
-    "description": "User management functionalities.",
-    "type": "yii2-extension",
-    "keywords": ["yii2","extension","user"],
-    "license": "Apache-2.0",
-    "authors": [
-        {
-            "name": "Nikola Kostadinov",
-            "email": "nikolakk@gmail.com"
-        }
-    ],
-    "require": {
-        "yiisoft/yii2": "*"
-    },
-    "autoload": {
-        "psr-4": {
-            "nkostadinov\\user\\": ""
-        }
+  "name": "nkostadinov/yii2-user",
+  "description": "User management functionalities.",
+  "type": "yii2-extension",
+  "keywords": [
+    "yii2",
+    "extension",
+    "user"
+  ],
+  "license": "Apache-2.0",
+  "authors": [
+    {
+      "name": "Nikola Kostadinov",
+      "email": "nikolakk@gmail.com"
     }
+  ],
+  "require": {
+    "yiisoft/yii2": "*"
+  },
+  "require-dev": {
+    "yiisoft/yii2-codeception": "~2.0.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "nkostadinov\\user\\": ""
+    }
+  }
 }
