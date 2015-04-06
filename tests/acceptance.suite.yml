@@ -11,4 +11,4 @@ modules:
         - AcceptanceHelper
     config:
         PhpBrowser:
-            url: 'http://proofy.kol.io/'
+            url: 'http://localhost:8080/'
