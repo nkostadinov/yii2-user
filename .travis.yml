@@ -8,6 +8,12 @@ php:
 
 env: VENDOR_DIR = ~/nkostadinov/yii2-user/vendor
 
+# cache vendor dirs
+cache:
+  directories:
+    - vendor
+    - $HOME/.composer/cache
+
 install:
   - travis_retry composer self-update
   - travis_retry composer global require "fxp/composer-asset-plugin:1.0.0"
@@ -16,11 +22,11 @@ install:
   - travis_retry composer install --prefer-dist
 
 before_script:
-#  - codecept build
-  - ~/.composer/vendor/bin/codecept build
   - ls -la
   - printenv VENDOR_DIR
-  - pwd
+  - pgit pullwd
+#  - codecept build
+  - ~/.composer/vendor/bin/codecept build
 
 script:
   - php -S localhost:8080 > /dev/null 2>&1 &
