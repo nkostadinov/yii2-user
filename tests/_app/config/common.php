@@ -30,7 +30,7 @@ $config = [
             'basePath' => dirname(__DIR__) . '/assets',
         ],
         'user' => [
-            'class' => 'nkostadinov\user\components\user'
+            'class' => 'nkostadinov\user\components\User'
         ],
         'urlManager' => [
             'enablePrettyUrl' => true,
