@@ -2,7 +2,7 @@
 
 use nkostadinov\user\tests\_pages\LoginPage;
 
-$I = new AcceptanceTester($scenario);
+$I = new FunctionalTester($scenario);
 $I->wantTo('see that login works.');
 
 $loginPage = LoginPage::openBy($I);

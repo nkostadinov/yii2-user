@@ -1,3 +1,6 @@
 # Created by .ignore support plugin (hsz.mobi)
 !tests/_output/.gitkeep
+!tests/_app/assets/.gitkeep
 tests/_output/
+tests/_app/assets/
+codeception.yml

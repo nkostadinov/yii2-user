@@ -6,4 +6,7 @@
 
 class_name: FunctionalTester
 modules:
-    enabled: [Filesystem, FunctionalHelper]
+    enabled: [Filesystem, FunctionalHelper, Yii2]
+    config:
+        Yii2:
+            configFile: 'tests/config/functional.php'

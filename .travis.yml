@@ -7,19 +7,18 @@ php:
   - hhvm
 
 install:
-  - composer self-update
-  - composer global require "fxp/composer-asset-plugin:1.0.0"
-  - composer install
+  - travis_retry composer self-update
+  - travis_retry composer global require "fxp/composer-asset-plugin:1.0.0"
   # codeception
   - travis_retry composer global require "codeception/codeception=2.0.*" "codeception/specify=*" "codeception/verify=*"
+  - travis_retry composer install --prefer-dist
 
 before_script:
-  - travis_retry composer self-update
-  - travis_retry composer install --no-interaction --prefer-source --dev
 #  - codecept build
+  - ~/.composer/vendor/bin/codecept build
 
 script:
-  - ~/.composer/vendor/bin/codecept build
+  - php -S localhost:8080 > /dev/null 2>&1 &
   - ~/.composer/vendor/bin/codecept run
 
 after_script:
