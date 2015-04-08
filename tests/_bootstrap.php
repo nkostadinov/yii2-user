@@ -4,8 +4,8 @@ defined('YII_ENV') or define('YII_ENV', 'test');
 defined('YII_TEST_ENTRY_URL') or define('YII_TEST_ENTRY_URL', '/index.php');
 defined('YII_TEST_ENTRY_FILE') or define('YII_TEST_ENTRY_FILE', __DIR__ . '/../application/web/index.php');
 
-if(getenv('VENDOR_DIR'))
-    define('VENDOR_DIR', getenv('VENDOR_DIR'));
+if(getenv('TRAVIS_BUILD_DIR'))
+    define('VENDOR_DIR', getenv('TRAVIS_BUILD_DIR') . '/vendor');
 else
     defined('VENDOR_DIR') or define('VENDOR_DIR', __DIR__ . '/../../../../vendor');
 

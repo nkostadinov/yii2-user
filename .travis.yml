@@ -21,9 +21,6 @@ install:
 
 before_script:
   - export VENDOR_DIR="~/build/nkostadinov/yii2-user/vendor"
-  - ls -la vendor/
-  - env
-  - ls -la $VENDOR_DIR
   #  - codecept build
   - ~/.composer/vendor/bin/codecept build
 script:
