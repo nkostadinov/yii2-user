@@ -9,7 +9,7 @@ php:
 # cache vendor dirs
 cache:
   directories:
-    - vendor
+    # - vendor
     - $HOME/.composer/cache
 
 install:
@@ -20,9 +20,9 @@ install:
   - travis_retry composer install --prefer-dist
 
 before_script:
-  - export VENDOR_DIR = "~/nkostadinov/yii2-user/vendor"
+  - export VENDOR_DIR="~/nkostadinov/yii2-user/vendor"
   - ls -la vendor/
-  - ls -la VENDOR_DIR
+  - ls -la $VENDOR_DIR
   - env
   #  - codecept build
   - ~/.composer/vendor/bin/codecept build
