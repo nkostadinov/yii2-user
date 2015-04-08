@@ -4,6 +4,11 @@
  * Date: 02.04.2015
  * Time: 14:11 ч.
  */
+if(getenv('TRAVIS_BUILD_DIR')) {
+    defined('VENDOR_DIR') or define('VENDOR_DIR', getenv('TRAVIS_BUILD_DIR') . '/vendor');
+} else {
+    defined('VENDOR_DIR') or define('VENDOR_DIR', __DIR__ . '/../vendor');
+}
 
 $config = [
     'id' => 'tester',
