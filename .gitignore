@@ -4,3 +4,4 @@
 tests/_output/
 tests/_app/assets/
 codeception.yml
+vendor/

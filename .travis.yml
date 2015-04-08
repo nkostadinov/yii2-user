@@ -9,7 +9,7 @@ php:
 # cache vendor dirs
 cache:
   directories:
-    # - vendor
+    - vendor
     - $HOME/.composer/cache
 
 install:
@@ -21,10 +21,11 @@ install:
 
 before_script:
   - export VENDOR_DIR="~/build/nkostadinov/yii2-user/vendor"
-  #  - codecept build
+  - mysql -e 'create database user_test;'
+  - php _app/yii migrate/up --interactive=0
   - ~/.composer/vendor/bin/codecept build
 script:
-  - php -S localhost:8080 > /dev/null 2>&1 &
+#  - php -S localhost:8080 > /dev/null 2>&1 &
   - ~/.composer/vendor/bin/codecept run
 
 after_script:
