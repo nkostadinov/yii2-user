@@ -19,6 +19,7 @@ install:
 before_script:
 #  - codecept build
   - ~/.composer/vendor/bin/codecept build
+  - ls -la
 
 script:
   - php -S localhost:8080 > /dev/null 2>&1 &
