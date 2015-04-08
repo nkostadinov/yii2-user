@@ -20,10 +20,10 @@ install:
   - travis_retry composer install --prefer-dist
 
 before_script:
-  - export VENDOR_DIR="~/nkostadinov/yii2-user/vendor"
+  - export VENDOR_DIR="~/build/nkostadinov/yii2-user/vendor"
   - ls -la vendor/
-  - ls -la $VENDOR_DIR
   - env
+  - ls -la $VENDOR_DIR
   #  - codecept build
   - ~/.composer/vendor/bin/codecept build
 script:
