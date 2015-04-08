@@ -1,4 +1,4 @@
-# Yii2 User module 
+# Yii2 User module [![Build Status](https://travis-ci.org/nkostadinov/yii2-user.svg?branch=master)](https://travis-ci.org/nkostadinov/yii2-user) 
 
 Just another user module management functionalities.
 
