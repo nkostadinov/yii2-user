@@ -23,11 +23,10 @@ install:
 
 before_script:
   - ls -la
-  - printenv VENDOR_DIR
-  - pgit pullwd
+  - env
+  - pwd
 #  - codecept build
   - ~/.composer/vendor/bin/codecept build
-
 script:
   - php -S localhost:8080 > /dev/null 2>&1 &
   - ~/.composer/vendor/bin/codecept run
