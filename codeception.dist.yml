@@ -6,15 +6,15 @@ paths:
     helpers: tests/_support
 settings:
     bootstrap: _bootstrap.php
-    colors: false
+    colors: true
     memory_limit: 1024M
-modules:
-    config:
-        Db:
-            dsn: ''
-            user: ''
-            password: ''
-            dump: tests/_data/dump.sql
+#modules:
+#    config:
+#        Db:
+#            dsn: ''
+#            user: ''
+#            password: ''
+#            dump: tests/_data/dump.sql
 config:
     # the entry script URL (with host info) for functional and acceptance tests
     # PLEASE ADJUST IT TO THE ACTUAL ENTRY SCRIPT URL
