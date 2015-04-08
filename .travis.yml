@@ -22,7 +22,8 @@ install:
 before_script:
   - export VENDOR_DIR="~/build/nkostadinov/yii2-user/vendor"
   - mysql -e 'create database user_test;'
-  - php _app/yii migrate/up --interactive=0
+  - pwd
+  - php tests/_app/yii migrate/up --interactive=0
   - ~/.composer/vendor/bin/codecept build
 script:
 #  - php -S localhost:8080 > /dev/null 2>&1 &
