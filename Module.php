@@ -19,10 +19,10 @@ class Module extends \yii\base\Module
     public $allowPasswordRecovery = true;
 
     public $views = [
-        'register' => '@vendor/nkostadinov/yii2-user/views/registration/signup',
-        'login' => '@vendor/nkostadinov/yii2-user/views/security/login',
+        'register' => '@nkostadinov/user/views/registration/signup',
+        'login' => '@nkostadinov/user/views/security/login',
         //'confirm' => '@vendor/nkostadinov/yii2-user/views/registration/confirm',
-        'request' => '@vendor/nkostadinov/yii2-user/views/recovery/request',
+        'request' => '@nkostadinov/user/views/recovery/request',
     ];
 
     /**

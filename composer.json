@@ -18,7 +18,8 @@
     "yiisoft/yii2": "*"
   },
   "require-dev": {
-    "yiisoft/yii2-codeception": "~2.0.0"
+    "yiisoft/yii2-codeception": "~2.0.0",
+    "yiisoft/yii2-bootstrap": "2.0.3"
   },
   "autoload": {
     "psr-4": {

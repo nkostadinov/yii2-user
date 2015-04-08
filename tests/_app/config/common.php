@@ -5,16 +5,13 @@
  * Time: 14:11 ч.
  */
 
-$_SERVER['SCRIPT_FILENAME'] = YII_TEST_ENTRY_FILE;
-$_SERVER['SCRIPT_NAME']     = YII_TEST_ENTRY_URL;
-
 $config = [
     'id' => 'tester',
     'name' => 'Yii2 user test app',
     'basePath' => dirname(__DIR__),
     'aliases' => [
         '@vendor' => VENDOR_DIR,
-        '@bower' => VENDOR_DIR . '/bower',
+        '@bower' => VENDOR_DIR . '/bower-asset',
         '@nkostadinov/user' => realpath(__DIR__ . '/../../../' ),
     ],
     'modules' => [
