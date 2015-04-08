@@ -6,8 +6,7 @@ php:
   - 5.6
   - hhvm
 
-env:
-  VENDOR_DIR = ~/.composer/vendor
+env: VENDOR_DIR = ~/nkostadinov/yii2-user/vendor
 
 install:
   - travis_retry composer self-update
@@ -20,6 +19,8 @@ before_script:
 #  - codecept build
   - ~/.composer/vendor/bin/codecept build
   - ls -la
+  - printenv VENDOR_DIR
+  - pwd
 
 script:
   - php -S localhost:8080 > /dev/null 2>&1 &
