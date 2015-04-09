@@ -10,4 +10,5 @@ namespace nkostadinov\user\interfaces;
 
 interface IUserNotificator {
     public function sendRecoveryMessage($user, $token);
+    public function sendConfirmationMessage($user, $token);
 }

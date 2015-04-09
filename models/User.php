@@ -169,7 +169,7 @@ class User extends ActiveRecord implements IdentityInterface
                     'type' => Token::TYPE_CONFIRMATION,
                 ]);
                 $token->link('user', $this);
-                //$this->mailer->sendConfirmationMessage($this, $token);
+                Yii::$app->user->notificator->sendConfirmationMessage($this, $token);
             } else {
                 \Yii::$app->user->login($this);
             }

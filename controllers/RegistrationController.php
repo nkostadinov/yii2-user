@@ -11,6 +11,8 @@ class RegistrationController extends BaseController
     public function actionConfirm($user_id, $code)
     {
         $user = User::findOne($user_id);
+        if(!isset($user))
+            throw new NotFoundHttpException("Confirmation code not found !");
         $user->confirm($code);
         return $this->render($this->module->views['confirm']);
     }

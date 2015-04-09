@@ -8,6 +8,7 @@
 namespace nkostadinov\user\components;
 
 
+use nkostadinov\user\interfaces\IUserNotificator;
 use nkostadinov\user\models\User as UserModel;
 use nkostadinov\user\models\UserSearch;
 use yii\web\User as BaseUser;
@@ -21,6 +22,13 @@ class User extends BaseUser
     public $recoveryForm = 'nkostadinov\user\models\forms\RecoveryForm';
 
     public $enableConfirmation = true;
+    public $allowUncofirmedLogin = false;
+
+    public $components = [
+        'notificator' => 'nkostadinov\user\components\MailNotificator',
+    ];
+
+    private $_notificator;
 
     public function listUsers($params)
     {
@@ -34,5 +42,16 @@ class User extends BaseUser
         return UserModel::findOne([
             'email' => $email,
         ]);
+    }
+
+    /**
+     * @return IUserNotificator
+     */
+    public function getNotificator()
+    {
+        if(!isset($this->_notificator)) {
+            $this->_notificator = \Yii::createObject($this->components['notificator']);
+        }
+        return $this->_notificator;
     }
 }

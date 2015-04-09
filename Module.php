@@ -21,7 +21,7 @@ class Module extends \yii\base\Module
     public $views = [
         'register' => '@nkostadinov/user/views/registration/signup',
         'login' => '@nkostadinov/user/views/security/login',
-        //'confirm' => '@vendor/nkostadinov/yii2-user/views/registration/confirm',
+        'confirm' => '@nkostadinov/user/views/registration/confirm',
         'request' => '@nkostadinov/user/views/recovery/request',
     ];
 

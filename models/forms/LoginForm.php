@@ -5,6 +5,7 @@ namespace nkostadinov\user\models\forms;
 use nkostadinov\user\models\User;
 use Yii;
 use yii\base\Model;
+use yii\web\ForbiddenHttpException;
 
 /**
  * LoginForm is the model behind the login form.
@@ -58,6 +59,8 @@ class LoginForm extends Model
     public function login()
     {
         if ($this->validate()) {
+            if(!$this->user->isConfirmed and !Yii::$app->user->allowUncofirmedLogin)
+                throw new ForbiddenHttpException(Yii::t('app.user', 'Unconfirmed account are not allowed to login'));
             return Yii::$app->user->login($this->getUser(), $this->rememberMe ? 3600*24*30 : 0);
         } else {
             return false;
