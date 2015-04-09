@@ -49,6 +49,7 @@ $I->assertTrue(
         $loginPage->login($email, 'test123');
     })
 , "I see yii\\web\\ForbiddenHttpException when trying to login unconfirmed.");
+
 //The exception is handled therefore I cannot see the items below !
 //$I->seeResponseCodeIs(403); //forbidden
 //$I->expectTo('see error that you cannot login without confirming your account.');
