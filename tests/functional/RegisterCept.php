@@ -48,7 +48,7 @@ $I->assertTrue(
     $I->seeExceptionThrown('yii\web\ForbiddenHttpException', function () use ($loginPage, $email) {
         $loginPage->login($email, 'test123');
     })
-, "Didn't see yii\\web\\ForbiddenHttpException when trying to login unconfirmed.");
+, "I see yii\\web\\ForbiddenHttpException when trying to login unconfirmed.");
 //The exception is handled therefore I cannot see the items below !
 //$I->seeResponseCodeIs(403); //forbidden
 //$I->expectTo('see error that you cannot login without confirming your account.');
@@ -66,7 +66,7 @@ $I->assertTrue(
     $I->seeExceptionThrown('yii\web\BadRequestHttpException', function () use ($I) {
         ConfirmPage::openBy($I);
     })
-, "Didn't see yii\\web\\BadRequestHttpException when opening confirm URL without params.");
+, "I see yii\\web\\BadRequestHttpException when opening confirm URL without params.");
 
 $confirmPage = ConfirmPage::openBy($I, [ 'user_id' => $user_id, 'code' => $token_code ]);
 //$I->assertTrue($confirmPage instanceof ConfirmPage);
