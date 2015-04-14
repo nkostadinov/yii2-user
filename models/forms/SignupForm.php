@@ -20,12 +20,7 @@ class SignupForm extends Model
      */
     public function rules()
     {
-        return [
-//            ['username', 'filter', 'filter' => 'trim'],
-//            ['username', 'required'],
-//            ['username', 'unique', 'targetClass' => 'nkostadinov\user\models\User', 'message' => 'This username has already been taken.'],
-//            ['username', 'string', 'min' => 2, 'max' => 255],
-
+        $rules = [
             ['email', 'filter', 'filter' => 'trim'],
             ['email', 'required'],
             ['email', 'email'],
@@ -34,6 +29,15 @@ class SignupForm extends Model
             ['password', 'required'],
             ['password', 'string', 'min' => 6],
         ];
+
+        if(\Yii::$app->user->requireUsername === true) {
+            $rules[] = ['username', 'required'];
+            $rules[] =  ['username', 'string', 'min' => 2, 'max' => 255];
+            $rules[] =  ['username', 'filter', 'filter' => 'trim'];
+            //['username', 'unique', 'targetClass' => 'nkostadinov\user\models\User', 'message' => 'This username has already been taken.'],
+        }
+
+        return $rules;
     }
 
     /**

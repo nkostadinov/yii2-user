@@ -21,13 +21,14 @@ class AdminController extends BaseController
             'access' => [
                 'class' => AccessControl::className(),
                 'rules' => [
+//                    [
+//                        'allow' => $this->module->getSecurity()->hasAccess(Security::USER_ADMINISTRATION_EDIT),
+//                        'actions' => ['update'],
+//                    ],
                     [
-                        'allow' => $this->module->getSecurity()->hasAccess(Security::USER_ADMINISTRATION_EDIT),
-                        'actions' => ['update'],
-                    ],
-                    [
-                        'allow' => $this->module->getSecurity()->hasAccess(Security::USER_ADMINISTRATION),
-                        'roles' => ['@'],
+//                        'allow' => $this->module->getSecurity()->hasAccess(Security::USER_ADMINISTRATION),
+                        'allow'=>true,
+                        'roles' => ['t', Security::USER_ADMINISTRATION],
                     ],
                 ],
             ],

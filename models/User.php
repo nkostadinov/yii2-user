@@ -55,12 +55,14 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function rules()
     {
-        return [
+        $rules = [
             ['status', 'default', 'value' => self::STATUS_ACTIVE],
             ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_DELETED]],
             ['email', 'email'],
             [['email'], 'required', 'on' => 'register']
         ];
+
+        return $rules;
     }
 
     /**
@@ -205,5 +207,15 @@ class User extends ActiveRecord implements IdentityInterface
     public function getIsConfirmed()
     {
         return isset($this->confirmed_on);
+    }
+
+    public function getName()
+    {
+        return $this->username > '' ? $this->username : substr($this->email, 0, strpos($this->email, '@'));
+    }
+
+    public function getTokens()
+    {
+        return $this->hasMany(Token::className(), ['user_id' => 'id']);
     }
 }

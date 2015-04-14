@@ -21,26 +21,12 @@ $this->params['breadcrumbs'][] = $this->title;
         ]), ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
+    <?php \yii\widgets\Pjax::begin() ?>
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
-        'columns' => [
-            //['class' => 'yii\grid\SerialColumn'],
-//            'id',
-            'username',
-//            'auth_key',
-//            'password_hash',
-//            'password_reset_token',
-            'email:email',
-//            'role',
-//            'status',
-            'created_at:datetime',
-            'updated_at:datetime',
-            'confirmed_on',
-//            'time_zone',
-
-            ['class' => 'yii\grid\ActionColumn'],
-        ],
+        'columns' => $this->context->module->adminColumns,
     ]); ?>
+    <?php \yii\widgets\Pjax::end() ?>
 
 </div>

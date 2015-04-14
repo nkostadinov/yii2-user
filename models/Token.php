@@ -22,6 +22,7 @@ class Token extends \yii\db\ActiveRecord
     const TYPE_CONFIRM_NEW_EMAIL = 2;
     const TYPE_CONFIRM_OLD_EMAIL = 3;
 
+
     /**
      * @inheritdoc
      */
@@ -78,5 +79,14 @@ class Token extends \yii\db\ActiveRecord
     public function getIsExpired()
     {
         return ($this->expires_on > 0) and ($this->expires_on < time());
+    }
+
+    public function getName()
+    {
+        //reverse constant lookup :)
+        foreach((new \ReflectionClass(get_class()))->getConstants() as $name => $value) {
+            if($value == $this->type)
+                return $name;
+        }
     }
 }

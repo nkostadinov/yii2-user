@@ -25,12 +25,15 @@ class Module extends \yii\base\Module
         'request' => '@nkostadinov/user/views/recovery/request',
     ];
 
-    /**
-     * @var ISecurityPolicy the security policy implementation
-     */
-    public $security = 'nkostadinov\user\components\Security';
-
-    private $_components;
+    public $adminColumns = [
+        //['class' => 'yii\grid\SerialColumn'],
+        'name',
+        'email:email',
+//            'status',
+        'created_at:datetime',
+        'confirmed_on:datetime',
+        ['class' => 'yii\grid\ActionColumn'],
+    ];
 
     public function init()
     {
@@ -39,17 +42,4 @@ class Module extends \yii\base\Module
         // custom initialization code goes here
     }
 
-    /**
-     * @return ISecurityPolicy The security policy implementation
-     * @throws InvalidConfigException
-     */
-    public function getSecurity()
-    {
-        if(!isset($this->_components['security'])) {
-            $this->_components['security'] = \Yii::createObject($this->security);
-            if(!$this->_components['security'] instanceof ISecurityPolicy)
-                throw new InvalidConfigException();
-        }
-        return $this->_components['security'];
-    }
 }

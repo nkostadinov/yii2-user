@@ -24,6 +24,9 @@ $this->params['breadcrumbs'][] = $this->title;
                 if (isset($account))
                     echo $form->field($account, 'id')->hiddenInput()->label(false);
                 ?>
+                <?php if(\Yii::$app->user->requireUsername === true)
+                    echo $form->field($model, 'username');
+                ?>
                 <?= $form->field($model, 'email') ?>
                 <?= $form->field($model, 'password')->passwordInput() ?>
 
