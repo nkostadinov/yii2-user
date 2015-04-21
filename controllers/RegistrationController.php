@@ -25,12 +25,13 @@ class RegistrationController extends BaseController
         $model = Yii::createObject(Yii::$app->user->registerForm);
 
         if ($model->load(Yii::$app->request->post())) {
-            if ($user = $model->signup()) {
+            if ($model->signup()) {
                 if(Yii::$app->user->enableConfirmation)
                     return $this->renderContent(\Yii::t('app.user', 'Confirmation mail has been sent to {0}.', [ $model->email ]));
                 return $this->goHome();
             }
         }
+
 
         return $this->render($this->module->views['register'], [
             'model' => $model,

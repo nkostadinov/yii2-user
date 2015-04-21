@@ -8,16 +8,29 @@
 namespace nkostadinov\user\components;
 
 
+use nkostadinov\user\behaviors\LastLoginBehavior;
+use nkostadinov\user\events\UserRegisterEvent;
 use nkostadinov\user\interfaces\ISecurityPolicy;
 use nkostadinov\user\interfaces\IUserNotificator;
+use nkostadinov\user\models\forms\SignupForm;
+use nkostadinov\user\models\Token;
 use nkostadinov\user\models\User as UserModel;
 use nkostadinov\user\models\UserSearch;
+use yii\authclient\ClientInterface;
+use yii\base\Event;
 use yii\base\InvalidConfigException;
+use yii\base\Model;
+use yii\db\ActiveRecord;
 use yii\di\Instance;
 use yii\web\User as BaseUser;
 
 class User extends BaseUser
 {
+    const LOG_CATEGORY = 'app.user';
+    //event constants
+    const EVENT_BEFORE_REGISTER = 'user.before.register';
+    const EVENT_AFTER_REGISTER = 'user.after.register';
+
     public $identityClass = 'nkostadinov\user\models\User';
 
     public $loginForm = 'nkostadinov\user\models\forms\LoginForm';
@@ -37,6 +50,14 @@ class User extends BaseUser
 
     private $_notificator;
     private $_security;
+
+    public function behaviors()
+    {
+        return [
+            'last_login' => LastLoginBehavior::className()
+        ];
+    }
+
 
     public function listUsers($params)
     {
@@ -70,7 +91,6 @@ class User extends BaseUser
         return $this->getSecurity()->hasAccess($permissionName, $params);
     }
 
-
     /**
      * @return ISecurityPolicy The security policy implementation
      */
@@ -82,4 +102,53 @@ class User extends BaseUser
         }
         return $this->_security;
     }
+
+    public function addAccount(ClientInterface $client)
+    {
+
+    }
+
+    /**
+     * Performs the actual user registration by validation the data and persisting the user.
+     *
+     * @param UserModel $model
+     * @return bool
+     */
+    public function register(\nkostadinov\user\models\User $model)
+    {
+        if ($this->enableConfirmation == false) {
+            $model->confirmed_on = time();
+        }
+//        if ($this->module->enableGeneratingPassword) {
+//            $this->password = Password::generate(8);
+//        }
+        $model->register_ip = \Yii::$app->getRequest()->isConsoleRequest ? '(console)' : \Yii::$app->getRequest()->getUserIP();
+
+        $event = new UserRegisterEvent();
+        $event->model = $model;
+        $this->trigger(self::EVENT_BEFORE_REGISTER, $event);
+
+        if ($model->save()) {
+            //Raise event that the user is persisted
+            $this->trigger(self::EVENT_AFTER_REGISTER, $event);
+            //Add confirmation token(if enabled) and notify user
+            if ($this->enableConfirmation) {
+                $token = \Yii::createObject([
+                    'class' => Token::className(),
+                    'type' => Token::TYPE_CONFIRMATION,
+                ]);
+                $token->link('user', $model);
+                $this->getNotificator()->sendConfirmationMessage($model, $token);
+            } else {
+                $this->login($model);
+            }
+//            if ($this->module->enableGeneratingPassword) {
+//                $this->mailer->sendWelcomeMessage($this);
+//            }
+            return true;
+        }
+        \Yii::error('An error occurred while registering user account', self::LOG_CATEGORY . '.register');
+        return false;
+    }
+
 }

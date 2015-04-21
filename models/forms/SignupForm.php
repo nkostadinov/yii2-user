@@ -55,7 +55,7 @@ class SignupForm extends Model
             $user->attributes = $this->attributes;
             $user->setPassword($this->password);
 
-            return $user->register();
+            return Yii::$app->user->register($user);
         }
 
         return false;

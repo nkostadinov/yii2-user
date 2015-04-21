@@ -3,6 +3,7 @@
 namespace nkostadinov\user\controllers;
 
 use Yii;
+use yii\authclient\ClientInterface;
 use yii\filters\AccessControl;
 
 class SecurityController extends BaseController
@@ -44,4 +45,21 @@ class SecurityController extends BaseController
         return $this->goHome();
     }
 
+    public function actions()
+    {
+        return [
+            'auth' => [
+                'class' => 'yii\authclient\AuthAction',
+                'successCallback' => [$this, 'successCallback'],
+            ],
+        ];
+    }
+
+    public function successCallback(ClientInterface $client)
+    {
+        $attributes = $client->getUserAttributes();
+
+        // user login or signup comes here
+        return false;
+    }
 }

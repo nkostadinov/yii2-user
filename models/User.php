@@ -150,43 +150,6 @@ class User extends ActiveRecord implements IdentityInterface
         return $this->hasMany(UserAccount::className(), ['user_id' => 'id']);
     }
 
-    public function register()
-    {
-        if ($this->getIsNewRecord() == false) {
-            throw new \RuntimeException('Calling "' . __CLASS__ . '::' . __METHOD__ . '" on existing user');
-        }
-
-        if (Yii::$app->user->enableConfirmation == false) {
-            $this->confirmed_on = time();
-        }
-//        if ($this->module->enableGeneratingPassword) {
-//            $this->password = Password::generate(8);
-//        }
-//        $this->trigger(self::USER_REGISTER_INIT);
-        if ($this->save()) {
-//            $this->trigger(self::USER_REGISTER_DONE);
-            if (Yii::$app->user->enableConfirmation) {
-                $token = \Yii::createObject([
-                    'class' => Token::className(),
-                    'type' => Token::TYPE_CONFIRMATION,
-                ]);
-                $token->link('user', $this);
-                Yii::$app->user->notificator->sendConfirmationMessage($this, $token);
-            } else {
-                \Yii::$app->user->login($this);
-            }
-//            if ($this->module->enableGeneratingPassword) {
-//                $this->mailer->sendWelcomeMessage($this);
-//            }
-//            \Yii::$app->session->setFlash('info', $this->getFlashMessage());
-//            \Yii::getLogger()->log('User has been registered', Logger::LEVEL_INFO);
-            return true;
-        }
-//        \Yii::getLogger()->log('An error occurred while registering user account', Logger::LEVEL_ERROR);
-        return false;
-
-    }
-
     public function confirm($code)
     {
         $token = Token::findOne([
@@ -209,13 +172,13 @@ class User extends ActiveRecord implements IdentityInterface
         return isset($this->confirmed_on);
     }
 
-    public function getName()
-    {
-        return $this->username > '' ? $this->username : substr($this->email, 0, strpos($this->email, '@'));
-    }
-
     public function getTokens()
     {
         return $this->hasMany(Token::className(), ['user_id' => 'id']);
+    }
+
+    public function getDisplayName()
+    {
+        return $this->name > '' ? $this->name : substr($this->email, 0, strpos($this->email, '@'));
     }
 }

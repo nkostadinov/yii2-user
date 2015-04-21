@@ -27,11 +27,14 @@ class Module extends \yii\base\Module
 
     public $adminColumns = [
         //['class' => 'yii\grid\SerialColumn'],
-        'name',
+        'DisplayName',
         'email:email',
 //            'status',
         'created_at:datetime',
         'confirmed_on:datetime',
+        'last_login:datetime',
+        'last_login_ip:text',
+        'register_ip:text',
         ['class' => 'yii\grid\ActionColumn'],
     ];
 
