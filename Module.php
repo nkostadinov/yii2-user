@@ -9,6 +9,16 @@ class Module extends \yii\base\Module
 {
     public $controllerNamespace = 'nkostadinov\user\controllers';
 
+    /** @var array The rules to be used in URL management. */
+    public static $urlRules = [
+        '<id:\d+>'                    => 'profile/show',
+        '<action:(login|logout)>'     => 'user/security/<action>',
+        '<action:(register|resend)>'  => 'user/registration/<action>',
+        'confirm/<id:\d+>/<code:\w+>' => 'user/registration/confirm',
+        'forgot'                      => 'user/recovery/request',
+        'recover/<id:\d+>/<code:\w+>' => 'user/recovery/reset',
+    ];
+
     /**
      * @var bool Whether to allow new user to register.
      */
@@ -29,11 +39,12 @@ class Module extends \yii\base\Module
         //['class' => 'yii\grid\SerialColumn'],
         'DisplayName',
         'email:email',
-//            'status',
+        'statusName',
         'created_at:datetime',
         'confirmed_on:datetime',
-        'last_login:datetime',
-        'last_login_ip:text',
+        'lastLoginText:html:Last login',
+//        'last_login:datetime',
+//        'last_login_ip:text',
         'register_ip:text',
         ['class' => 'yii\grid\ActionColumn'],
     ];
