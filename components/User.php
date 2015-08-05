@@ -7,15 +7,14 @@
 
 namespace nkostadinov\user\components;
 
-
 use nkostadinov\user\behaviors\LastLoginBehavior;
 use nkostadinov\user\events\UserRegisterEvent;
 use nkostadinov\user\interfaces\ISecurityPolicy;
 use nkostadinov\user\interfaces\IUserNotificator;
-use nkostadinov\user\models\forms\SignupForm;
 use nkostadinov\user\models\Token;
 use nkostadinov\user\models\User as UserModel;
 use nkostadinov\user\models\UserSearch;
+use nkostadinov\user\models\UserAccount;
 use yii\authclient\ClientInterface;
 use yii\base\Event;
 use yii\base\InvalidConfigException;
@@ -31,8 +30,6 @@ class User extends BaseUser
     const EVENT_BEFORE_REGISTER = 'user.before.register';
     const EVENT_AFTER_REGISTER = 'user.after.register';
 
-    public $identityClass = 'nkostadinov\user\models\User';
-
     public $loginForm = 'nkostadinov\user\models\forms\LoginForm';
     public $registerForm = 'nkostadinov\user\models\forms\SignupForm';
     public $recoveryForm = 'nkostadinov\user\models\forms\RecoveryForm';
@@ -41,6 +38,8 @@ class User extends BaseUser
     public $allowUncofirmedLogin = false;
     public $requireUsername = false;
 
+    public $identityClass = 'nkostadinov\user\models\User';
+    public $enableAutoLogin = true;
     public $loginUrl = ['user/security/login'];
 
     public $components = [
@@ -149,6 +148,21 @@ class User extends BaseUser
         }
         \Yii::error('An error occurred while registering user account', self::LOG_CATEGORY . '.register');
         return false;
+    }
+
+    public function findAccount(ClientInterface $client)
+    {
+        return UserAccount::findOne([
+            'provider' => $client->name,
+            'client_id' => $client->getUserAttributes()['id']
+        ]);
+    }
+
+    public function getName()
+    {
+        if($this->isGuest)
+            return 'Guest';
+        return $this->identity->getDisplayName();
     }
 
 }

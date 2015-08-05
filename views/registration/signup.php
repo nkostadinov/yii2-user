@@ -21,9 +21,10 @@ $this->params['breadcrumbs'][] = $this->title;
                     'options' => ['class' => 'form-vertical'],
                 ]); ?>
                 <?php
-                if (isset($account))
-                    echo $form->field($account, 'id')->hiddenInput()->label(false);
+//                if (isset($account))
+//                    echo $form->field($account, 'id')->hiddenInput()->label(false);
                 ?>
+                <?= $form->field($model, 'name') ?>
                 <?php if(\Yii::$app->user->requireUsername === true)
                     echo $form->field($model, 'username');
                 ?>

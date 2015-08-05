@@ -2,6 +2,8 @@
 
 namespace nkostadinov\user\controllers;
 
+use nkostadinov\user\interfaces\IUserAccount;
+use nkostadinov\user\models\UserAccount;
 use Yii;
 use yii\authclient\ClientInterface;
 use yii\filters\AccessControl;
@@ -57,9 +59,30 @@ class SecurityController extends BaseController
 
     public function successCallback(ClientInterface $client)
     {
-        $attributes = $client->getUserAttributes();
+        $account = \Yii::$app->user->findAccount($client);
+        //if account doesnt exists then create it
+        if(!isset($account)) {
+            $token = $client->getAccessToken();
 
-        // user login or signup comes here
+            $account = new UserAccount();
+            $account->provider = $client->getName();
+            $account->attributes = json_encode($client->getUserAttributes());
+            $account->access_token = $token->token;
+            $account->expires = $token->createTimestamp + $token->expireDuration;
+            $account->token_create_time = $token->createTimestamp;
+            $account->client_id = $client->getUserAttributes()['id'];
+            $account->save();
+        }
+
+        if(Yii::$app->user->isGuest) { //Create a new user and link account
+            if($client instanceof IUserAccount) {
+            } else
+                Yii::error("Cannot register new user with {$client->name}. You must setup nkostadinov\\clients\\facebook in AuthCollection.");
+        } else {
+            //add account to user
+            $account->link('user', Yii::$app->user->identity);
+        }
+
         return false;
     }
 }

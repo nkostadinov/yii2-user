@@ -1,7 +1,6 @@
 <?php
 namespace nkostadinov\user\models;
 
-use common\models\UserAccount;
 use Yii;
 use yii\base\NotSupportedException;
 use yii\behaviors\TimestampBehavior;
@@ -58,8 +57,11 @@ class User extends ActiveRecord implements IdentityInterface
         $rules = [
             ['status', 'default', 'value' => self::STATUS_ACTIVE],
             ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_DELETED]],
+
             ['email', 'email'],
-            [['email'], 'required', 'on' => 'register']
+            [['email'], 'required', 'on' => 'register'],
+
+            ['name', 'safe'],
         ];
 
         return $rules;
@@ -180,5 +182,19 @@ class User extends ActiveRecord implements IdentityInterface
     public function getDisplayName()
     {
         return $this->name > '' ? $this->name : substr($this->email, 0, strpos($this->email, '@'));
+    }
+
+    public function getStatusName()
+    {
+        //reverse constant lookup :)
+        foreach((new \ReflectionClass(get_class()))->getConstants() as $name => $value) {
+            if($value == $this->status && strpos($name, 'STATUS_') === 0)
+                return substr($name, 7, 255);
+        }
+    }
+
+    public function getLastLoginText()
+    {
+        return Yii::$app->formatter->asDatetime($this->last_login)."\n{$this->last_login_ip}";
     }
 }

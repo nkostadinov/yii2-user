@@ -11,6 +11,7 @@ use Yii;
  */
 class SignupForm extends Model
 {
+    public $name;
     public $username;
     public $email;
     public $password;
@@ -28,6 +29,8 @@ class SignupForm extends Model
 
             ['password', 'required'],
             ['password', 'string', 'min' => 6],
+
+            ['name', 'string', 'min' => 3],
         ];
 
         if(\Yii::$app->user->requireUsername === true) {

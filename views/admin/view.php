@@ -7,7 +7,7 @@ use yii\widgets\DetailView;
 /* @var $this yii\web\View */
 /* @var $model nkostadinov\user\models\user */
 
-$this->title = $model->name;
+$this->title = "{$model->DisplayName} #{$model->id}";
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app.users', 'Users'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
@@ -29,20 +29,19 @@ $this->params['breadcrumbs'][] = $this->title;
         <?= DetailView::widget([
             'model' => $model,
             'attributes' => [
-                'id',
                 'username',
                 'email:email',
-                'status',
+                'StatusName',
                 'created_at:datetime',
                 'updated_at:datetime',
                 'confirmed_on:datetime',
             ],
         ]) ?>
 
+
     </div>
 
-<?php
-if ($model->tokens): ?>
+<?php if ($model->tokens): ?>
     <h2>Active tokens</h2>
     <?= GridView::widget([
         'dataProvider' => new \yii\data\ArrayDataProvider([
@@ -56,5 +55,30 @@ if ($model->tokens): ?>
         ]
 //        'columns' => $this->context->module->adminColumns,
     ]);
-    ?>
+?>
+<?php endif; ?>
+<?php if ($model->userAccounts): ?>
+    <h2>Linked accounts</h2>
+    <?= GridView::widget([
+        'dataProvider' => new \yii\data\ArrayDataProvider([
+            'allModels' => $model->userAccounts,
+        ]),
+        'columns' => [
+            'provider',
+            'client_id',
+            'token_create_time:datetime',
+            'expires:datetime',
+            [
+                'value' => function($model) {
+                    $data = json_decode($model->attributes);
+                    $text = \yii\helpers\VarDumper::dumpAsString((array)$data, 10, true);
+                    return $text;
+                },
+                'format' => 'raw',
+            ],
+//            'attributes:raw',
+        ]
+//        'columns' => $this->context->module->adminColumns,
+    ]);
+?>
 <?php endif; ?>
