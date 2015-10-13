@@ -7,6 +7,7 @@ use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
 use yii\web\NotFoundHttpException;
+use yii\web\UnauthorizedHttpException;
 
 /**
  * This is the model class for table "user".
@@ -45,7 +46,7 @@ class User extends ActiveRecord implements IdentityInterface
     public function behaviors()
     {
         return [
-            TimestampBehavior::className(),
+            'timestamp' => TimestampBehavior::className(),
         ];
     }
 
@@ -80,7 +81,16 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public static function findIdentityByAccessToken($token, $type = null)
     {
-        throw new NotSupportedException('"findIdentityByAccessToken" is not implemented.');
+        $token = Token::findOne([
+            'code' => $token,
+            'type' => Token::TYPE_API_AUTH
+        ]);
+
+        if (!isset($token) or $token->isExpired)
+            throw new UnauthorizedHttpException("Auth code not found or expired!");
+
+        return static::findOne($token->user_id);
+        //throw new NotSupportedException('"findIdentityByAccessToken" is not implemented.');
     }
 
     /**
