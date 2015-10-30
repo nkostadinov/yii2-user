@@ -4,14 +4,15 @@ namespace nkostadinov\user\controllers;
 
 class ProfileController extends \yii\web\Controller
 {
-    public function actionIndex()
-    {
-        return $this->render('index');
-    }
+    public $defaultAction = 'view';
 
     public function actionView()
     {
-        return $this->render('view');
+        $view = $this->module->views['profile'];
+        if(\Yii::$app->request->isAjax)
+            return $this->renderAjax($view);
+
+        return $this->render($view);
     }
 
 }

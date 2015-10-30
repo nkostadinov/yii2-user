@@ -34,6 +34,12 @@ class SecurityController extends BaseController
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
             return $this->goBack();
         } else {
+            if(Yii::$app->request->isAjax)
+            return $this->renderAjax($this->module->views['login'], [
+                'model' => $model,
+                'module' => $this->module,
+            ]);
+            else
             return $this->render($this->module->views['login'], [
                 'model' => $model,
                 'module' => $this->module,

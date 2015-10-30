@@ -11,7 +11,7 @@ class Module extends \yii\base\Module
 
     /** @var array The rules to be used in URL management. */
     public static $urlRules = [
-        '<id:\d+>'                    => 'profile/show',
+        'profile'                     => 'user/profile/view',
         '<action:(login|logout)>'     => 'user/security/<action>',
         '<action:(register|resend)>'  => 'user/registration/<action>',
         'confirm/<id:\d+>/<code:\w+>' => 'user/registration/confirm',
@@ -33,6 +33,7 @@ class Module extends \yii\base\Module
         'login' => '@nkostadinov/user/views/security/login',
         'confirm' => '@nkostadinov/user/views/registration/confirm',
         'request' => '@nkostadinov/user/views/recovery/request',
+        'profile' => '@nkostadinov/user/views/profile/view',
     ];
 
     public $adminColumns = [
