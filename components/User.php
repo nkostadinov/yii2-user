@@ -9,7 +9,6 @@ namespace nkostadinov\user\components;
 
 use nkostadinov\user\behaviors\LastLoginBehavior;
 use nkostadinov\user\events\UserRegisterEvent;
-use nkostadinov\user\interfaces\ISecurityPolicy;
 use nkostadinov\user\interfaces\IUserNotificator;
 use nkostadinov\user\models\Token;
 use nkostadinov\user\models\User as UserModel;
@@ -44,11 +43,9 @@ class User extends BaseUser
 
     public $components = [
         'notificator' => 'nkostadinov\user\components\MailNotificator',
-        'security' => 'nkostadinov\user\components\Security',
     ];
 
     private $_notificator;
-    private $_security;
 
     public function behaviors()
     {
@@ -79,27 +76,9 @@ class User extends BaseUser
     {
         if(!isset($this->_notificator)) {
             $this->_notificator = \Yii::createObject($this->components['notificator']);
-            //Instance::ensure($this->_security, 'nkostadinov\user\interfaces\IUserNotificator');
+            Instance::ensure($this->_notificator, 'nkostadinov\user\interfaces\IUserNotificator');
         }
         return $this->_notificator;
-    }
-
-    public function can($permissionName, $params = [], $allowCaching = true)
-    {
-        //TODO: add cache
-        return $this->getSecurity()->hasAccess($permissionName, $params);
-    }
-
-    /**
-     * @return ISecurityPolicy The security policy implementation
-     */
-    public function getSecurity()
-    {
-        if(!isset($this->_security)) {
-            $this->_security = \Yii::createObject($this->components['security']);
-            //Instance::ensure($this->_security, 'nkostadinov\user\interfaces\ISecurityPolicy');
-        }
-        return $this->_security;
     }
 
     public function addAccount(ClientInterface $client)
