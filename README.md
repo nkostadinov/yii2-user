@@ -38,7 +38,7 @@ Add following lines to your main configuration file:
 ```php
 'components' => [
     'user' => [
-        'class' => 'nkostadinov\user\models\User',
+        'class' => 'nkostadinov\user\components\User',
     ],
 ],
 ```
