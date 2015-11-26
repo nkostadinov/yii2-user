@@ -3,17 +3,15 @@
 use nkostadinov\user\models\User;
 use nkostadinov\user\tests\_pages\RegisterPage;
 
-class AdvancedAuthenticationCest
+class AdvancedUserCest
 {
-    const TEST_EMAIL = 'test@innologica.com';
-    
     public function _before(FunctionalTester $I)
     {
     }
 
     public function _after(FunctionalTester $I)
     {
-        User::deleteAll('email = :email', [':email' => self::TEST_EMAIL]);
+        User::deleteAll('email = :email', [':email' => Commons::TEST_EMAIL]);
     }
 
     /**
@@ -30,14 +28,14 @@ class AdvancedAuthenticationCest
         
         // try to register a user with a shorter password
         $registerPage = RegisterPage::openBy($I);
-        $registerPage->register(self::TEST_EMAIL, '12345');
+        $registerPage->register(Commons::TEST_EMAIL, '12345');
         // it must fail
         $I->see('Password should contain at least 6 characters.');
-        $I->dontSeeRecord(User::className(), ['email' => self::TEST_EMAIL]);
+        $I->dontSeeRecord(User::className(), ['email' => Commons::TEST_EMAIL]);
 
         // try to register a user with a correct password length
-        $registerPage->register(self::TEST_EMAIL, '123456');
+        $registerPage->register(Commons::TEST_EMAIL, '123456');
         // it must pass
-        $I->seeRecord(User::className(), ['email' => self::TEST_EMAIL]);
+        $I->seeRecord(User::className(), ['email' => Commons::TEST_EMAIL]);
     }
 }
