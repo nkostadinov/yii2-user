@@ -28,7 +28,7 @@ class SignupForm extends Model
             ['email', 'unique', 'targetClass' => 'nkostadinov\user\models\User', 'message' => 'This email address has already been taken.'],
 
             ['password', 'required'],
-            ['password', 'string', 'min' => 6],
+            ['password', 'string', 'min' => Yii::$app->user->minPasswordLength],
 
             ['name', 'string', 'min' => 3],
         ];

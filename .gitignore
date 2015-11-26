@@ -11,3 +11,4 @@ vendor/
 tests/_support/_generated/
 tests/_support/UnitTester.php
 tests/_support/FunctionalTester.php
+/tests/_app/runtime/
