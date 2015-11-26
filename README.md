@@ -8,8 +8,7 @@ Just another user module management functionalities.
 * Flexible access control
 * Console commnads(TODO)
 
-Installation
-------------
+# Installation
 
 1. Download Yii2-user using composer
 --------------------------
@@ -61,11 +60,42 @@ applying the migrations:
 
 ```bash
 $ php yii migrate/up --migrationPath=@vendor/nkostadinov/yii2-user/migrations
+```
 
-Usage
------
+# Ho to run tests
 
-Once the extension is installed, simply use it in your code by  :
+Install codeception globally:
 
-```php
-<?= \nkostadinov\user\AutoloadExample::widget(); ?>```
+```bash
+$ composer global require "codeception/codeception:*"
+```
+
+Install globally the composer's asset plugin:
+
+```bash
+$ composer global require "fxp/composer-asset-plugin:~1.1.0"
+```
+
+Go to nkostadinov/yii2-user directory and run:
+
+```bash
+$ composer update
+```
+
+Build the codeception actors:
+
+```bash
+$ codecept build
+```
+
+Create a new database called 'user_test':
+
+```bash
+$ mysql -e 'create database user_test;'
+```
+
+Run the migrations:
+
+```bash
+$ php tests/_app/yii migrate --interactive=0
+```
