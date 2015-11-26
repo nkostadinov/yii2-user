@@ -41,6 +41,12 @@ class User extends BaseUser
     public $enableAutoLogin = true;
     public $loginUrl = ['user/security/login'];
 
+    /**
+     * The minimum length that a password field can have.
+     * @var integer
+     */
+    public $minPasswordLength = 6;
+
     public $components = [
         'notificator' => 'nkostadinov\user\components\MailNotificator',
     ];
