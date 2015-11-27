@@ -42,8 +42,7 @@ class User extends BaseUser
     public $loginUrl = ['user/security/login'];
 
     /**
-     * The minimum length that a password field can have.
-     * @var integer
+     * @var integer The minimum length that a password field can have.
      */
     public $minPasswordLength = 6;
 
@@ -56,7 +55,7 @@ class User extends BaseUser
     public function behaviors()
     {
         return [
-            'last_login' => LastLoginBehavior::className()
+//            'last_login' => LastLoginBehavior::className()
         ];
     }
 
