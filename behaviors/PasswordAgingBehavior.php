@@ -22,7 +22,17 @@ class PasswordAgingBehavior extends Behavior
     /**
      * @var array The route where the user will be redirected for a password change.
      */
-    public $changePasswordUrl = ['user/security/change_password'];
+    public $changePasswordUrl = ['user/security/change-password'];
+
+    /**
+     * @var type The form used for changing the old password.
+     */
+    public $changePasswordForm = 'nkostadinov\user\models\forms\ChangePasswordForm';
+
+    /**
+     * @var type The form used for changing the old password.
+     */
+    public $changePasswordView = '@nkostadinov/user/views/security/change_password';
 
     public function events()
     {
@@ -37,13 +47,18 @@ class PasswordAgingBehavior extends Behavior
      *
      * If the result is bigger than the $passwordChangeInterval,
      * the user will be logged out and redirected to the password change page.
+     *
+     * If the value of the 'password_changed_at' field is not set,
+     * the current timestamp is set and the login process continues
      */
     public function execute()
     {
         $passwordChangedAt = Yii::$app->user->identity->password_changed_at;
-        if ((time() - $passwordChangedAt) > $this->passwordChangeInterval) {
+        if (empty($passwordChangedAt)) {
+            Yii::$app->user->identity->password_changed_at = time();
+            Yii::$app->user->identity->save(false);
+        } else if ((time() - $passwordChangedAt) > $this->passwordChangeInterval) {
             Yii::$app->user->logout();
-            Yii::$app->session->setFlash('warning', 'It\'s time to change your password once in a wild');
             Yii::$app->response->redirect($this->changePasswordUrl);
         }
     }

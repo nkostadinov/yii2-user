@@ -55,7 +55,7 @@ class User extends BaseUser
     public function behaviors()
     {
         return [
-//            'last_login' => LastLoginBehavior::className()
+            'last_login' => LastLoginBehavior::className()
         ];
     }
 

@@ -91,4 +91,16 @@ class SecurityController extends BaseController
 
         return false;
     }
+
+    public function actionChangePassword()
+    {
+        $behavior = Yii::$app->user->getBehavior('passwordAging');
+        $model = Yii::createObject($behavior->changePasswordForm);
+        if ($model->load(Yii::$app->request->post()) && $model->changePassword())
+            return $this->goBack();
+
+        return $this->render($behavior->changePasswordView, [
+            'model' => $model,
+        ]);
+    }
 }
