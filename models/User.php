@@ -162,6 +162,11 @@ class User extends ActiveRecord implements IdentityInterface
         return $this->hasMany(UserAccount::className(), ['user_id' => 'id']);
     }
 
+    public function getPasswordHistories()
+    {
+        return $this->hasMany(PasswordHistory::className(), ['user_id' => 'id']);
+    }
+
     public function confirm($code)
     {
         $token = Token::findOne([

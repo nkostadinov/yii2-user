@@ -71,5 +71,4 @@ class PasswordAgingBehavior extends Behavior
             }
         }
     }
-
 }
