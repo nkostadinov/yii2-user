@@ -36,7 +36,7 @@ class AdvancedUserTest extends TestCase
         });
 
         $this->specify('Behavior validations', function() {
-            $behavior = Yii::$app->user->attachBehavior('passwordAgingBehavior', 'nkostadinov\user\behaviors\PasswordAgingBehavior');
+            $behavior = Yii::$app->user->attachBehavior('passwordAging', 'nkostadinov\user\behaviors\PasswordAgingBehavior');
             verify('Check that the behavior exists', $behavior)->notNull();
 
             verify('Check that passwordChangeInterval field exists', $behavior->passwordChangeInterval);
@@ -45,7 +45,11 @@ class AdvancedUserTest extends TestCase
         });
         
         $identity = Commons::createUser(Commons::TEST_EMAIL, 'test');
-        $this->specify('Create one user and set it\'s default password_changed_at value to older than two months', function() use ($identity) {
+        $this->specify('Create one user', function() use ($identity) {
+            verify('Asure that the password_changed_at field is empty', $identity->password_changed_at)->null();
+        });
+        
+        $this->specify('Set the password_changed_at value to a value older than two months', function() use ($identity) {
             $identity->setAttribute(self::ATTR_PASSWORD_CHANGED_AT, strtotime('-3 months'));
             $identity->save('false');
             verify('The login is unsuccessful', Yii::$app->user->login($identity))->false();

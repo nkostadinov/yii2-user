@@ -19,7 +19,7 @@ class AdvancedUserCest
      *
      * @param FunctionalTester $I
      */
-    public function minimumPasswordLengthTest(FunctionalTester $I)
+    public function testTheMinimumPasswordLength(FunctionalTester $I)
     {
         // assert that the property exists
         $I->assertTrue(isset(Yii::$app->user->minPasswordLength));

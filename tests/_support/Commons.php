@@ -16,12 +16,12 @@ class Commons
     public static function createUser($email, $password, $status = 1)
     {
         $user = new User();
-        $user->email = $email;        
+        $user->email = $email;
         $user->status = $status;
+        $user->confirmed_on = time();
         $user->setPassword($password);
         $user->save(false);
 
         return $user;
     }
-
 }

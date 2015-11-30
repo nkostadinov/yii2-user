@@ -7,6 +7,7 @@ Just another user module management functionalities.
 * User administration interface
 * Flexible access control
 * Console commnads(TODO)
+* Advanced user (optional)
 
 # Installation
 
@@ -62,7 +63,7 @@ applying the migrations:
 $ php yii migrate/up --migrationPath=@vendor/nkostadinov/yii2-user/migrations
 ```
 
-# Ho to run tests
+# How to run tests
 
 Install codeception globally:
 
@@ -99,3 +100,9 @@ Run the migrations:
 ```bash
 $ php tests/_app/yii migrate --interactive=0
 ```
+
+# Advanced user
+
+The yii2-user extension has the following additional functionalities that can be added on demand:
+
+ - [Password aging] (PASSWORD_AGING.md)

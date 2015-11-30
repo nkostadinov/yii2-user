@@ -5,6 +5,7 @@ namespace nkostadinov\user\behaviors;
 use nkostadinov\user\components\User;
 use Yii;
 use yii\base\Behavior;
+use yii\web\ForbiddenHttpException;
 
 /**
  * Responsible for tracking when a user has changed his/her password for a last time. 
@@ -45,21 +46,29 @@ class PasswordAgingBehavior extends Behavior
      * Calculates the difference between the current time and
      * the value from the password_changed_at field.
      *
-     * If the result is bigger than the $passwordChangeInterval,
-     * the user will be logged out and redirected to the password change page.
+     * If the result is bigger than the $passwordChangeInterval, the user will be logged out.
+     *
+     * If this is a web application, the user will be redirected to the password change page.
+     * Else a new ForbiddenHttpException is thrown.
      *
      * If the value of the 'password_changed_at' field is not set,
-     * the current timestamp is set and the login process continues
+     * the current timestamp is set and the login process continues.
+     *
+     * @throws ForbiddenHttpException
      */
     public function execute()
     {
-        $passwordChangedAt = Yii::$app->user->identity->password_changed_at;
-        if (empty($passwordChangedAt)) {
-            Yii::$app->user->identity->password_changed_at = time();
-            Yii::$app->user->identity->save(false);
-        } else if ((time() - $passwordChangedAt) > $this->passwordChangeInterval) {
+        $identity = Yii::$app->user->identity;
+        if (empty($identity->password_changed_at)) {
+            $identity->password_changed_at = time();
+            $identity->save(false);
+        } else if ((time() - $identity->password_changed_at) > $this->passwordChangeInterval) {
             Yii::$app->user->logout();
-            Yii::$app->response->redirect($this->changePasswordUrl);
+            if (Yii::$app instanceof \yii\web\Application) {
+                Yii::$app->response->redirect($this->changePasswordUrl);
+            } else {
+                throw new ForbiddenHttpException('The system requires a password change');
+            }
         }
     }
 
