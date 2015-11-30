@@ -48,6 +48,11 @@ class AdvancedUserTest extends TestCase
         $this->specify('Create one user', function() use ($identity) {
             verify('Asure that the password_changed_at field is empty', $identity->password_changed_at)->null();
         });
+
+        $this->specify('Login for a first time', function() use ($identity) {
+            Yii::$app->user->login($identity);
+            verify('After the first login, the password_changed_at field must be automaticaly set', $identity->password_changed_at)->notNull();
+        });
         
         $this->specify('Set the password_changed_at value to a value older than two months', function() use ($identity) {
             $identity->setAttribute(self::ATTR_PASSWORD_CHANGED_AT, strtotime('-3 months'));
@@ -58,6 +63,7 @@ class AdvancedUserTest extends TestCase
         $this->specify('Now set the value of password_changed_at field to 1 month', function() use ($identity) {
             $identity->setAttribute(self::ATTR_PASSWORD_CHANGED_AT, strtotime('-1 month'));
             $identity->save('false');
+            
             verify('The login is successful', Yii::$app->user->login($identity))->true();
         });
     }
