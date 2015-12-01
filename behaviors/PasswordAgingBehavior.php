@@ -3,8 +3,10 @@
 namespace nkostadinov\user\behaviors;
 
 use nkostadinov\user\components\User;
+use nkostadinov\user\Module;
 use Yii;
 use yii\base\Behavior;
+use yii\web\Application;
 use yii\web\ForbiddenHttpException;
 
 /**
@@ -19,21 +21,6 @@ class PasswordAgingBehavior extends Behavior
      * @var integer The interval of time after which a user will be invited to change his password. The value is in seconds and defaults to 2 months.
      */
     public $passwordChangeInterval = 60 * 60 * 24 * 30 * 2;
-
-    /**
-     * @var array The route where the user will be redirected for a password change.
-     */
-    public $changePasswordUrl = ['user/security/change-password'];
-
-    /**
-     * @var type The form used for changing the old password.
-     */
-    public $changePasswordForm = 'nkostadinov\user\models\forms\ChangePasswordForm';
-
-    /**
-     * @var type The form used for changing the old password.
-     */
-    public $changePasswordView = '@nkostadinov/user/views/security/change_password';
 
     public function events()
     {
@@ -64,8 +51,8 @@ class PasswordAgingBehavior extends Behavior
             $identity->save(false);
         } else if ((time() - $identity->password_changed_at) > $this->passwordChangeInterval) {
             Yii::$app->user->logout();
-            if (Yii::$app instanceof \yii\web\Application) {
-                Yii::$app->response->redirect($this->changePasswordUrl);
+            if (Yii::$app instanceof Application) {
+                Yii::$app->response->redirect(Module::$urlRules['changePassword']);
             } else {
                 throw new ForbiddenHttpException('The system requires a password change');
             }

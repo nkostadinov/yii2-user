@@ -77,7 +77,7 @@ class ChangePasswordForm extends Model
         return false;
     }
 
-    private function getUser()
+    public function getUser()
     {
         if (!$this->_user) {
             $this->_user = User::findByEmail($this->email);

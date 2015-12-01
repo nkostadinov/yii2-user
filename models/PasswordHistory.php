@@ -42,4 +42,29 @@ class PasswordHistory extends ActiveRecord
     {
         return $this->hasOne(User::className(), ['id' => 'user_id']);
     }
+
+    /**
+     * @param integer $userId The user's id
+     * @param string $passwordHash The passsword's hash
+     */
+    public static function createAndSave($userId, $passwordHash)
+    {
+        $passwordHistory = new PasswordHistory();
+        $passwordHistory->user_id = $userId;
+        $passwordHistory->password_hash = $passwordHash;
+        $passwordHistory->save();
+    }
+
+    /**
+     * @param integer $userId
+     * @param integer $limit
+     * @return array An array of PasswordHistory objects
+     */
+    public static function findAllByUserId($userId, $limit = 5)
+    {
+        return self::find()
+            ->where(['user_id' => $userId])
+            ->limit($limit)
+            ->all();
+    }
 }

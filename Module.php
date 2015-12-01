@@ -17,6 +17,7 @@ class Module extends \yii\base\Module
         'confirm/<id:\d+>/<code:\w+>' => 'user/registration/confirm',
         'forgot'                      => 'user/recovery/request',
         'recover/<id:\d+>/<code:\w+>' => 'user/recovery/reset',
+        'changePassword'              => 'user/security/change-password',
     ];
 
     /**
@@ -28,13 +29,12 @@ class Module extends \yii\base\Module
      */
     public $allowPasswordRecovery = true;
 
-    public $views = [
-        'register' => '@nkostadinov/user/views/registration/signup',
-        'login' => '@nkostadinov/user/views/security/login',
-        'confirm' => '@nkostadinov/user/views/registration/confirm',
-        'request' => '@nkostadinov/user/views/recovery/request',
-        'profile' => '@nkostadinov/user/views/profile/view',
-    ];
+    public $registerView = '@nkostadinov/user/views/registration/signup';
+    public $loginView = '@nkostadinov/user/views/security/login';
+    public $confirmView = '@nkostadinov/user/views/registration/confirm';
+    public $requestView = '@nkostadinov/user/views/recovery/request';
+    public $profileView = '@nkostadinov/user/views/profile/view';
+    public $changePasswordView = '@nkostadinov/user/views/security/change_password';
 
     public $adminColumns = [
         //['class' => 'yii\grid\SerialColumn'],

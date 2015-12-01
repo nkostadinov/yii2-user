@@ -14,7 +14,7 @@ class RegistrationController extends BaseController
         if(!isset($user))
             throw new NotFoundHttpException("Confirmation code not found !");
         $user->confirm($code);
-        return $this->render($this->module->views['confirm']);
+        return $this->render($this->module->confirmView);
     }
 
     public function actionSignup()
@@ -33,7 +33,7 @@ class RegistrationController extends BaseController
         }
 
 
-        return $this->render($this->module->views['register'], [
+        return $this->render($this->module->registerView, [
             'model' => $model,
         ]);
     }

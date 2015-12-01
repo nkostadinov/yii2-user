@@ -35,12 +35,12 @@ class SecurityController extends BaseController
             return $this->goBack();
         } else {
             if(Yii::$app->request->isAjax)
-            return $this->renderAjax($this->module->views['login'], [
+            return $this->renderAjax($this->module->loginView, [
                 'model' => $model,
                 'module' => $this->module,
             ]);
             else
-            return $this->render($this->module->views['login'], [
+            return $this->render($this->module->loginView, [
                 'model' => $model,
                 'module' => $this->module,
             ]);
@@ -94,12 +94,11 @@ class SecurityController extends BaseController
 
     public function actionChangePassword()
     {
-        $behavior = Yii::$app->user->getBehavior('passwordAging');
-        $model = Yii::createObject($behavior->changePasswordForm);
+        $model = Yii::createObject(Yii::$app->user->changePasswordForm);
         if ($model->load(Yii::$app->request->post()) && $model->changePassword())
             return $this->goBack();
 
-        return $this->render($behavior->changePasswordView, [
+        return $this->render($this->module->changePasswordView, [
             'model' => $model,
         ]);
     }

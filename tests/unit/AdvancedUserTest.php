@@ -1,5 +1,8 @@
 <?php
 
+use nkostadinov\user\behaviors\PasswordHistoryPolicyBehavior;
+use nkostadinov\user\models\forms\ChangePasswordForm;
+use nkostadinov\user\models\PasswordHistory;
 use nkostadinov\user\models\User;
 use yii\codeception\TestCase;
 
@@ -85,10 +88,10 @@ class AdvancedUserTest extends TestCase
 
             verify('Asure that the model is created', Yii::createObject(self::PASSWORD_HISTORY_MODEL))->notNull();
         });
-        
-        $this->specify('Behavior validations', function() {
-            Yii::$app->user->identity = new nkostadinov\user\models\User();            
-            $behavior = Yii::$app->user->identity->attachBehavior('passwordHistoryPolicy', 'nkostadinov\user\behaviors\PasswordHistoryPolicyBehavior');
+
+        $changePasswordForm = Yii::createObject(Yii::$app->user->changePasswordForm);
+        $this->specify('Behavior validations', function() use ($changePasswordForm) {
+            $behavior = $changePasswordForm->attachBehavior('passwordHistoryPolicy', 'nkostadinov\user\behaviors\PasswordHistoryPolicyBehavior');
             
             verify('Check that the behavior exists', $behavior)->notNull();
             verify('Check that lastPasswordChangesCount field exists', isset($behavior->lastPasswordChangesCount))->true();
@@ -96,28 +99,50 @@ class AdvancedUserTest extends TestCase
                 $behavior->lastPasswordChangesCount)->equals(5);
         });
 
-        $this->specify('Create one user', function() {
-            Yii::$app->user->identity->email = Commons::TEST_EMAIL;
-            Yii::$app->user->identity->status = 1;
-            Yii::$app->user->identity->confirmed_on = time();
-            Yii::$app->user->identity->setPassword('test123');
-            Yii::$app->user->identity->save(false);
-            
-            $model = Yii::createObject(self::PASSWORD_HISTORY_MODEL);
-            verify('Asure that the password_history table is updated', $model->find()->count())->equals(1);
+        Commons::createUser(Commons::TEST_EMAIL, 'test123');
+        $this->specify('Change the password for a first time by adding the same password', function() use ($changePasswordForm) {
+            $changePasswordForm->email = Commons::TEST_EMAIL;
+            $changePasswordForm->oldPassword = 'test123';
+            $changePasswordForm->newPassword = 'test123';
+            $changePasswordForm->newPasswordRepeat = 'test123';
+
+            verify('Assure that the password cannot be changed, because it is the same as the previous one', $changePasswordForm->changePassword())->false();
+            verify('Assure that exactly the new password field has errors', $changePasswordForm->hasErrors('newPassword'))->true();
+            verify('Assure that the error on the new password is the error we expect',
+                $changePasswordForm->getErrors('newPassword')[0])->equals(PasswordHistoryPolicyBehavior::MESSAGE_SAME_PASSWORDS);
         });
 
-//        $this->specify('Change the password of the user, by trying to put the same password', function() use ($identity) {
-//            $identity->setPassword('test123');
-//            verify('Assure that the password cannot be changed, because it is the same as the previous one', $identity->save(false))->false();
-//        });
-//
-//        $this->specify('Change the password of the user, by trying to put a different password', function() use ($identity) {
-//            $identity->setPassword('BabaGusi');
-//            $model = Yii::createObject(self::PASSWORD_HISTORY_MODEL);
-//
-//            verify('Assure that the password can be changed', $identity->save(false))->true();
-//            verify('Asure that the password_history table is correctly updated', $model->find()->count())->equals(2);
-//        });
+        $userId = $changePasswordForm->getUser()->id;
+        $this->specify('Change the password this time for real', function() use ($changePasswordForm, $userId) {
+            $changePasswordForm->newPassword = 'BabaGusi';
+            $changePasswordForm->newPasswordRepeat = 'BabaGusi';
+            verify('Assure that the password is successfuly changed', $changePasswordForm->changePassword())->true();
+
+            $previousPasswords = PasswordHistory::findAllByUserId($userId);
+            verify('Assure that both - the first and the new passwords are added to the history table',
+                count($previousPasswords))->equals(2);
+        });        
+
+        $this->specify('Try to change the password by adding a password that has already been used in the past', function() use ($changePasswordForm) {
+            $changePasswordForm->oldPassword = 'BabaGusi';
+            $changePasswordForm->newPassword = 'test123';
+            $changePasswordForm->newPasswordRepeat = 'test123';
+
+            verify('Assure that the password cannot be changed, because it is the same as a password added in the past',
+                $changePasswordForm->changePassword())->false();
+            verify('Assure that exactly the new password field has errors', $changePasswordForm->hasErrors('newPassword'))->true();
+            verify('Assure that the error on the new password is the error we expect',
+                $changePasswordForm->getErrors('newPassword')[0])->equals(PasswordHistoryPolicyBehavior::MESSAGE_SAME_PREV_PASSWORDS);
+        });
+
+        $this->specify('Change the password for a second time for real', function() use ($changePasswordForm, $userId) {
+            $changePasswordForm->oldPassword = 'BabaGusi';
+            $changePasswordForm->newPassword = 'AllahuAkbar';
+            $changePasswordForm->newPasswordRepeat = 'AllahuAkbar';
+            verify('Assure that the password is successfuly changed', $changePasswordForm->changePassword())->true();
+
+            $previousPasswords = PasswordHistory::findAllByUserId($userId);
+            verify('Assure that the new password is added to the history table', count($previousPasswords))->equals(3);
+        });
     }
 }

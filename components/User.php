@@ -32,6 +32,11 @@ class User extends BaseUser
     public $loginForm = 'nkostadinov\user\models\forms\LoginForm';
     public $registerForm = 'nkostadinov\user\models\forms\SignupForm';
     public $recoveryForm = 'nkostadinov\user\models\forms\RecoveryForm';
+    
+    /**
+     * @var string The class name of the form used for changing passwords.
+     */
+    public $changePasswordForm = 'nkostadinov\user\models\forms\ChangePasswordForm';
 
     public $enableConfirmation = true;
     public $allowUncofirmedLogin = false;
@@ -40,7 +45,7 @@ class User extends BaseUser
     public $identityClass = 'nkostadinov\user\models\User';
     public $enableAutoLogin = true;
     public $loginUrl = ['user/security/login'];
-
+    
     /**
      * @var integer The minimum length that a password field can have.
      */
