@@ -12,8 +12,13 @@ Here is the life cycle of the functionality:
 
 # Installation
 
-In order to install the password aging functionality, you must add the password 
-aging behavior to your config (config.php/web.php).
+Run the migrations:
+
+```
+$ ./yii migrate --migrationPath=@vendor/nkostadinov/yii2-user/migrations/advanced
+```
+
+In order to install the password aging functionality, you must add the password aging behavior to your config (config.php/web.php).
 
 This is the most simple configuration needed:
 
