@@ -1,10 +1,11 @@
 <?php
 
 use nkostadinov\user\behaviors\PasswordHistoryPolicyBehavior;
-use nkostadinov\user\models\forms\ChangePasswordForm;
+use nkostadinov\user\models\forms\LoginForm;
 use nkostadinov\user\models\PasswordHistory;
 use nkostadinov\user\models\User;
 use yii\codeception\TestCase;
+use yii\web\ForbiddenHttpException;
 
 class AdvancedUserTest extends TestCase
 {   
@@ -12,8 +13,11 @@ class AdvancedUserTest extends TestCase
 
     const ATTR_PASSWORD_CHANGED_AT = 'password_changed_at';
     
-    const ATTR_PASSWORD_HISTORY = 'password_history';
+    const ATTR_PASSWORD_HISTORY = 'password_history';    
     const PASSWORD_HISTORY_MODEL = 'nkostadinov\user\models\PasswordHistory';
+
+    const ATTR_LOGIN_ATTEMPTS = 'login_attempts';
+    const ATTR_LOCKED_UNTIL = 'locked_until';
 
     public $appConfig = '@tests/tests/_app/config/unit.php';
     
@@ -143,6 +147,99 @@ class AdvancedUserTest extends TestCase
 
             $previousPasswords = PasswordHistory::findAllByUserId($userId);
             verify('Assure that the new password is added to the history table', count($previousPasswords))->equals(3);
+        });
+    }
+
+    public function testLockOutPolicy()
+    {
+        $this->specify('Asure that everything is configured properly', function() {
+            verify('Check that the advanced directory exists', is_dir(Commons::ADVANCED_MIGRATIONS_DIR))->true();
+
+            $files = scandir(Commons::ADVANCED_MIGRATIONS_DIR);
+            $result = preg_grep('/lock_out_policy/', $files);
+            verify('Check that the migration exists', $result)->notEmpty();
+
+            $user = new User();
+            verify('Check that the login_attempts field is added to the user\'s table',
+                $user->hasAttribute(self::ATTR_LOGIN_ATTEMPTS))->true();
+            verify('Check that the locked_until field is added to the user\'s table',
+                $user->hasAttribute(self::ATTR_LOCKED_UNTIL))->true();
+        });
+
+        $loginForm = new LoginForm();
+        $loginForm->username = Commons::TEST_EMAIL;
+        $this->specify('Behavior validations', function() use ($loginForm) {
+            $behavior = $loginForm->attachBehavior('unsuccessfulLoginAttempts', 'nkostadinov\user\behaviors\UnsuccessfulLoginAttemptsBehavior');
+
+            verify('Check that the behavior exists', $behavior)->notNull();
+            verify('Check that maxLoginAttempts field exists', isset($behavior->maxLoginAttempts))->true();
+            verify('Check that the default value of maxLoginAttempts is set to 5',
+                $behavior->maxLoginAttempts)->equals(5);
+
+            verify('Check that lockExpiration field exists', isset($behavior->lockExpiration))->true();
+            verify('Check that the default value of lockExpiration is set to 1 hour (in seconds)',
+                $behavior->lockExpiration)->equals(3600);
+        });
+
+        $user = Commons::createUser(Commons::TEST_EMAIL, 'test123');
+        $this->specify('Create one user and check the default values', function() use ($user) {
+            verify('Asure that the login_attempts field is empty', $user->login_attempts)->equals(0);
+            verify('Asure that the locked_until field is empty', $user->locked_until)->null();
+        });
+
+        $this->specify('Try to login with wrong password', function() use ($loginForm, $user) {
+            $loginForm->password = 'ghfghfhsdf';
+            $loginForm->login();
+
+            $user->refresh();
+            verify('Check that the login attemps field is initialized', $user->login_attempts)->equals(1);
+        });
+        
+        $this->specify('Lock the account', function() use ($loginForm, $user) {
+            $behavior = $loginForm->getBehavior('unsuccessfulLoginAttempts');
+            for ($i = 1; $i < $behavior->maxLoginAttempts; $i++) { // Start from 1 because we already have one attempt
+                $loginForm->login();
+            }
+        }, ['throws' => new ForbiddenHttpException()]);
+
+        $this->specify('Check the lock values', function() use ($loginForm, $user) {
+            $behavior = $loginForm->getBehavior('unsuccessfulLoginAttempts');
+            $user->refresh();
+
+            verify('Check that the login_attemps field is properly set', $user->login_attempts)->equals($behavior->maxLoginAttempts);
+            verify('Check that the locked_until field is set', $user->locked_until)->notNull();
+            verify('Check that the locked_until field is set in the future', $user->locked_until)->greaterThan(time());
+        });
+
+        $this->specify('Login the account after the lock ends', function() use ($loginForm, $user) {
+            // Simulate that the lock ends
+            $user->locked_until = strtotime('-2 weeks');
+            $user->save(false);
+
+            $loginForm->password = 'test123';
+            verify('Check that the login is successful', $loginForm->login())->true();
+            
+            $user->refresh();
+            verify('Check that the login_attempts field is set to 0', $user->login_attempts)->equals(0);
+            verify('Check that the locked_until field is null', $user->locked_until)->null();
+        });
+
+        $this->specify('Try to login again with unsuccessful password to check the updated values after the clean up', function() use ($loginForm, $user) {
+            $loginForm->password = 'AzObi4amMa4IBoza';
+            verify('Check that the login is unsuccessful', $loginForm->login())->false();
+
+            $user->refresh();
+            verify('Check that the login_attempts field is 1', $user->login_attempts)->equals(1);
+            verify('Check that the locked_until field is still null', $user->locked_until)->null();
+        });
+
+        $this->specify('Login and check the defaults, in order to prove that only consequent attempts are being counted', function() use ($loginForm, $user) {
+            $loginForm->password = 'test123';
+            verify('Check that the login is successful', $loginForm->login())->true();
+
+            $user->refresh();
+            verify('Check that the login_attempts field is set to 0', $user->login_attempts)->equals(0);
+            verify('Check that the locked_until field is still null', $user->locked_until)->null();
         });
     }
 }

@@ -11,9 +11,7 @@ First of all, run the migrations:
 $ ./yii migrate --migrationPath=@vendor/nkostadinov/yii2-user/migrations/advanced
 ```
 
-TODO: Describe the whole installation process - e.g. run migrations etc.
-
-Then you must add the password history policy behavior to your ChangePasswordForm model in your config (config.php/web.php).
+Then you must add the PasswordHistoryPolicyBehavior to your ChangePasswordForm model in your config (config.php/web.php).
 
 This is the most simple configuration needed:
 
