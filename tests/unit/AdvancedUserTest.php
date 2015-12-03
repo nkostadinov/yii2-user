@@ -57,7 +57,7 @@ class AdvancedUserTest extends TestCase
                 $behavior->passwordChangeInterval)->equals(60 * 60 * 24 * 30 * 2);
         });
         
-        $identity = Commons::createUser(Commons::TEST_EMAIL, 'test');
+        $identity = Commons::createUser();
         $this->specify('Create one user', function() use ($identity) {
             verify('Asure that the password_changed_at field is empty', $identity->password_changed_at)->null();
         });
@@ -108,7 +108,7 @@ class AdvancedUserTest extends TestCase
                 $behavior->lastPasswordChangesCount)->equals(5);
         });
 
-        Commons::createUser(Commons::TEST_EMAIL, 'test123');
+        Commons::createUser();
         $this->specify('Change the password for a first time by adding the same password', function() use ($changePasswordForm) {
             $changePasswordForm->email = Commons::TEST_EMAIL;
             $changePasswordForm->oldPassword = 'test123';
@@ -130,7 +130,7 @@ class AdvancedUserTest extends TestCase
             $previousPasswords = PasswordHistory::findAllByUserId($userId);
             verify('Assure that both - the first and the new passwords are added to the history table',
                 count($previousPasswords))->equals(2);
-        });        
+        });
 
         $this->specify('Try to change the password by adding a password that has already been used in the past', function() use ($changePasswordForm) {
             $changePasswordForm->oldPassword = 'BabaGusi';
@@ -171,7 +171,7 @@ class AdvancedUserTest extends TestCase
                 $user->hasAttribute(self::ATTR_LOCKED_UNTIL))->true();
         });
 
-        $loginForm = new LoginForm();
+        $loginForm = Yii::createObject(Yii::$app->user->loginForm);
         $loginForm->username = Commons::TEST_EMAIL;
         $this->specify('Behavior validations', function() use ($loginForm) {
             $behavior = $loginForm->attachBehavior('unsuccessfulLoginAttempts', 'nkostadinov\user\behaviors\UnsuccessfulLoginAttemptsBehavior');
@@ -186,7 +186,7 @@ class AdvancedUserTest extends TestCase
                 $behavior->lockExpiration)->equals(3600);
         });
 
-        $user = Commons::createUser(Commons::TEST_EMAIL, 'test123');
+        $user = Commons::createUser();
         $this->specify('Create one user and check the default values', function() use ($user) {
             verify('Asure that the login_attempts field is empty', $user->login_attempts)->equals(0);
             verify('Asure that the locked_until field is empty', $user->locked_until)->null();
@@ -266,7 +266,7 @@ class AdvancedUserTest extends TestCase
             verify('Check that the behavior exists', $behavior)->notNull();
         });
 
-        $user = Commons::createUser(Commons::TEST_EMAIL, 'test123');
+        $user = Commons::createUser();
         $this->specify('Defaults validations', function() use ($user) {
             verify('Check that the default value of the ' . self::ATTR_REQUIRE_PASSWORD_CHANGE . ' field is set to 1',
                 $user->require_password_change)->equals(1);

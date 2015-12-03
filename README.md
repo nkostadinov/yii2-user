@@ -108,3 +108,4 @@ The yii2-user extension has the following additional functionalities that can be
  - [Password aging] (PASSWORD_AGING.md)
  - [Password history policy] (PASSWORD_HISTORY_POLICY.md)
  - [Account locking policy] (ACCOUNT_LOCKING_POLICY.md)
+ - [First login policy] (FIRST_LOGIN_POLICY.md)

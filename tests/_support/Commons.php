@@ -10,6 +10,7 @@ use nkostadinov\user\models\User;
 class Commons
 {
     const TEST_EMAIL = 'test@innologica.com';
+    const TEST_PASSWORD = 'test123';
 
     const ADVANCED_MIGRATIONS_DIR = __DIR__ . '/../../migrations/advanced';
 
@@ -21,7 +22,7 @@ class Commons
      * @param type $status Whether the password is active or not. Defaults to 'active'.
      * @return nkostadinov\user\models\User
      */
-    public static function createUser($email, $password, $status = 1)
+    public static function createUser($email = self::TEST_EMAIL, $password = self::TEST_PASSWORD, $status = 1)
     {
         $user = new User();
         $user->email = $email;
