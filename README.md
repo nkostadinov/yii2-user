@@ -68,7 +68,7 @@ $ php yii migrate/up --migrationPath=@vendor/nkostadinov/yii2-user/migrations
 Install codeception globally:
 
 ```bash
-$ composer global require "codeception/codeception:*"
+$ composer global require "codeception/codeception=*" "codeception/specify=*" "codeception/verify=*"
 ```
 
 Install globally the composer's asset plugin:
