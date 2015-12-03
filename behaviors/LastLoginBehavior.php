@@ -28,6 +28,6 @@ class LastLoginBehavior extends Behavior
         $event->identity->last_login = time();
         $event->identity->last_login_ip = Yii::$app->getRequest()->isConsoleRequest ? '(console)' : Yii::$app->getRequest()->getUserIP();
         $event->identity->save();
-        Yii::$app->user->attachBehavior('timestamp', $behavior);
+        Yii::$app->user->identity->attachBehavior('timestamp', $behavior);
     }
 }
