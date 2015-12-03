@@ -69,7 +69,12 @@ class ChangePasswordForm extends Model
         if ($this->validate()) {
             $user = $this->getUser();
             $user->setPassword($this->newPassword);
-            $user->password_changed_at = time();
+
+            if ($user->hasAttribute('password_changed_at'))
+                $user->password_changed_at = time();
+
+            if (!empty($user->require_password_change))
+                $user->require_password_change = 0;
 
             return $user->save() && Yii::$app->user->login($user);
         }

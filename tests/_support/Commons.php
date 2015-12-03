@@ -29,7 +29,9 @@ class Commons
         $user->confirmed_on = time();
         $user->setPassword($password);
         $user->save(false);
-
+        
+        $user->refresh(); // To load the defaults set by the database
+        
         return $user;
     }
 }

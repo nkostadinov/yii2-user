@@ -7,12 +7,9 @@
 
 namespace nkostadinov\user\behaviors;
 
-
 use nkostadinov\user\components\User;
-use nkostadinov\user\events\UserRegisterEvent;
+use Yii;
 use yii\base\Behavior;
-use yii\behaviors\TimestampBehavior;
-use yii\helpers\VarDumper;
 use yii\web\UserEvent;
 
 class LastLoginBehavior extends Behavior
@@ -20,19 +17,17 @@ class LastLoginBehavior extends Behavior
     public function events()
     {
         return [
-            User::EVENT_AFTER_LOGIN => [ $this, 'afterLogin'],
+            User::EVENT_AFTER_LOGIN => 'setLastLogin',
         ];
     }
 
-    public function afterLogin(UserEvent $event)
+    public function setLastLogin(UserEvent $event)
     {
-        $behavior = \Yii::$app->user->identity->getBehavior('timestamp');
-        \Yii::$app->user->identity->detachBehavior('timestamp');
+        $behavior = Yii::$app->user->identity->getBehavior('timestamp');
+        Yii::$app->user->identity->detachBehavior('timestamp');
         $event->identity->last_login = time();
-        $event->identity->last_login_ip = \Yii::$app->getRequest()->isConsoleRequest ? '(console)' : \Yii::$app->getRequest()->getUserIP();
+        $event->identity->last_login_ip = Yii::$app->getRequest()->isConsoleRequest ? '(console)' : Yii::$app->getRequest()->getUserIP();
         $event->identity->save();
-        \Yii::$app->user->attachBehavior('timestamp', $behavior);
+        Yii::$app->user->attachBehavior('timestamp', $behavior);
     }
-
-
 }

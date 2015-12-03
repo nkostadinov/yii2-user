@@ -13,11 +13,11 @@ class m151130_132238_create_password_history_table extends Migration
             'password_hash' => Schema::TYPE_STRING . '(255) NOT NULL',
             'created_at' => Schema::TYPE_TIMESTAMP . ' NULL DEFAULT CURRENT_TIMESTAMP',
         ], $this->getTableOptions());
-        $this->addForeignKey('password_history_user_fk', 'password_history', 'user_id', 'user', 'id', 'CASCADE');
+        $this->addForeignKey('password_history_user_fk', '{{%password_history}}', 'user_id', 'user', 'id', 'CASCADE');
     }
 
     public function down()
     {
-        $this->dropTable('password_history');
+        $this->dropTable('{{%password_history}}');
     }
 }

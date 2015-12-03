@@ -1,6 +1,7 @@
 <?php
 
 use nkostadinov\user\behaviors\PasswordHistoryPolicyBehavior;
+use nkostadinov\user\models\forms\ChangePasswordForm;
 use nkostadinov\user\models\forms\LoginForm;
 use nkostadinov\user\models\PasswordHistory;
 use nkostadinov\user\models\User;
@@ -18,6 +19,8 @@ class AdvancedUserTest extends TestCase
 
     const ATTR_LOGIN_ATTEMPTS = 'login_attempts';
     const ATTR_LOCKED_UNTIL = 'locked_until';
+
+    const ATTR_REQUIRE_PASSWORD_CHANGE = 'require_password_change';
 
     public $appConfig = '@tests/tests/_app/config/unit.php';
     
@@ -62,11 +65,13 @@ class AdvancedUserTest extends TestCase
         $this->specify('Login for a first time', function() use ($identity) {
             Yii::$app->user->login($identity);
             verify('After the first login, the password_changed_at field must be automaticaly set', $identity->password_changed_at)->notNull();
+            Yii::$app->user->logout();
         });
         
         $this->specify('Set the password_changed_at value to a value older than two months', function() use ($identity) {
             $identity->setAttribute(self::ATTR_PASSWORD_CHANGED_AT, strtotime('-3 months'));
             $identity->save('false');
+
             verify('The login is unsuccessful', Yii::$app->user->login($identity))->false();
         });
 
@@ -240,6 +245,50 @@ class AdvancedUserTest extends TestCase
             $user->refresh();
             verify('Check that the login_attempts field is set to 0', $user->login_attempts)->equals(0);
             verify('Check that the locked_until field is still null', $user->locked_until)->null();
+        });
+    }
+
+    public function testChangePasswordAfterFirstLogin()
+    {
+        $this->specify('Asure that everything is configured properly', function() {
+            verify('Check that the advanced directory exists', is_dir(Commons::ADVANCED_MIGRATIONS_DIR))->true();
+
+            $files = scandir(Commons::ADVANCED_MIGRATIONS_DIR);
+            $result = preg_grep('/'. self::ATTR_REQUIRE_PASSWORD_CHANGE .'/', $files);
+            verify('Check that the migration exists', $result)->notEmpty();
+
+            verify('Check that the field is added to the table (the migration is run)',
+                (new User())->hasAttribute(self::ATTR_REQUIRE_PASSWORD_CHANGE))->true();
+        });
+
+        $this->specify('Behavior validations', function() {
+            $behavior = Yii::$app->user->attachBehavior('firstLoginPolicy', 'nkostadinov\user\behaviors\FirstLoginPolicyBehavior');
+            verify('Check that the behavior exists', $behavior)->notNull();
+        });
+
+        $user = Commons::createUser(Commons::TEST_EMAIL, 'test123');
+        $this->specify('Defaults validations', function() use ($user) {
+            verify('Check that the default value of the ' . self::ATTR_REQUIRE_PASSWORD_CHANGE . ' field is set to 1',
+                $user->require_password_change)->equals(1);
+        });
+
+        $this->specify('The user is required to change his password on a first login', function() use ($user) {
+            verify('Check that the login fails', Yii::$app->user->login($user))->false();
+        });
+
+        $this->specify('Change the password of the user and check the user is logged in', function() use ($user) {
+            $changePasswordForm = new ChangePasswordForm();
+            $changePasswordForm->email = Commons::TEST_EMAIL;
+            $changePasswordForm->oldPassword = 'test123';
+            $changePasswordForm->newPassword = 'Risto-Bageristo';
+            $changePasswordForm->newPasswordRepeat = 'Risto-Bageristo';
+            $changePasswordForm->changePassword(); // The user is logged in after a password change
+            
+            $user->refresh();
+            verify('Asure the ' . self::ATTR_REQUIRE_PASSWORD_CHANGE . ' is set to 0', $user->require_password_change)->equals(0);
+            verify('Check that the login passes', Yii::$app->user->isGuest)->false();
+
+            Yii::$app->user->logout(); // Logout the user to continue testing without a logged in user
         });
     }
 }

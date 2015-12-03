@@ -29,7 +29,7 @@ class UnsuccessfulLoginAttemptsBehavior extends Behavior
 
     /**
      * @param Event $event
-     * @throws ForbiddenHttpException If the user is locked
+     * @throws ForbiddenHttpException If the user is locked (for console applications)
      */
     public function unsuccessfulAttemptsChecker(Event $event)
     {

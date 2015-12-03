@@ -7,7 +7,6 @@ use Yii;
 use yii\base\Behavior;
 use yii\base\Event;
 use yii\base\Model;
-use yii\db\AfterSaveEvent;
 
 /**
  * Prevents users from creating a password that has already been used in the past.
