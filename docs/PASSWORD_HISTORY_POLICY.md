@@ -1,4 +1,4 @@
-# Password History Policy [![Build Status](https://travis-ci.org/nkostadinov/yii2-user.svg?branch=master)](https://travis-ci.org/nkostadinov/yii2-user) 
+# Password History Policy
 
 When a user wants to change his password, he must add a password that hasn't been used by him in the past.
 This functionality checks the last 5 password changes. The value is configurable.

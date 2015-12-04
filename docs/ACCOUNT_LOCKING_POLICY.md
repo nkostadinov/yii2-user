@@ -1,4 +1,4 @@
-# Account Locking Policy [![Build Status](https://travis-ci.org/nkostadinov/yii2-user.svg?branch=master)](https://travis-ci.org/nkostadinov/yii2-user) 
+# Account Locking Policy
 
 A functionality that locks the user after 5 consequent unsuccessful attempts to login. The user is locked for 1 hour. 
 Those values are configurable.

@@ -1,4 +1,4 @@
-# First Login Policy [![Build Status](https://travis-ci.org/nkostadinov/yii2-user.svg?branch=master)](https://travis-ci.org/nkostadinov/yii2-user) 
+# First Login Policy
 
 Requires the user to change password before the first login or when required.
 

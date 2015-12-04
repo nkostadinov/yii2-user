@@ -105,7 +105,7 @@ $ php tests/_app/yii migrate --interactive=0
 
 The yii2-user extension has the following additional functionalities that can be added on demand:
 
- - [Password aging] (PASSWORD_AGING.md)
- - [Password history policy] (PASSWORD_HISTORY_POLICY.md)
- - [Account locking policy] (ACCOUNT_LOCKING_POLICY.md)
- - [First login policy] (FIRST_LOGIN_POLICY.md)
+ - [Password aging] (docs/PASSWORD_AGING.md)
+ - [Password history policy] (docs/PASSWORD_HISTORY_POLICY.md)
+ - [Account locking policy] (docs/ACCOUNT_LOCKING_POLICY.md)
+ - [First login policy] (docs/FIRST_LOGIN_POLICY.md)

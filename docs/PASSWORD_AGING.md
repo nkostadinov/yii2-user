@@ -1,4 +1,4 @@
-# Password Aging [![Build Status](https://travis-ci.org/nkostadinov/yii2-user.svg?branch=master)](https://travis-ci.org/nkostadinov/yii2-user) 
+# Password Aging
 
 The password aging functionality is designed to be used in enterprise environments, by adding more security to the application.
 The functionality requires a user to change his password after a certain period of time.
