@@ -2,6 +2,8 @@
 
 use nkostadinov\user\models\User;
 
+define('ADVANCED_DIR_PATH', __DIR__ . '/../../migrations/advanced');
+
 /**
  * Common functionalities for all kinds of tests.
  *
@@ -12,7 +14,7 @@ class Commons
     const TEST_EMAIL = 'test@innologica.com';
     const TEST_PASSWORD = 'test123';
 
-    const ADVANCED_MIGRATIONS_DIR = __DIR__ . '/../../migrations/advanced';
+    const ADVANCED_MIGRATIONS_DIR = ADVANCED_DIR_PATH;
 
     /**
      * Creates a new, confirmed user.
