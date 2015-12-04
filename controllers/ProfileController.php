@@ -8,7 +8,7 @@ class ProfileController extends \yii\web\Controller
 
     public function actionView()
     {
-        $view = $this->module->views['profile'];
+        $view = $this->module->profileView;
         if(\Yii::$app->request->isAjax)
             return $this->renderAjax($view);
 

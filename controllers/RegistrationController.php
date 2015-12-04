@@ -23,19 +23,17 @@ class RegistrationController extends BaseController
             throw new NotFoundHttpException("Registration disabled!");
 
         $model = Yii::createObject(Yii::$app->user->registerForm);
-
         if ($model->load(Yii::$app->request->post())) {
             if ($model->signup()) {
                 if(Yii::$app->user->enableConfirmation)
-                    return $this->renderContent(\Yii::t('app.user', 'Confirmation mail has been sent to {0}.', [ $model->email ]));
+                    return $this->renderContent(\Yii::t('app.user', 'Confirmation mail has been sent to {0}.', [$model->email]));
+                
                 return $this->goHome();
             }
         }
-
 
         return $this->render($this->module->registerView, [
             'model' => $model,
         ]);
     }
-
 }

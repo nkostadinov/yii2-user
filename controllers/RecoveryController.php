@@ -44,7 +44,7 @@ class RecoveryController extends BaseController
             ]);
         }
 
-        return $this->render($this->module->views['request'], [
+        return $this->render($this->module->requestView, [
             'model' => $model,
         ]);
     }
