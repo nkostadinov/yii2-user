@@ -15,8 +15,7 @@ use yii\base\Model;
 class PasswordHistoryPolicyBehavior extends Behavior
 {
     const MESSAGE_SAME_PASSWORDS = 'Passwords must not be the same!';
-    const MESSAGE_SAME_PREV_PASSWORDS = 'Your password is the same as a previous '
-            . 'password of yours. For security reasons, please add another password.';
+    const MESSAGE_SAME_PREV_PASSWORDS = 'Your password is the same as a previous password of yours. For security reasons, please add another password.';
 
     /**
      * @var integer The number of the password changes, that the system will check.
