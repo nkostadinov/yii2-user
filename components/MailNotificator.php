@@ -21,7 +21,13 @@ class MailNotificator extends Component implements IUserNotificator {
 
     public function sendRecoveryMessage($user, $token)
     {
-        // TODO: Implement sendRecoveryMessage() method.
+        $this->getMailer()->compose()
+            ->setFrom($this->sender)
+            ->setTo($user->email)
+            ->setSubject($this->mailSubject)
+            ->setTextBody($token->code)
+            ->setHtmlBody("<b>{$token->code}</b>")
+            ->send();
     }
 
     public function sendConfirmationMessage($user, $token)

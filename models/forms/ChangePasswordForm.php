@@ -12,6 +12,9 @@ use yii\base\Model;
  */
 class ChangePasswordForm extends Model
 {
+    const SCENARIO_PASSWORD_RECOVERY = 'passwordRecovery';
+    const SCENARIO_CHANGE_PASSWORD = 'changePassword';
+
     public $email;
     public $oldPassword;
     public $newPassword;

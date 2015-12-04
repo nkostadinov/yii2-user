@@ -1,5 +1,6 @@
 <?php
 
+use nkostadinov\user\models\Token;
 use nkostadinov\user\models\User;
 
 define('ADVANCED_DIR_PATH', __DIR__ . '/../../migrations/advanced');
@@ -22,7 +23,7 @@ class Commons
      * @param type $email
      * @param type $password
      * @param type $status Whether the password is active or not. Defaults to 'active'.
-     * @return nkostadinov\user\models\User
+     * @return User
      */
     public static function createUser($email = self::TEST_EMAIL, $password = self::TEST_PASSWORD, $status = 1)
     {
@@ -36,5 +37,27 @@ class Commons
         $user->refresh(); // To load the defaults set by the database
         
         return $user;
+    }
+
+    public static function createUnconfirmedUser($email = self::TEST_EMAIL, $password = self::TEST_PASSWORD)
+    {
+        $user = new User();
+        $user->email = $email;
+        $user->setPassword($password);
+        $user->save(false);
+
+        return $user;
+    }
+
+    public static function createTokenForUser($userId)
+    {
+        $token = Yii::createObject([
+            'class'   => Token::className(),
+            'user_id' => $userId,
+            'type'    => Token::TYPE_RECOVERY
+        ]);
+        $token->save(false);
+
+        return $token;
     }
 }

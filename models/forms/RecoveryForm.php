@@ -75,7 +75,7 @@ class RecoveryForm extends Model
                 'type'    => Token::TYPE_RECOVERY
             ]);
             $token->save(false);
-            \Yii::$app->user->notification->sendRecoveryMessage($this->user, $token);
+            \Yii::$app->user->notificator->sendRecoveryMessage($this->user, $token);
             \Yii::$app->session->setFlash('info', \Yii::t('user', 'An email has been sent with instructions for resetting your password'));
             return true;
         }

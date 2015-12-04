@@ -177,11 +177,11 @@ class User extends ActiveRecord implements IdentityInterface
 
         if (!isset($token) or $token->isExpired)
             throw new NotFoundHttpException("Confirmation code not found or expired!");
-        else {
-            $token->delete();
-            $this->confirmed_on = time();
-            return $this->save(false);
-        }
+        
+        $token->delete();
+        $this->confirmed_on = time();
+        
+        return $this->save(false);
     }
 
     public function getIsConfirmed()
@@ -211,5 +211,16 @@ class User extends ActiveRecord implements IdentityInterface
     public function getLastLoginText()
     {
         return Yii::$app->formatter->asDatetime($this->last_login)."\n{$this->last_login_ip}";
+    }
+
+    public static function resetPassword($code)
+    {
+        $token = Token::findByCode($code);
+        $user = $token->user;
+        $user->setPassword(Yii::$app->security->generateRandomString());
+        if ($user->save(false))
+            $token->delete();
+
+        return Yii::$app->user->login($user);
     }
 }

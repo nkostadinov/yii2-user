@@ -2,7 +2,7 @@
 
 use nkostadinov\user\tests\_pages\ChangePasswordPage;
 use nkostadinov\user\tests\_pages\LoginPage;
-use nkostadinov\user\tests\_pages\PasswordRecoveryPage;
+use nkostadinov\user\tests\_pages\PasswordRecoveryRequestPage;
 use nkostadinov\user\tests\_pages\ProfilePage;
 use nkostadinov\user\tests\_pages\RegisterPage;
 
@@ -28,6 +28,6 @@ ProfilePage::openBy($I);
 $I->see('profile/view');
 
 // Password recovery page
-PasswordRecoveryPage::openBy($I);
+PasswordRecoveryRequestPage::openBy($I);
 $I->seeInTitle('Recover your password');
 $I->seeElement('#password-recovery-form');

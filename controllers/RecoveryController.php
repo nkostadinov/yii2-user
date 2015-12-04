@@ -7,6 +7,9 @@
 
 namespace nkostadinov\user\controllers;
 
+use nkostadinov\user\models\forms\ChangePasswordForm;
+use nkostadinov\user\models\User;
+use Yii;
 use yii\filters\AccessControl;
 
 /**
@@ -34,18 +37,28 @@ class RecoveryController extends BaseController
 
     public function actionRequest()
     {
-        $model = \Yii::createObject(\Yii::$app->user->recoveryForm);
+        $model = Yii::createObject(Yii::$app->user->recoveryForm);
         $model->scenario = 'request';
-
-        if ($model->load(\Yii::$app->request->post()) && $model->sendRecoveryMessage()) {
-            return $this->render('/message', [
-                'title'  => \Yii::t('user', 'Recovery message sent'),
+        if ($model->load(Yii::$app->request->post()) && $model->sendRecoveryMessage()) {
+            return $this->render('message', [
+                'title'  => Yii::t('user', 'Recovery message sent'),
                 'module' => $this->module,
             ]);
         }
 
         return $this->render($this->module->requestView, [
             'model' => $model,
+        ]);
+    }
+
+    public function actionReset($code)
+    {
+        User::resetPassword($code);        
+        $changePasswordForm = Yii::createObject(Yii::$app->user->changePasswordForm);
+        $changePasswordForm->scenario = ChangePasswordForm::SCENARIO_PASSWORD_RECOVERY;
+
+        return $this->render($this->module->changePasswordView, [
+            'model' => $changePasswordForm,
         ]);
     }
 }

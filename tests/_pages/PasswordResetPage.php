@@ -5,10 +5,10 @@ namespace nkostadinov\user\tests\_pages;
 use yii\codeception\BasePage;
 
 /**
- * Represents the password recovery's page
+ * Represents the password reset page
  * @property \AcceptanceTester|\FunctionalTester $actor
  */
-class PasswordRecoveryPage extends BasePage
+class PasswordResetPage extends BasePage
 {
-    public $route = '/user/recovery/request';
+    public $route = '/user/recovery/reset';
 }

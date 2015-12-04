@@ -90,4 +90,25 @@ class Token extends \yii\db\ActiveRecord
                 return $name;
         }
     }
+
+    /**
+     * Finds a token with user by the token's code.
+     *
+     * @param string $code
+     * @param integer $type The type of the token
+     * @return Token
+     * @throws \yii\web\NotFoundHttpException
+     */
+    public static function findByCode($code, $type = self::TYPE_RECOVERY)
+    {
+        $token = Token::find()->with('user')
+            ->where(['code' => $code, 'type' => $type])
+            ->one();
+        
+        if (empty($token) || empty($token->user)) {
+            throw new \yii\web\NotFoundHttpException('Code not found!');
+        }
+
+        return $token;
+    }
 }
