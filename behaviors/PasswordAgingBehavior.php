@@ -21,7 +21,7 @@ class PasswordAgingBehavior extends Behavior
     /**
      * @var integer The interval of time after which a user will be invited to change his password. The value is in seconds and defaults to 2 months.
      */
-    public $passwordChangeInterval = 60 * 60 * 24 * 30 * 2;
+    public $passwordChangeInterval = 5184000;
 
     public function events()
     {
