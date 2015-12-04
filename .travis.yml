@@ -30,7 +30,7 @@ before_script:
   - export VENDOR_DIR="~/build/nkostadinov/yii2-user/vendor"
   - mysql -e 'create database user_test;'
   - php tests/_app/yii migrate/up --interactive=0
-  - php tests/_app/yii migrate/up --migrationPath=@nkostadinov/yii2-user/migrations/advanced --interactive=0
+  - php tests/_app/yii migrate/up --migrationPath=@nkostadinov/user/migrations/advanced --interactive=0
   - ~/.composer/vendor/bin/codecept build
 script:
 #  - php -S localhost:8080 > /dev/null 2>&1 &
