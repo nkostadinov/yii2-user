@@ -11,4 +11,11 @@ use yii\codeception\BasePage;
 class ChangePasswordPage extends BasePage
 {
     public $route = '/user/security/change-password';
+
+    public function changePassword($newPassword, $newPasswordRepeat)
+    {
+        $this->actor->fillField('input[name="ChangePasswordForm[newPassword]"]', $newPassword);
+        $this->actor->fillField('input[name="ChangePasswordForm[newPasswordRepeat]"]', $newPasswordRepeat);
+        $this->actor->click('change-password-button');
+    }
 }

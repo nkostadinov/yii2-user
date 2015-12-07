@@ -32,7 +32,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <?= $form->field($model, 'newPasswordRepeat')->passwordInput() ?>
 
                 <div class="form-group">
-                    <?= Html::submitButton('Submit', ['class' => 'btn btn-primary btn-block', 'name' => 'login-button']) ?>
+                    <?= Html::submitButton('Submit', ['class' => 'btn btn-primary btn-block', 'name' => 'change-password-button']) ?>
                 </div>
 
                 <?php ActiveForm::end(); ?>
