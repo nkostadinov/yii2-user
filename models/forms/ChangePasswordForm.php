@@ -7,13 +7,15 @@ use Yii;
 use yii\base\Model;
 
 /**
- * The form used for requiring a password change of a user, that haven't changed
- * his password for PasswordAgingBehavior::$passwordChangeInterval time.
+ * Covers three cases:
+ *  - Change password - when the user wants a password change by his/hers desire;
+ *  - Required password change - when the system requires from the user a password change.
+ *    In this case the user is not logged in and the 'email' and the 'oldPassword' fields are needed.
+ *  - Reset password - after reseting password the user is sent to change it immedeately.
  */
 class ChangePasswordForm extends Model
 {
-    const SCENARIO_PASSWORD_RECOVERY = 'passwordRecovery';
-    const SCENARIO_CHANGE_PASSWORD = 'changePassword';
+    const SCENARIO_REQUIRE_PASSWORD_CHANGE = 'requirePasswordChange';
 
     public $email;
     public $oldPassword;
@@ -29,15 +31,15 @@ class ChangePasswordForm extends Model
     {
         return [
             ['email', 'email'],
-            ['email', 'required'],
             ['email', 'filter', 'filter' => 'trim'],
 
-            [['oldPassword', 'newPassword', 'newPasswordRepeat'], 'string', 'min' => Yii::$app->user->minPasswordLength],
-            [['oldPassword', 'newPassword', 'newPasswordRepeat'], 'required'],
+            [['newPassword', 'newPasswordRepeat'], 'string', 'min' => Yii::$app->user->minPasswordLength],
+            [['newPassword', 'newPasswordRepeat'], 'required'],
+            [['newPassword', 'newPasswordRepeat'], 'validateNewPasswords'],
 
-            ['oldPassword', 'validatePassword'],
-
-            [['newPassword', 'newPasswordRepeat'], 'validateNewPasswords']
+            ['email', 'required', 'on' => self::SCENARIO_REQUIRE_PASSWORD_CHANGE],
+            ['oldPassword', 'required', 'on' => self::SCENARIO_REQUIRE_PASSWORD_CHANGE],
+            ['oldPassword', 'validatePassword', 'on' => self::SCENARIO_REQUIRE_PASSWORD_CHANGE],
         ];
     }
 
@@ -79,18 +81,42 @@ class ChangePasswordForm extends Model
             if (!empty($user->require_password_change))
                 $user->require_password_change = 0;
 
-            return $user->save() && Yii::$app->user->login($user);
+            if ($user->save()) {
+                if (Yii::$app->user->isGuest) {
+                    return Yii::$app->user->login($user);
+                }
+                return true;
+            }
         }
-
         return false;
     }
 
+    /**
+     * @return User
+     */
     public function getUser()
     {
         if (!$this->_user) {
-            $this->_user = User::findByEmail($this->email);
+            if (!Yii::$app->user->isGuest) {
+                $this->_user = $Yii::$app->user->identity;
+            } else {
+                $this->_user = User::findByEmail($this->email);
+            }
         }
 
         return $this->_user;
+    }
+
+    /**
+     * A central point for determining the scenario.
+     *
+     * If the user is not logged in, the scenario is ChangePasswordForm::SCENARIO_REQUIRE_PASSWORD_CHANGE.
+     * In all other cases the user is logged in, so no further check is needed so far.
+     */
+    public function scenario()
+    {
+        if (Yii::$app->user->isGuest) {
+            $this->scenario = self::SCENARIO_REQUIRE_PASSWORD_CHANGE;
+        }
     }
 }

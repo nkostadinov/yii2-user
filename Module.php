@@ -16,7 +16,7 @@ class Module extends \yii\base\Module
         '<action:(register|resend)>'  => 'user/registration/<action>',
         'confirm/<id:\d+>/<code:\w+>' => 'user/registration/confirm',
         'forgot'                      => 'user/recovery/request',
-        'recover/<id:\d+>/<code:\w+>' => 'user/recovery/reset',
+        'recover/<code:\w+>'          => 'user/recovery/reset',
         'changePassword'              => 'user/security/change-password',
     ];
 

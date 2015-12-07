@@ -61,33 +61,22 @@ class RecoveryCest
         $I->assertNotEmpty($this->mailDir);
     }
 
-//    public function testResetPassword(FunctionalTester $I)
-//    {
-//        $user = Commons::createUnconfirmedUser();
-//        $token = Commons::createTokenForUser($user->id);
-//
-//        $I->amGoingTo('test that the reset password functionality is working properly');
-//
-//        $I->amGoingTo('to confirm the email for the user');
-//        PasswordResetPage::openBy($I, ['code' => $token->code]);
-//
-//        $I->expectTo('see the user activated');
-//        $I->dontSeeRecord(Token::className(), ['user_id' => $user->id]);
-//
-//        $I->expectTo('see the user is sent to the change password form');
-//        $I->see('Change password');
-//        $I->seeElement('#changepasswordform-newpassword');
-//        $I->seeElement('#changepasswordform-newpasswordrepeat');
-//        $I->dontSeeElement('#changepasswordform-email');
-//        $I->dontSeeElement('#changepasswordform-oldpassword');
-//
-//        $I->expect('to see the user is logged in');
-//        $I->assertFalse(Yii::$app->user->isGuest);
-//        $I->assertEquals($user->id, Yii::$app->user->identity->id);
-//
-//        $I->amGoingTo('populate the change password form and submit it');
-//        $I->fillField('input[name="ChangePasswordForm[newPasssword]"]', 'newPasssword');
-//        $I->fillField('input[name="ChangePasswordForm[newPassswordRepeat]"]', 'newPasssword');
-//        $I->click('change-password-button');
-//    }
+    public function testResetPassword(FunctionalTester $I)
+    {
+        $user = Commons::createUnconfirmedUser();
+        $token = Commons::createTokenForUser($user->id);
+
+        $I->amGoingTo('test that the reset password functionality is working properly');
+
+        $I->amGoingTo('to confirm the email for the user');
+        PasswordResetPage::openBy($I, ['code' => $token->code]);
+
+        $I->expectTo('see successful activation');
+        $I->dontSeeRecord(Token::className(), ['user_id' => $user->id]);
+
+        $I->expectTo('see the user is sent to the change password form');
+        $I->see('Change password');
+        $I->seeElement('#changepasswordform-newpassword');
+        $I->seeElement('#changepasswordform-newpasswordrepeat');
+    }
 }

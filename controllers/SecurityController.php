@@ -95,6 +95,7 @@ class SecurityController extends BaseController
     public function actionChangePassword()
     {
         $model = Yii::createObject(Yii::$app->user->changePasswordForm);
+        $model->scenario();
         if ($model->load(Yii::$app->request->post()) && $model->changePassword())
             return $this->goBack();
 
