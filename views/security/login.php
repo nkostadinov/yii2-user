@@ -1,12 +1,16 @@
 <?php
-use yii\helpers\Html;
-use yii\bootstrap\ActiveForm;
-use yii\helpers\Url;
 
-/* @var $this yii\web\View */
-/* @var $form yii\bootstrap\ActiveForm */
-/* @var $model nkostadinov\user\models\forms\LoginForm */
-/* @var $module nkostadinov\user\Module */
+use nkostadinov\user\models\forms\LoginForm;
+use nkostadinov\user\Module;
+use yii\authclient\widgets\AuthChoice;
+use yii\bootstrap\ActiveForm;
+use yii\helpers\Html;
+use yii\web\View;
+
+/* @var $this View */
+/* @var $form ActiveForm */
+/* @var $model LoginForm */
+/* @var $module Module */
 
 $this->title = 'Login';
 $this->params['breadcrumbs'][] = $this->title;
@@ -43,7 +47,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
         <?php if (Yii::$app->get("authClientCollection", false)): ?>
             <div>
-                <?= yii\authclient\widgets\AuthChoice::widget([
+                <?= AuthChoice::widget([
                     'baseAuthUrl' => [ '/'.$this->context->module->id . '/security/auth']
                 ]) ?>
             </div>

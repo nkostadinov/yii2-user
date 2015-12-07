@@ -11,23 +11,32 @@ namespace nkostadinov\user\accounts;
 use nkostadinov\user\interfaces\IUserAccount;
 use yii\authclient\clients\Facebook;
 
-class FacebookAccount extends Facebook implements IUserAccount{
-
+class FacebookAccount extends Facebook implements IUserAccount
+{
     /** @return string|null User's email */
     public function getEmail()
     {
-        // TODO: Implement getEmail() method.
+        return $this->getAttributeValue('email');
     }
 
     /** @return string|null User's username */
     public function getUsername()
     {
-        // TODO: Implement getUsername() method.
+        return $this->getAttributeValue('username');
     }
 
     /** @return string|null User's name */
     public function getRealName()
     {
-        // TODO: Implement getRealName() method.
+        return $this->getAttributeValue('name');
+    }
+
+    private function getAttributeValue($attributeName)
+    {
+        if (isset($this->getUserAttributes()[$attributeName])) {
+            return $this->getUserAttributes()[$attributeName];
+        }
+
+        return null;
     }
 }

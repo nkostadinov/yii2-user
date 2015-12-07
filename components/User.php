@@ -139,14 +139,6 @@ class User extends BaseUser
         return false;
     }
 
-    public function findAccount(ClientInterface $client)
-    {
-        return UserAccount::findOne([
-            'provider' => $client->name,
-            'client_id' => $client->getUserAttributes()['id']
-        ]);
-    }
-
     public function getName()
     {
         if($this->isGuest)

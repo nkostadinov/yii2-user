@@ -3,9 +3,11 @@
 namespace nkostadinov\user\controllers;
 
 use nkostadinov\user\interfaces\IUserAccount;
+use nkostadinov\user\models\User;
 use nkostadinov\user\models\UserAccount;
 use Yii;
 use yii\authclient\ClientInterface;
+use yii\base\NotSupportedException;
 use yii\filters\AccessControl;
 
 class SecurityController extends BaseController
@@ -65,31 +67,39 @@ class SecurityController extends BaseController
 
     public function successCallback(ClientInterface $client)
     {
-        $account = \Yii::$app->user->findAccount($client);
-        //if account doesnt exists then create it
-        if(!isset($account)) {
-            $token = $client->getAccessToken();
-
-            $account = new UserAccount();
-            $account->provider = $client->getName();
-            $account->attributes = json_encode($client->getUserAttributes());
-            $account->access_token = $token->token;
-            $account->expires = $token->createTimestamp + $token->expireDuration;
-            $account->token_create_time = $token->createTimestamp;
-            $account->client_id = $client->getUserAttributes()['id'];
-            $account->save();
+        if(!$client instanceof IUserAccount) {
+            throw new NotSupportedException('Your client must extend the IUserInterface. The valid clients are in the nkostadinov\user\accounts namespace');
+        }
+        
+        $account = UserAccount::findByClient($client);
+        if(empty($account)) { // If account doesn't exist, create it
+            $account = UserAccount::createAndSave($client);
         }
 
-        if(Yii::$app->user->isGuest) { //Create a new user and link account
-            if($client instanceof IUserAccount) {
-            } else
-                Yii::error("Cannot register new user with {$client->name}. You must setup nkostadinov\\clients\\facebook in AuthCollection.");
-        } else {
-            //add account to user
-            $account->link('user', Yii::$app->user->identity);
+        if(!$account->user) { // Create a new user and/or link account
+            if (Yii::$app->user->isGuest) { // This means the user comes for a first time or has a user created by a regular login or another client
+                $email = $client->getEmail();
+                if (is_null($email)) { // Sometimes the email cannot be fetched from the client
+                    return $this->redirect('/'); // Redirect to a page where the user must add password
+                }
+                
+                $user = User::findByEmail($email);
+                if ($user) {
+                    $account->link('user', $user);
+                } else {
+                    // Create a new user and link the user to the account
+                }
+
+                return Yii::$app->user->login($user);
+            } else { // Link account to user
+                // This means the user is logged in through a regular login or another client. Needs to be linked.
+                $account->link('user', Yii::$app->user->identity);
+            }
+        } else if (Yii::$app->user->isGuest) {
+            return Yii::$app->user->login($account->user);
         }
 
-        return false;
+        return true;
     }
 
     public function actionChangePassword()
