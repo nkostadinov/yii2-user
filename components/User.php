@@ -13,12 +13,7 @@ use nkostadinov\user\interfaces\IUserNotificator;
 use nkostadinov\user\models\Token;
 use nkostadinov\user\models\User as UserModel;
 use nkostadinov\user\models\UserSearch;
-use nkostadinov\user\models\UserAccount;
-use yii\authclient\ClientInterface;
-use yii\base\Event;
-use yii\base\InvalidConfigException;
-use yii\base\Model;
-use yii\db\ActiveRecord;
+use Yii;
 use yii\di\Instance;
 use yii\web\User as BaseUser;
 
@@ -85,7 +80,7 @@ class User extends BaseUser
     public function getNotificator()
     {
         if(!isset($this->_notificator)) {
-            $this->_notificator = \Yii::createObject($this->components['notificator']);
+            $this->_notificator = Yii::createObject($this->components['notificator']);
             Instance::ensure($this->_notificator, 'nkostadinov\user\interfaces\IUserNotificator');
         }
         return $this->_notificator;
@@ -97,7 +92,7 @@ class User extends BaseUser
      * @param UserModel $model
      * @return bool
      */
-    public function register(\nkostadinov\user\models\User $model)
+    public function register(UserModel $model)
     {
         if ($this->enableConfirmation == false) {
             $model->confirmed_on = time();
@@ -112,7 +107,7 @@ class User extends BaseUser
             $this->trigger(self::EVENT_AFTER_REGISTER, $event);
             //Add confirmation token(if enabled) and notify user
             if ($this->enableConfirmation) {
-                $token = \Yii::createObject([
+                $token = Yii::createObject([
                     'class' => Token::className(),
                     'type' => Token::TYPE_CONFIRMATION,
                 ]);
@@ -123,7 +118,7 @@ class User extends BaseUser
             return true;
         }
         
-        \Yii::error('An error occurred while registering user account', self::LOG_CATEGORY . '.register');
+        Yii::error('An error occurred while registering user account', self::LOG_CATEGORY . '.register');
         return false;
     }
 

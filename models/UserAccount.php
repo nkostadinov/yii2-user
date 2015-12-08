@@ -95,7 +95,7 @@ class UserAccount extends ActiveRecord
         return UserAccount::find()
             ->with('user')
             ->where([
-                'provider' => $client->name,
+                'provider' => $client->id,
                 'client_id' => $client->getUserId(),
             ])->one();
     }

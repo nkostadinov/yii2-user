@@ -36,7 +36,7 @@ class m141215_094938_init extends Migration
             'access_token' => Schema::TYPE_STRING,
             'expires' => Schema::TYPE_INTEGER,
             'token_create_time' => Schema::TYPE_INTEGER,
-            'client_id' => Schema::TYPE_BIGINT . ' NOT NULL',
+            'client_id' => Schema::TYPE_STRING . '(25) NOT NULL',
             'created_at' => Schema::TYPE_TIMESTAMP . ' DEFAULT CURRENT_TIMESTAMP',
             'updated_at' => Schema::TYPE_TIMESTAMP,
         ], $this->getTableOptions());

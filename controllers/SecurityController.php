@@ -31,7 +31,16 @@ class SecurityController extends BaseController
                 ],
             ],
         ];
+    }
 
+    public function actions()
+    {
+        return [
+            'auth' => [
+                'class' => 'yii\authclient\AuthAction',
+                'successCallback' => [$this, 'successCallback'],
+            ],
+        ];
     }
 
     public function actionLogin()
@@ -57,16 +66,6 @@ class SecurityController extends BaseController
     {
         Yii::$app->user->logout();
         return $this->goHome();
-    }
-
-    public function actions()
-    {
-        return [
-            'auth' => [
-                'class' => 'yii\authclient\AuthAction',
-                'successCallback' => [$this, 'successCallback'],
-            ],
-        ];
     }
 
     public function successCallback(ClientInterface $client)
