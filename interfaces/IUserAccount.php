@@ -12,6 +12,8 @@ use yii\authclient\ClientInterface;
 
 interface IUserAccount extends ClientInterface
 {
+    /** @return integer User's id */
+    public function getUserId();
     /** @return string|null User's email */
     public function getEmail();
     /** @return string|null User's username */

@@ -2,6 +2,7 @@
 
 namespace nkostadinov\user\models;
 
+use nkostadinov\user\interfaces\IUserAccount;
 use nkostadinov\user\models\User;
 use Yii;
 use yii\authclient\ClientInterface;
@@ -73,29 +74,29 @@ class UserAccount extends ActiveRecord
         return $this->hasOne(Yii::$app->user->identityClass, ['id' => 'user_id']);
     }
 
-    public static function createAndSave(ClientInterface $client)
+    public static function createAndSave(IUserAccount $client)
     {
         $token = $client->getAccessToken();
 
         $account = new UserAccount();
-        $account->provider = $client->getName();
+        $account->provider = $client->getId();
         $account->attributes = json_encode($client->getUserAttributes());
         $account->access_token = $token->token;
         $account->expires = $token->createTimestamp + $token->expireDuration;
         $account->token_create_time = $token->createTimestamp;
-        $account->client_id = $client->getUserAttributes()['id'];
+        $account->client_id = $client->getUserId();
         $account->save(false);
 
         return $account;
     }
 
-    public static function findByClient(ClientInterface $client)
+    public static function findByClient(IUserAccount $client)
     {
         return UserAccount::find()
             ->with('user')
             ->where([
                 'provider' => $client->name,
-                'client_id' => $client->getUserAttributes()['id']
+                'client_id' => $client->getUserId(),
             ])->one();
     }
 }

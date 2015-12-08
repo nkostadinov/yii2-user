@@ -91,11 +91,6 @@ class User extends BaseUser
         return $this->_notificator;
     }
 
-    public function addAccount(ClientInterface $client)
-    {
-
-    }
-
     /**
      * Performs the actual user registration by validation the data and persisting the user.
      *
@@ -107,10 +102,6 @@ class User extends BaseUser
         if ($this->enableConfirmation == false) {
             $model->confirmed_on = time();
         }
-//        if ($this->module->enableGeneratingPassword) {
-//            $this->password = Password::generate(8);
-//        }
-        $model->register_ip = \Yii::$app->getRequest()->isConsoleRequest ? '(console)' : \Yii::$app->getRequest()->getUserIP();
 
         $event = new UserRegisterEvent();
         $event->model = $model;
@@ -127,14 +118,11 @@ class User extends BaseUser
                 ]);
                 $token->link('user', $model);
                 $this->getNotificator()->sendConfirmationMessage($model, $token);
-            } else {
-                $this->login($model);
             }
-//            if ($this->module->enableGeneratingPassword) {
-//                $this->mailer->sendWelcomeMessage($this);
-//            }
+            
             return true;
         }
+        
         \Yii::error('An error occurred while registering user account', self::LOG_CATEGORY . '.register');
         return false;
     }

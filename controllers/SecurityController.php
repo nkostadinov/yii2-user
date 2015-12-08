@@ -2,7 +2,9 @@
 
 namespace nkostadinov\user\controllers;
 
+use nkostadinov\user\helpers\Http;
 use nkostadinov\user\interfaces\IUserAccount;
+use nkostadinov\user\models\forms\AcquireEmailForm;
 use nkostadinov\user\models\User;
 use nkostadinov\user\models\UserAccount;
 use Yii;
@@ -12,6 +14,8 @@ use yii\filters\AccessControl;
 
 class SecurityController extends BaseController
 {
+    const CLIENT_PARAM = 'client';
+
     public function behaviors()
     {
         return [
@@ -80,17 +84,11 @@ class SecurityController extends BaseController
             if (Yii::$app->user->isGuest) { // This means the user comes for a first time or has a user created by a regular login or another client
                 $email = $client->getEmail();
                 if (is_null($email)) { // Sometimes the email cannot be fetched from the client
-                    return $this->redirect('/'); // Redirect to a page where the user must add password
-                }
-                
-                $user = User::findByEmail($email);
-                if ($user) {
-                    $account->link('user', $user);
-                } else {
-                    // Create a new user and link the user to the account
+                    Yii::$app->session->set(self::CLIENT_PARAM, $client);
+                    return $this->redirect('/user/security/acquire-email'); // Redirect to a page where the user must add a password
                 }
 
-                return Yii::$app->user->login($user);
+                return $this->linkAccounts($client, $account, $email);
             } else { // Link account to user
                 // This means the user is logged in through a regular login or another client. Needs to be linked.
                 $account->link('user', Yii::$app->user->identity);
@@ -100,6 +98,27 @@ class SecurityController extends BaseController
         }
 
         return true;
+    }
+
+    public function actionAcquireEmail()
+    {
+        $model = new AcquireEmailForm();
+        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+            $client = Yii::$app->session->get(self::CLIENT_PARAM);
+            $account = UserAccount::findByClient($client);
+
+            if ($this->linkAccounts($client, $account, $model->email)) {
+                Yii::$app->session->remove(self::CLIENT_PARAM);
+                return $this->goHome();
+            }
+            
+            Yii::$app->session->addFlash('danger', 'Error. Please contact the administrator!');
+            return $this->goBack();
+        }
+
+        return $this->render('acquire_email', [
+            'model' => $model
+        ]);
     }
 
     public function actionChangePassword()
@@ -112,5 +131,21 @@ class SecurityController extends BaseController
         return $this->render($this->module->changePasswordView, [
             'model' => $model,
         ]);
+    }
+
+    private function linkAccounts(IUserAccount $client, $account, $email)
+    {
+        $user = User::findByEmail($email);
+        if (!$user) {
+            // Create a new user
+            $user = new User();
+            $user->email = $email;
+            $user->name = $client->getRealName();
+            $user->register_ip = Http::getUserIP();
+            $user->save();
+        }
+        // Link the user to the account
+        $account->link('user', $user);
+        return Yii::$app->user->login($user);
     }
 }

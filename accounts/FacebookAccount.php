@@ -13,6 +13,12 @@ use yii\authclient\clients\Facebook;
 
 class FacebookAccount extends Facebook implements IUserAccount
 {
+    /** @return integer User's id */
+    public function getUserId()
+    {
+        return $this->getAttributeValue('id');
+    }
+
     /** @return string|null User's email */
     public function getEmail()
     {

@@ -34,8 +34,11 @@ class UnsuccessfulLoginAttemptsBehavior extends Behavior
     public function unsuccessfulAttemptsChecker(Event $event)
     {
         $user = User::findByEmail($event->sender->username);
-        $currentTime = time();
+        if (!$user) {
+            return;
+        }
         
+        $currentTime = time();
         if ($user->locked_until > $currentTime) {
             throw new ForbiddenHttpException('Your account is locked!');
         } else if(isset($user->locked_until) && $user->locked_until < $currentTime) {

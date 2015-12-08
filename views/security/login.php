@@ -48,7 +48,8 @@ $this->params['breadcrumbs'][] = $this->title;
         <?php if (Yii::$app->get("authClientCollection", false)): ?>
             <div>
                 <?= AuthChoice::widget([
-                    'baseAuthUrl' => [ '/'.$this->context->module->id . '/security/auth']
+                    'baseAuthUrl' => [ '/'.$this->context->module->id . '/security/auth'],
+                    'popupMode' => false,
                 ]) ?>
             </div>
         <?php endif; ?>

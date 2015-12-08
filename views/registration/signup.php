@@ -1,10 +1,14 @@
 <?php
-use yii\helpers\Html;
-use yii\bootstrap\ActiveForm;
 
-/* @var $this yii\web\View */
-/* @var $form yii\bootstrap\ActiveForm */
-/* @var $model nkostadinov\user\models\forms\SignupForm */
+use nkostadinov\user\models\forms\SignupForm;
+use yii\authclient\widgets\AuthChoice;
+use yii\bootstrap\ActiveForm;
+use yii\helpers\Html;
+use yii\web\View;
+
+/* @var $this View */
+/* @var $form ActiveForm */
+/* @var $model SignupForm */
 
 $this->title = 'Signup';
 $this->params['breadcrumbs'][] = $this->title;
@@ -20,12 +24,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     'id' => 'form-signup',
                     'options' => ['class' => 'form-vertical'],
                 ]); ?>
-                <?php
-//                if (isset($account))
-//                    echo $form->field($account, 'id')->hiddenInput()->label(false);
-                ?>
-                <?= $form->field($model, 'name') ?>
-                <?php if(\Yii::$app->user->requireUsername === true)
+                <?php if(Yii::$app->user->requireUsername === true)
                     echo $form->field($model, 'username');
                 ?>
                 <?= $form->field($model, 'email') ?>
@@ -37,5 +36,13 @@ $this->params['breadcrumbs'][] = $this->title;
                 <?php ActiveForm::end(); ?>
             </div>
         </div>
+        <?php if (Yii::$app->get("authClientCollection", false)): ?>
+            <div>
+                <?= AuthChoice::widget([
+                    'baseAuthUrl' => [ '/'.$this->context->module->id . '/security/auth'],
+                    'popupMode' => false,
+                ]) ?>
+            </div>
+        <?php endif; ?>
     </div>
 </div>
