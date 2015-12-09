@@ -105,7 +105,7 @@ class Token extends \yii\db\ActiveRecord
             ->where(['code' => $code, 'type' => $type])
             ->one();
         
-        if (empty($token) || empty($token->user)) {
+        if (empty($token) && empty($token->user)) {
             throw new \yii\web\NotFoundHttpException('Code not found!');
         }
 

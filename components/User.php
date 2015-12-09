@@ -26,12 +26,11 @@ class User extends BaseUser
 
     public $loginForm = 'nkostadinov\user\models\forms\LoginForm';
     public $registerForm = 'nkostadinov\user\models\forms\SignupForm';
-    public $recoveryForm = 'nkostadinov\user\models\forms\RecoveryForm';
-    
-    /**
-     * @var string The class name of the form used for changing passwords.
-     */
+    public $recoveryForm = 'nkostadinov\user\models\forms\RecoveryForm';        
+    /** @var string The class name of the form used for changing passwords. */
     public $changePasswordForm = 'nkostadinov\user\models\forms\ChangePasswordForm';
+    /** @var string The class name of the form used for acquiring the user's email when it cannot be fetched via a social network. */
+    public $acquireEmailForm = 'nkostadinov\user\models\forms\AcquireEmailForm';
 
     public $enableConfirmation = true;
     public $allowUncofirmedLogin = false;

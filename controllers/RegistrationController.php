@@ -2,18 +2,17 @@
 
 namespace nkostadinov\user\controllers;
 
-use nkostadinov\user\models\User;
+use nkostadinov\user\models\Token;
 use Yii;
 use yii\web\NotFoundHttpException;
 
 class RegistrationController extends BaseController
 {
-    public function actionConfirm($user_id, $code)
+    public function actionConfirm($code)
     {
-        $user = User::findOne($user_id);
-        if(!isset($user))
-            throw new NotFoundHttpException("Confirmation code not found !");
-        $user->confirm($code);
+        $token = Token::findByCode($code, Token::TYPE_CONFIRMATION);
+        $token->user->confirm($code);
+        
         return $this->render($this->module->confirmView);
     }
 

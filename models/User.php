@@ -1,8 +1,8 @@
 <?php
 namespace nkostadinov\user\models;
 
+use ReflectionClass;
 use Yii;
-use yii\base\NotSupportedException;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
@@ -202,7 +202,7 @@ class User extends ActiveRecord implements IdentityInterface
     public function getStatusName()
     {
         //reverse constant lookup :)
-        foreach((new \ReflectionClass(get_class()))->getConstants() as $name => $value) {
+        foreach((new ReflectionClass(get_class()))->getConstants() as $name => $value) {
             if($value == $this->status && strpos($name, 'STATUS_') === 0)
                 return substr($name, 7, 255);
         }
