@@ -2,7 +2,6 @@
 
 use nkostadinov\user\behaviors\PasswordHistoryPolicyBehavior;
 use nkostadinov\user\models\forms\ChangePasswordForm;
-use nkostadinov\user\models\forms\LoginForm;
 use nkostadinov\user\models\PasswordHistory;
 use nkostadinov\user\models\User;
 use yii\codeception\TestCase;
@@ -56,7 +55,7 @@ class AdvancedUserTest extends TestCase
             $behavior->passwordChangeInterval)->equals(60 * 60 * 24 * 30 * 2);
 
         // Create one user
-        $identity = Commons::createUser();        
+        $identity = Commons::createUser();
         verify('Asure that the password_changed_at field is empty', $identity->password_changed_at)->null();
 
         // Login for a first time
