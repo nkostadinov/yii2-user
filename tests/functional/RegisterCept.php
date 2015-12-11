@@ -1,11 +1,12 @@
 <?php
+
+use nkostadinov\user\models\User;
 use nkostadinov\user\tests\_pages\ConfirmPage;
 use nkostadinov\user\tests\_pages\LoginPage;
 use nkostadinov\user\tests\_pages\RegisterPage;
-use yii\web\ForbiddenHttpException;
 
 //setup vars
-$email = 'mail@example.com';
+$email = Commons::TEST_EMAIL;
 
 $I = new FunctionalTester($scenario);
 $I->wantTo('see that registration works.');
@@ -32,7 +33,7 @@ $I->expectTo('to see error that password cannot be blank.');
 $I->see('Password cannot be blank.');
 
 //successful registration
-$registerPage->register($email, 'test123');
+$registerPage->register($email, 'Test!23');
 $I->expectTo("to see message that confirmation is sent to $email.");
 $I->see("Confirmation mail has been sent to $email.");
 
@@ -78,3 +79,5 @@ $I->see('Registration confirmed', 'h1');
 $I->see('Your registration is confirmed succesfully!');
 //token must be missing
 $I->dontSeeInDatabase('token', ['type' => 0, 'user_id' => $user_id]);
+
+User::deleteAll('email = :email', [':email' => $email]);

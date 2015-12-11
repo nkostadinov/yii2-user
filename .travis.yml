@@ -23,7 +23,7 @@ install:
   - travis_retry composer self-update
   - travis_retry composer global require "fxp/composer-asset-plugin:~1.1.0"
   # codeception
-  - travis_retry composer global require "codeception/codeception=*" "codeception/specify=*" "codeception/verify=*" --prefer-source
+  - travis_retry composer global require "codeception/codeception=*" "codeception/verify=*" --prefer-source
   - travis_retry composer install --prefer-source
 
 before_script:
