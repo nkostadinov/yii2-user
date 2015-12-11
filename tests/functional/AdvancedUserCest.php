@@ -34,7 +34,7 @@ class AdvancedUserCest
         $I->dontSeeRecord(User::className(), ['email' => Commons::TEST_EMAIL]);
 
         // try to register a user with a correct password length
-        $registerPage->register(Commons::TEST_EMAIL, '123456');
+        $registerPage->register(Commons::TEST_EMAIL, 'Innologica!23');
         // it must pass
         $I->seeRecord(User::className(), ['email' => Commons::TEST_EMAIL]);
     }

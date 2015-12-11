@@ -13,6 +13,7 @@ use nkostadinov\user\interfaces\IUserNotificator;
 use nkostadinov\user\models\Token;
 use nkostadinov\user\models\User as UserModel;
 use nkostadinov\user\models\UserSearch;
+use nkostadinov\user\validators\PasswordStrengthValidator;
 use Yii;
 use yii\di\Instance;
 use yii\web\User as BaseUser;
@@ -39,11 +40,10 @@ class User extends BaseUser
     public $identityClass = 'nkostadinov\user\models\User';
     public $enableAutoLogin = true;
     public $loginUrl = ['user/security/login'];
-    
-    /**
-     * @var integer The minimum length that a password field can have.
-     */
+    /** @var integer The minimum length that a password field can have. */
     public $minPasswordLength = 6;
+    /** @var array Configurations for the password strength validator. Defaults to '['preset' => PasswordStrengthValidator::NORMAL]' */
+    public $passwordStrengthConfig = ['preset' => PasswordStrengthValidator::NORMAL];
 
     public $components = [
         'notificator' => 'nkostadinov\user\components\MailNotificator',

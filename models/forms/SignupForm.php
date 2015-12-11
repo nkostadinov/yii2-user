@@ -4,6 +4,7 @@ namespace nkostadinov\user\models\forms;
 
 use nkostadinov\user\helpers\Http;
 use nkostadinov\user\models\User;
+use nkostadinov\user\validators\PasswordStrengthValidator;
 use Yii;
 use yii\base\Model;
 
@@ -29,6 +30,8 @@ class SignupForm extends Model
 
             ['password', 'required'],
             ['password', 'string', 'min' => Yii::$app->user->minPasswordLength],
+            array_merge(['password', PasswordStrengthValidator::className()],
+                Yii::$app->user->passwordStrengthConfig),
         ];
 
         if(\Yii::$app->user->requireUsername === true) {
