@@ -151,7 +151,7 @@ class AdvancedUserTest extends TestCase
         $result = preg_grep('/lock_out_policy/', $files);
         verify('Check that the migration exists', $result)->notEmpty();
 
-        $user = new User();
+        $user = Yii::createObject(User::className());
         verify('Check that the login_attempts field is added to the user\'s table',
             $user->hasAttribute(self::ATTR_LOGIN_ATTEMPTS))->true();
         verify('Check that the locked_until field is added to the user\'s table',

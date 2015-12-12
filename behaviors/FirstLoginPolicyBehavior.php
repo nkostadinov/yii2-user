@@ -2,9 +2,9 @@
 
 namespace nkostadinov\user\behaviors;
 
-use nkostadinov\user\Module;
 use Yii;
 use yii\base\Behavior;
+use yii\web\Application;
 use yii\web\ForbiddenHttpException;
 use yii\web\User;
 use yii\web\UserEvent;
@@ -29,8 +29,8 @@ class FirstLoginPolicyBehavior extends Behavior
     {
         if ($event->identity->require_password_change) {
             $event->isValid = false;
-            if (Yii::$app instanceof \yii\web\Application) {
-                Yii::$app->response->redirect(Module::$urlRules['changePassword']);
+            if (Yii::$app instanceof Application) {
+                Yii::$app->response->redirect(['/user/security/change-password']);
             } else {
                 throw new ForbiddenHttpException('The system requires a password change');
             }

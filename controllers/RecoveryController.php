@@ -8,7 +8,6 @@
 namespace nkostadinov\user\controllers;
 
 use nkostadinov\user\models\User;
-use nkostadinov\user\Module;
 use Yii;
 use yii\filters\AccessControl;
 
@@ -54,6 +53,6 @@ class RecoveryController extends BaseController
     public function actionReset($code)
     {
         User::resetPassword($code);
-        return Yii::$app->response->redirect([Module::$urlRules['changePassword']]);
+        return $this->redirect(['/user/security/change-password']);
     }
 }

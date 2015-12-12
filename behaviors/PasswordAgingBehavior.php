@@ -3,7 +3,6 @@
 namespace nkostadinov\user\behaviors;
 
 use nkostadinov\user\components\User;
-use nkostadinov\user\Module;
 use Yii;
 use yii\base\Behavior;
 use yii\web\Application;
@@ -51,7 +50,7 @@ class PasswordAgingBehavior extends Behavior
         } else if ((time() - $event->identity->password_changed_at) > $this->passwordChangeInterval) {
             $event->isValid = false;
             if (Yii::$app instanceof Application) {
-                Yii::$app->response->redirect(Module::$urlRules['changePassword']);
+                Yii::$app->response->redirect(['/user/security/change-password']);
             } else {
                 throw new ForbiddenHttpException('The system requires a password change');
             }

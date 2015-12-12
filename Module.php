@@ -14,10 +14,10 @@ class Module extends \yii\base\Module
         'profile'                     => 'user/profile/view',
         '<action:(login|logout)>'     => 'user/security/<action>',
         '<action:(register|resend)>'  => 'user/registration/<action>',
-        'confirm/<id:\d+>/<code:\w+>' => 'user/registration/confirm',
+        'confirm/<code:\w+>' => 'user/registration/confirm',
         'forgot'                      => 'user/recovery/request',
         'recover/<code:\w+>'          => 'user/recovery/reset',
-        'changePassword'              => 'user/security/change-password',
+        'change-password'             => 'user/security/change-password',
     ];
 
     /**

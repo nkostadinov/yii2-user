@@ -8,7 +8,7 @@
 namespace nkostadinov\user\components;
 
 use nkostadinov\user\behaviors\LastLoginBehavior;
-use nkostadinov\user\events\UserRegisterEvent;
+use nkostadinov\user\helpers\Event;
 use nkostadinov\user\interfaces\IUserNotificator;
 use nkostadinov\user\models\Token;
 use nkostadinov\user\models\User as UserModel;
@@ -17,13 +17,17 @@ use nkostadinov\user\validators\PasswordStrengthValidator;
 use Yii;
 use yii\di\Instance;
 use yii\web\User as BaseUser;
+use yii\web\UserEvent;
 
 class User extends BaseUser
 {
-    const LOG_CATEGORY = 'app.user';
-    //event constants
-    const EVENT_BEFORE_REGISTER = 'user.before.register';
-    const EVENT_AFTER_REGISTER = 'user.after.register';
+    const LOG_CATEGORY = 'nkostadinov.user';
+
+    /** Event triggered before registration. Triggered with UserEvent. */
+    const EVENT_BEFORE_REGISTER = 'nkostadinov.user.beforeRegister';
+
+    /** Event triggered after registration. Triggered with UserEvent. */
+    const EVENT_AFTER_REGISTER = 'nkostadinov.user.afterRegister';
 
     public $loginForm = 'nkostadinov\user\models\forms\LoginForm';
     public $registerForm = 'nkostadinov\user\models\forms\SignupForm';
@@ -97,8 +101,7 @@ class User extends BaseUser
             $model->confirmed_on = time();
         }
 
-        $event = new UserRegisterEvent();
-        $event->model = $model;
+        $event = Event::createUserEvent($model);
         $this->trigger(self::EVENT_BEFORE_REGISTER, $event);
 
         if ($model->save()) {
