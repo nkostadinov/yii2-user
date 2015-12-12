@@ -1,6 +1,7 @@
 <?php
 
 use nkostadinov\user\models\forms\SignupForm;
+use nkostadinov\user\Module;
 use yii\authclient\widgets\AuthChoice;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
@@ -10,7 +11,7 @@ use yii\web\View;
 /* @var $form ActiveForm */
 /* @var $model SignupForm */
 
-$this->title = 'Signup';
+$this->title = Yii::t(Module::I18N_CATEGORY, 'Signup');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="row">
@@ -31,7 +32,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <?= $form->field($model, 'password')->passwordInput() ?>
 
                 <div class="form-group">
-                    <?= Html::submitButton('Signup', ['class' => 'btn btn-primary', 'name' => 'signup-button']) ?>
+                    <?= Html::submitButton(Yii::t(Module::I18N_CATEGORY, 'Signup'), ['class' => 'btn btn-primary', 'name' => 'signup-button']) ?>
                 </div>
                 <?php ActiveForm::end(); ?>
             </div>

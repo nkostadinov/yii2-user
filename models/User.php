@@ -1,6 +1,7 @@
 <?php
 namespace nkostadinov\user\models;
 
+use nkostadinov\user\Module;
 use ReflectionClass;
 use Yii;
 use yii\behaviors\TimestampBehavior;
@@ -87,7 +88,7 @@ class User extends ActiveRecord implements IdentityInterface
         ]);
 
         if (!isset($token) or $token->isExpired)
-            throw new UnauthorizedHttpException("Auth code not found or expired!");
+            throw new UnauthorizedHttpException(Yii::t(Module::I18N_CATEGORY, 'Auth code not found or expired!'));
 
         return static::findOne($token->user_id);
         //throw new NotSupportedException('"findIdentityByAccessToken" is not implemented.');
@@ -176,7 +177,7 @@ class User extends ActiveRecord implements IdentityInterface
         ]);
 
         if (!isset($token) or $token->isExpired)
-            throw new NotFoundHttpException("Confirmation code not found or expired!");
+            throw new NotFoundHttpException(Yii::t(Module::I18N_CATEGORY, 'Confirmation code not found or expired!'));
         
         $token->delete();
         $this->confirmed_on = time();

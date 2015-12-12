@@ -11,7 +11,7 @@ use yii\web\View;
 /* @var $model ChangePasswordForm */
 /* @var $module Module */
 
-$this->title = 'One more step';
+$this->title = Yii::t(Module::I18N_CATEGORY, 'One more step');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="row">
@@ -28,7 +28,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <?= $form->field($model, 'email'); ?>
 
                 <div class="form-group">
-                    <?= Html::submitButton('Submit', ['class' => 'btn btn-primary btn-block']) ?>
+                    <?= Html::submitButton(Yii::t(Module::I18N_CATEGORY, 'Submit'), ['class' => 'btn btn-primary btn-block']) ?>
                 </div>
 
                 <?php ActiveForm::end(); ?>

@@ -8,6 +8,7 @@
 namespace nkostadinov\user\controllers;
 
 use nkostadinov\user\models\User;
+use nkostadinov\user\Module;
 use Yii;
 use yii\filters\AccessControl;
 
@@ -40,7 +41,7 @@ class RecoveryController extends BaseController
         $model->scenario = 'request';
         if ($model->load(Yii::$app->request->post()) && $model->sendRecoveryMessage()) {
             return $this->render('message', [
-                'title'  => Yii::t('user', 'Recovery message sent'),
+                'title'  => Yii::t(Module::I18N_CATEGORY, 'Recovery message sent'),
                 'module' => $this->module,
             ]);
         }

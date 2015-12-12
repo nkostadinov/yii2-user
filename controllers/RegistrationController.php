@@ -4,6 +4,7 @@ namespace nkostadinov\user\controllers;
 
 use nkostadinov\user\helpers\Event;
 use nkostadinov\user\models\Token;
+use nkostadinov\user\Module;
 use Yii;
 use yii\web\NotFoundHttpException;
 
@@ -25,7 +26,7 @@ class RegistrationController extends BaseController
     public function actionSignup()
     {
         if (!$this->module->allowRegistration)
-            throw new NotFoundHttpException("Registration disabled!");
+            throw new NotFoundHttpException(Yii::t(Module::I18N_CATEGORY, 'Registration disabled!'));
 
         $model = Yii::createObject(Yii::$app->user->registerForm);
 
@@ -35,7 +36,7 @@ class RegistrationController extends BaseController
         if ($model->load(Yii::$app->request->post()) && $model->signup()) {
             $this->trigger(self::EVENT_AFTER_SIGNUP, $event);
             if(Yii::$app->user->enableConfirmation)
-                return $this->renderContent(\Yii::t('app.user', 'Confirmation mail has been sent to {0}.', [$model->email]));
+                return $this->renderContent(Yii::t(Module::I18N_CATEGORY, 'Confirmation mail has been sent to {0}.', [$model->email]));
 
             return $this->goHome();
         }

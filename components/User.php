@@ -13,11 +13,11 @@ use nkostadinov\user\interfaces\IUserNotificator;
 use nkostadinov\user\models\Token;
 use nkostadinov\user\models\User as UserModel;
 use nkostadinov\user\models\UserSearch;
+use nkostadinov\user\Module;
 use nkostadinov\user\validators\PasswordStrengthValidator;
 use Yii;
 use yii\di\Instance;
 use yii\web\User as BaseUser;
-use yii\web\UserEvent;
 
 class User extends BaseUser
 {
@@ -25,7 +25,6 @@ class User extends BaseUser
 
     /** Event triggered before registration. Triggered with UserEvent. */
     const EVENT_BEFORE_REGISTER = 'nkostadinov.user.beforeRegister';
-
     /** Event triggered after registration. Triggered with UserEvent. */
     const EVENT_AFTER_REGISTER = 'nkostadinov.user.afterRegister';
 
@@ -61,8 +60,7 @@ class User extends BaseUser
             'last_login' => LastLoginBehavior::className()
         ];
     }
-
-
+    
     public function listUsers($params)
     {
         $searchModel = new UserSearch();

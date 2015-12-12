@@ -7,6 +7,8 @@ use yii\base\InvalidConfigException;
 
 class Module extends \yii\base\Module
 {
+    const I18N_CATEGORY = 'nkostadinov.user';
+
     public $controllerNamespace = 'nkostadinov\user\controllers';
 
     /** @var array The rules to be used in URL management. */

@@ -12,7 +12,7 @@ use yii\web\View;
 /* @var $model LoginForm */
 /* @var $module Module */
 
-$this->title = 'Login';
+$this->title = Yii::t(Module::I18N_CATEGORY, 'Login');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="row">
@@ -28,11 +28,11 @@ $this->params['breadcrumbs'][] = $this->title;
                 ]); ?>
 
                 <?= $form->field($model, 'username', ['inputOptions' => ['autofocus' => 'autofocus', 'class' => 'form-control',]]) ?>
-                <?= $form->field($model, 'password')->passwordInput()->label(Yii::t('user', 'Password') . ($module->allowPasswordRecovery ? ' (' . Html::a(Yii::t('user', 'Forgot password?'), ['/user/recovery/request'], ['tabindex' => '5']) . ')' : '')) ?>
+                <?= $form->field($model, 'password')->passwordInput()->label(Yii::t(Module::I18N_CATEGORY, 'Password') . ($module->allowPasswordRecovery ? ' (' . Html::a(Yii::t(Module::I18N_CATEGORY, 'Forgot password?'), ['/user/recovery/request'], ['tabindex' => '5']) . ')' : '')) ?>
                 <?= $form->field($model, 'rememberMe')->checkbox() ?>
 
                 <div class="form-group">
-                    <?= Html::submitButton('Login', ['class' => 'btn btn-primary btn-block', 'name' => 'login-button']) ?>
+                    <?= Html::submitButton(Yii::t(Module::I18N_CATEGORY, 'Login'), ['class' => 'btn btn-primary btn-block', 'name' => 'login-button']) ?>
                 </div>
 
                 <?php ActiveForm::end(); ?>

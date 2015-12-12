@@ -7,6 +7,7 @@ use nkostadinov\user\helpers\Http;
 use nkostadinov\user\interfaces\IUserAccount;
 use nkostadinov\user\models\User;
 use nkostadinov\user\models\UserAccount;
+use nkostadinov\user\Module;
 use Yii;
 use yii\authclient\ClientInterface;
 use yii\base\NotSupportedException;
@@ -104,7 +105,7 @@ class SecurityController extends BaseController
     public function successCallback(ClientInterface $client)
     {
         if(!$client instanceof IUserAccount)
-            throw new NotSupportedException('Your client must extend the IUserInterface. The valid clients are in the nkostadinov\user\accounts namespace');
+            throw new NotSupportedException(Yii::t(Module::I18N_CATEGORY, 'Your client must extend the IUserInterface.'));
         
         $account = UserAccount::findByClient($client);
         if(empty($account)) // If account doesn't exist, create it
@@ -119,7 +120,7 @@ class SecurityController extends BaseController
                 $email = $client->getEmail();
                 if (is_null($email)) { // Sometimes the email cannot be fetched from the client
                     Yii::$app->session->set(self::CLIENT_PARAM, $client);
-                    $result = $this->redirect('/user/security/acquire-email'); // Redirect to a page where the user must add an email
+                    $result = $this->redirect(['/user/security/acquire-email']); // Redirect to a page where the user must add an email
                 }
 
                 $result = $this->createAccount($client, $account, $email);
@@ -190,7 +191,8 @@ class SecurityController extends BaseController
             $account->link('user', $user);
         } else {
             // User already exists
-            Yii::$app->session->setFlash('warning', 'This email is already taken. In order to link your account, please login first!');
+            Yii::$app->session->setFlash('warning',
+                Yii::t(Module::I18N_CATEGORY, 'This email is already taken. In order to link your account, please login first!'));
             return $this->redirect(['/user/security/login']);
         }
 

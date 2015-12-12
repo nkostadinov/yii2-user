@@ -4,8 +4,8 @@ namespace nkostadinov\user\models;
 
 use nkostadinov\user\interfaces\IUserAccount;
 use nkostadinov\user\models\User;
+use nkostadinov\user\Module;
 use Yii;
-use yii\authclient\ClientInterface;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 
@@ -54,15 +54,15 @@ class UserAccount extends ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'user_id' => 'User ID',
-            'provider' => 'Provider',
-            'attributes' => 'Attributes',
-            'access_token' => 'Access Token',
-            'expires' => 'Expires',
-            'token_create_time' => 'Token Create Time',
-            'created_at' => 'Created At',
-            'updated_at' => 'Updated At',
+            'id' => Yii::t(Module::I18N_CATEGORY, 'ID'),
+            'user_id' => Yii::t(Module::I18N_CATEGORY, 'User ID'),
+            'provider' => Yii::t(Module::I18N_CATEGORY, 'Provider'),
+            'attributes' => Yii::t(Module::I18N_CATEGORY, 'Attributes'),
+            'access_token' => Yii::t(Module::I18N_CATEGORY, 'Access Token'),
+            'expires' => Yii::t(Module::I18N_CATEGORY, 'Expires'),
+            'token_create_time' => Yii::t(Module::I18N_CATEGORY, 'Token Create Time'),
+            'created_at' => Yii::t(Module::I18N_CATEGORY, 'Created At'),
+            'updated_at' => Yii::t(Module::I18N_CATEGORY, 'Updated At'),
         ];
     }
 

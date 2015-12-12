@@ -3,6 +3,7 @@
 namespace nkostadinov\user\behaviors;
 
 use nkostadinov\user\components\User;
+use nkostadinov\user\Module;
 use Yii;
 use yii\base\Behavior;
 use yii\web\Application;
@@ -13,7 +14,7 @@ use yii\web\UserEvent;
  * Responsible for tracking when a user has changed his/her password for a last time. 
  *
  * If the password hasn't changed for a time longer than $passwordChangeInterval
- * the behavior will invite you to change your password and will log you out of the system.
+ * the behavior will invite the user to a password change and will log the user out of the system.
  */
 class PasswordAgingBehavior extends Behavior
 {
@@ -52,7 +53,7 @@ class PasswordAgingBehavior extends Behavior
             if (Yii::$app instanceof Application) {
                 Yii::$app->response->redirect(['/user/security/change-password']);
             } else {
-                throw new ForbiddenHttpException('The system requires a password change');
+                throw new ForbiddenHttpException(Yii::t(Module::I18N_CATEGORY, 'The system requires a password change'));
             }
         }
     }

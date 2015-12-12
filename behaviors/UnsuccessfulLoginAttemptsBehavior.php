@@ -3,6 +3,8 @@
 namespace nkostadinov\user\behaviors;
 
 use nkostadinov\user\models\User;
+use nkostadinov\user\Module;
+use Yii;
 use yii\base\Behavior;
 use yii\base\Event;
 use yii\base\Model;
@@ -40,7 +42,7 @@ class UnsuccessfulLoginAttemptsBehavior extends Behavior
         
         $currentTime = time();
         if ($user->locked_until > $currentTime) {
-            throw new ForbiddenHttpException('Your account is locked!');
+            throw new ForbiddenHttpException(Yii::t(Module::I18N_CATEGORY, 'Your account is locked!'));
         } else if(isset($user->locked_until) && $user->locked_until < $currentTime) {
             // Unlock the account
             $user->login_attempts = 0;
@@ -54,7 +56,7 @@ class UnsuccessfulLoginAttemptsBehavior extends Behavior
                 $user->locked_until = $currentTime + $this->lockExpiration;
                 $user->save(false);
 
-                throw new ForbiddenHttpException('Your account is locked!');
+                throw new ForbiddenHttpException(Yii::t(Module::I18N_CATEGORY, 'Your account is locked!'));
             }
         } else if ($user->login_attempts > 0) {
             // Clear the attempts

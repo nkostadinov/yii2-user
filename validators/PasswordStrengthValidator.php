@@ -3,6 +3,7 @@
 namespace nkostadinov\user\validators;
 
 use nkostadinov\user\assets\NkostadinovUserAsset;
+use nkostadinov\user\Module;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\helpers\Html;
@@ -131,24 +132,7 @@ class PasswordStrengthValidator extends Validator
      * defaults to [[presets.php]] in the current directory
      */
     public $presetsSource;
-    /**
-     * @var array the target strength rule requirements that will
-     * be evaluated for displaying the strength meter
-     */
-    public $strengthTarget = [
-        'min' => 8,
-        'lower' => 3,
-        'upper' => 3,
-        'digit' => 3,
-        'special' => 3,
-    ];
-    /**
-     * @var string translation message file category name for i18n
-     */
-    protected $_msgCat = 'kvpwdstrength';
-    /**
-     * @var array the list of inbuilt presets and their parameter settings
-     */
+    /** @var array the list of inbuilt presets and their parameter settings */
     private $_presets;
     
     /**
@@ -220,13 +204,13 @@ class PasswordStrengthValidator extends Validator
     protected function setRuleMessages()
     {
         if ($this->strError === null) {
-            $this->strError = Yii::t('user', '{attribute} must be a string');
+            $this->strError = Yii::t(Module::I18N_CATEGORY, '{attribute} must be a string');
         }
         foreach (self::$_rules as $rule => $setup) {
             $param = "{$rule}Error";
             if ($this->$rule !== null) {
                 $message = (!isset($this->$param) || $this->$param === null) ? $setup['msg'] : $this->$param;
-                $this->$param = Yii::t('user', $message, ['n' => $this->$rule]);
+                $this->$param = Yii::t(Module::I18N_CATEGORY, $message, ['n' => $this->$rule]);
             }
         }
     }
@@ -288,13 +272,13 @@ class PasswordStrengthValidator extends Validator
     public function clientValidateAttribute($model, $attribute, $view)
     {
         $label = $model->getAttributeLabel($attribute);
-        $options = ['strError' => Html::encode(Yii::t('user', $this->message, ['attribute' => $label]))];
+        $options = ['strError' => Html::encode(Yii::t(Module::I18N_CATEGORY, $this->message, ['attribute' => $label]))];
         $options['userField'] = '#' . Html::getInputId($model, $this->userAttribute);
         foreach (self::$_rules as $rule => $setup) {
             $param = "{$rule}Error";
             if ($this->$rule !== null) {
                 $options[$rule] = $this->$rule;
-                $options[$param] = Html::encode(Yii::t('user', $this->$param, ['attribute' => $label]));
+                $options[$param] = Html::encode(Yii::t(Module::I18N_CATEGORY, $this->$param, ['attribute' => $label]));
             }
         }
         NkostadinovUserAsset::register($view);

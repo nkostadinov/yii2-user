@@ -5,7 +5,7 @@ namespace nkostadinov\user\helpers;
 use Yii;
 
 /**
- * HTTP-related helpers.
+ * HTTP-related helper.
  *
  * @author Nikolay Traykov
  */

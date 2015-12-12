@@ -1,12 +1,6 @@
 <?php
-/**
- * @author Nikola Kostadinov<nikolakk@gmail.com>
- * Date: 21.04.2015
- * Time: 09:59 ч.
- */
 
 namespace nkostadinov\user\accounts;
-
 
 use nkostadinov\user\interfaces\IUserAccount;
 use yii\authclient\clients\Facebook;

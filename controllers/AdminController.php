@@ -3,12 +3,13 @@
 namespace nkostadinov\user\controllers;
 
 use nkostadinov\user\components\Security;
-use Yii;
 use nkostadinov\user\models\user;
 use nkostadinov\user\models\UserSearch;
+use nkostadinov\user\Module;
+use Yii;
 use yii\filters\AccessControl;
-use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\NotFoundHttpException;
 
 /**
  * AdminController implements the CRUD actions for user model.
@@ -132,7 +133,7 @@ class AdminController extends BaseController
         if (($model = user::findOne($id)) !== null) {
             return $model;
         } else {
-            throw new NotFoundHttpException('The requested page does not exist.');
+            throw new NotFoundHttpException(Yii::t(Module::I18N_CATEGORY, 'The requested page does not exist.'));
         }
     }
 }

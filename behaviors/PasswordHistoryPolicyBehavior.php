@@ -3,6 +3,7 @@
 namespace nkostadinov\user\behaviors;
 
 use nkostadinov\user\models\PasswordHistory;
+use nkostadinov\user\Module;
 use Yii;
 use yii\base\Behavior;
 use yii\base\Event;
@@ -14,12 +15,7 @@ use yii\base\Model;
  */
 class PasswordHistoryPolicyBehavior extends Behavior
 {
-    const MESSAGE_SAME_PASSWORDS = 'Passwords must not be the same!';
-    const MESSAGE_SAME_PREV_PASSWORDS = 'Your password is the same as a previous password of yours. For security reasons, please add another password.';
-
-    /**
-     * @var integer The number of the password changes, that the system will check.
-     */
+    /** @var integer The number of the password changes, that the system will check. */
     public $lastPasswordChangesCount = 5;
 
     public function events()
@@ -40,7 +36,7 @@ class PasswordHistoryPolicyBehavior extends Behavior
     {
         $form = $event->sender; // The ChangePasswordForm
         if ($form->oldPassword == $form->newPassword) {
-            $form->addError('newPassword', self::MESSAGE_SAME_PASSWORDS);
+            $form->addError('newPassword', Yii::t(Module::I18N_CATEGORY, 'Passwords must not be the same!'));
             return;
         }
 
@@ -52,7 +48,8 @@ class PasswordHistoryPolicyBehavior extends Behavior
         } else {
             foreach ($previousPasswords as $passwordHistory) {
                 if ($security->validatePassword($form->newPassword, $passwordHistory->password_hash)) {
-                    $form->addError('newPassword', self::MESSAGE_SAME_PREV_PASSWORDS);
+                    $form->addError('newPassword', Yii::t(Module::I18N_CATEGORY,
+                        'Your password is the same as a previous password of yours. For security reasons, please add another password.'));
                     return;
                 }
             }

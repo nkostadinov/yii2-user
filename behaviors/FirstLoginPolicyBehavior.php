@@ -2,6 +2,7 @@
 
 namespace nkostadinov\user\behaviors;
 
+use nkostadinov\user\Module;
 use Yii;
 use yii\base\Behavior;
 use yii\web\Application;
@@ -32,7 +33,7 @@ class FirstLoginPolicyBehavior extends Behavior
             if (Yii::$app instanceof Application) {
                 Yii::$app->response->redirect(['/user/security/change-password']);
             } else {
-                throw new ForbiddenHttpException('The system requires a password change');
+                throw new ForbiddenHttpException(Yii::t(Module::I18N_CATEGORY, 'The system requires a password change'));
             }
         }
     }

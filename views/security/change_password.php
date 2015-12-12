@@ -1,15 +1,17 @@
 <?php
 
 use nkostadinov\user\models\forms\ChangePasswordForm;
+use nkostadinov\user\Module;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
+use yii\web\View;
 
-/* @var $this yii\web\View */
-/* @var $form yii\bootstrap\ActiveForm */
+/* @var $this View */
+/* @var $form ActiveForm */
 /* @var $model ChangePasswordForm */
-/* @var $module nkostadinov\user\Module */
+/* @var $module Module */
 
-$this->title = 'Change password';
+$this->title = Yii::t(Module::I18N_CATEGORY, 'Change password');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="row">
@@ -32,7 +34,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <?= $form->field($model, 'newPasswordRepeat')->passwordInput() ?>
 
                 <div class="form-group">
-                    <?= Html::submitButton('Submit', ['class' => 'btn btn-primary btn-block', 'name' => 'change-password-button']) ?>
+                    <?= Html::submitButton(Yii::t(Module::I18N_CATEGORY, 'Submit'), ['class' => 'btn btn-primary btn-block', 'name' => 'change-password-button']) ?>
                 </div>
 
                 <?php ActiveForm::end(); ?>

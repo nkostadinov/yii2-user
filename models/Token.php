@@ -2,7 +2,12 @@
 
 namespace nkostadinov\user\models;
 
+use nkostadinov\user\Module;
+use ReflectionClass;
 use Yii;
+use yii\db\ActiveQuery;
+use yii\db\ActiveRecord;
+use yii\web\NotFoundHttpException;
 
 /**
  * This is the model class for table "token".
@@ -15,7 +20,7 @@ use Yii;
  *
  * @property User $user
  */
-class Token extends \yii\db\ActiveRecord
+class Token extends ActiveRecord
 {
     const TYPE_CONFIRMATION      = 0;
     const TYPE_RECOVERY          = 1;
@@ -41,7 +46,7 @@ class Token extends \yii\db\ActiveRecord
             [['user_id', 'code', 'created_at', 'type', 'expires_on'], 'required'],
             [['user_id', 'created_at', 'type', 'expires_on'], 'integer'],
             [['code'], 'string', 'max' => 32],
-            [['user_id', 'code', 'type'], 'unique', 'targetAttribute' => ['user_id', 'code', 'type'], 'message' => 'The combination of User ID, Code and Type has already been taken.']
+            [['user_id', 'code', 'type'], 'unique', 'targetAttribute' => ['user_id', 'code', 'type'], 'message' => Yii::t(Module::I18N_CATEGORY, 'The combination of User ID, Code and Type has already been taken.')]
         ];
     }
 
@@ -51,16 +56,16 @@ class Token extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'user_id' => Yii::t('app.user', 'User ID'),
-            'code' => Yii::t('app.user', 'Code'),
-            'created_at' => Yii::t('app.user', 'Created At'),
-            'type' => Yii::t('app.user', 'Type'),
-            'expires_on' => Yii::t('app.user', 'Expires On'),
+            'user_id' => Yii::t(Module::I18N_CATEGORY, 'User ID'),
+            'code' => Yii::t(Module::I18N_CATEGORY, 'Code'),
+            'created_at' => Yii::t(Module::I18N_CATEGORY, 'Created At'),
+            'type' => Yii::t(Module::I18N_CATEGORY, 'Type'),
+            'expires_on' => Yii::t(Module::I18N_CATEGORY, 'Expires On'),
         ];
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
     public function getUser()
     {
@@ -85,7 +90,7 @@ class Token extends \yii\db\ActiveRecord
     public function getName()
     {
         //reverse constant lookup :)
-        foreach((new \ReflectionClass(get_class()))->getConstants() as $name => $value) {
+        foreach((new ReflectionClass(get_class()))->getConstants() as $name => $value) {
             if($value == $this->type)
                 return $name;
         }
@@ -97,7 +102,7 @@ class Token extends \yii\db\ActiveRecord
      * @param string $code
      * @param integer $type The type of the token
      * @return Token
-     * @throws \yii\web\NotFoundHttpException
+     * @throws NotFoundHttpException
      */
     public static function findByCode($code, $type = self::TYPE_RECOVERY)
     {
@@ -106,7 +111,7 @@ class Token extends \yii\db\ActiveRecord
             ->one();
         
         if (empty($token) && empty($token->user)) {
-            throw new \yii\web\NotFoundHttpException('Code not found!');
+            throw new NotFoundHttpException(Yii::t(Module::I18N_CATEGORY, 'Code not found!'));
         }
 
         return $token;

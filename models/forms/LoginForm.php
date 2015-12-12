@@ -3,6 +3,7 @@
 namespace nkostadinov\user\models\forms;
 
 use nkostadinov\user\models\User;
+use nkostadinov\user\Module;
 use Yii;
 use yii\base\Model;
 use yii\web\ForbiddenHttpException;
@@ -47,7 +48,7 @@ class LoginForm extends Model
             $user = $this->getUser();
 
             if (!$user || !$user->password_hash || !$user->validatePassword($this->password)) {
-                $this->addError($attribute, 'Incorrect username or password.');
+                $this->addError($attribute, Yii::t(Module::I18N_CATEGORY, 'Incorrect username or password.'));
             }
         }
     }
@@ -60,7 +61,7 @@ class LoginForm extends Model
     {
         if ($this->validate()) {
             if(!$this->user->isConfirmed and !Yii::$app->user->allowUncofirmedLogin)
-                throw new ForbiddenHttpException(Yii::t('app.user', 'Unconfirmed account are not allowed to login'));
+                throw new ForbiddenHttpException(Yii::t(Module::I18N_CATEGORY, 'Unconfirmed account are not allowed to login'));
             return Yii::$app->user->login($this->getUser(), $this->rememberMe ? 3600*24*30 : 0);
         } else {
             return false;

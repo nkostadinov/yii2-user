@@ -109,7 +109,7 @@ class AdvancedUserTest extends TestCase
         verify('Assure that the password cannot be changed, because it is the same as the previous one', $changePasswordForm->changePassword())->false();
         verify('Assure that exactly the new password field has errors', $changePasswordForm->hasErrors('newPassword'))->true();
         verify('Assure that the error on the new password is the error we expect',
-            $changePasswordForm->getErrors('newPassword')[0])->equals(PasswordHistoryPolicyBehavior::MESSAGE_SAME_PASSWORDS);
+            $changePasswordForm->getErrors('newPassword')[0])->equals('Passwords must not be the same!');
 
         // Change the password this time for real
         $userId = $changePasswordForm->getUser()->id;        
@@ -130,7 +130,7 @@ class AdvancedUserTest extends TestCase
             $changePasswordForm->changePassword())->false();
         verify('Assure that exactly the new password field has errors', $changePasswordForm->hasErrors('newPassword'))->true();
         verify('Assure that the error on the new password is the error we expect',
-            $changePasswordForm->getErrors('newPassword')[0])->equals(PasswordHistoryPolicyBehavior::MESSAGE_SAME_PREV_PASSWORDS);
+            $changePasswordForm->getErrors('newPassword')[0])->equals('Your password is the same as a previous password of yours. For security reasons, please add another password.');
 
         // Change the password for a second time (this time for real)
         $changePasswordForm->oldPassword = 'BabaGusi';

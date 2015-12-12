@@ -3,6 +3,7 @@
 namespace nkostadinov\user\models\forms;
 
 use nkostadinov\user\models\User;
+use nkostadinov\user\Module;
 use Yii;
 use yii\base\Model;
 
@@ -57,15 +58,15 @@ class ChangePasswordForm extends Model
     {
         $user = $this->getUser();
         if (!$user || !$user->validatePassword($this->oldPassword)) {
-            $this->addError('oldPassword', 'Incorrect email or password.');
-            $this->addError('email', 'Incorrect email or password.');
+            $this->addError('oldPassword', Yii::t(Module::I18N_CATEGORY, 'Incorrect email or password.'));
+            $this->addError('email', Yii::t(Module::I18N_CATEGORY, 'Incorrect email or password.'));
         }
     }
 
     public function validateNewPasswords($attribute, $params)
     {
         if ($this->newPassword != $this->newPasswordRepeat) {
-            $this->addError($attribute, 'The new passwords are not the same.');
+            $this->addError($attribute, Yii::t(Module::I18N_CATEGORY, 'The new passwords are not the same.'));
         }
     }
 

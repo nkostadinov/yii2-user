@@ -1,18 +1,16 @@
 <?php
-/**
- * @author Nikola Kostadinov<nikolakk@gmail.com>
- * Date: 29.03.2015
- * Time: 19:21 ч.
- */
 
+use nkostadinov\user\Module;
 use yii\helpers\Html;
+use yii\web\View;
 use yii\widgets\ActiveForm;
+
 /**
- * @var yii\web\View $this
- * @var yii\widgets\ActiveForm $form
+ * @var View $this
+ * @var ActiveForm $form
  * @var nkostadinov\user\models\RecoveryForm $model
  */
-$this->title = Yii::t('app.user', 'Recover your password');
+$this->title = Yii::t(Module::I18N_CATEGORY, 'Recover your password');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="row">
@@ -30,7 +28,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
                 <?= $form->field($model, 'email')->textInput(['autofocus' => true]) ?>
 
-                <?= Html::submitButton(Yii::t('app.user', 'Continue'), ['class' => 'btn btn-primary btn-block', 'name' => 'password-recovery-button']) ?><br>
+                <?= Html::submitButton(Yii::t(Module::I18N_CATEGORY, 'Continue'), ['class' => 'btn btn-primary btn-block', 'name' => 'password-recovery-button']) ?><br>
 
                 <?php ActiveForm::end(); ?>
             </div>

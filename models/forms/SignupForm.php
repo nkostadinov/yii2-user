@@ -4,6 +4,7 @@ namespace nkostadinov\user\models\forms;
 
 use nkostadinov\user\helpers\Http;
 use nkostadinov\user\models\User;
+use nkostadinov\user\Module;
 use nkostadinov\user\validators\PasswordStrengthValidator;
 use Yii;
 use yii\base\Model;
@@ -48,7 +49,7 @@ class SignupForm extends Model
     {
         $user = User::findByEmail($this->$attribute);
         if ($user && $user->password_hash) {
-            $this->addError($attribute, 'This email address has already been taken.');
+            $this->addError($attribute, Yii::t(Module::I18N_CATEGORY, 'This email address has already been taken.'));
         }
     }
 
