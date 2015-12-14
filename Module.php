@@ -2,10 +2,9 @@
 
 namespace nkostadinov\user;
 
-use nkostadinov\user\interfaces\ISecurityPolicy;
-use yii\base\InvalidConfigException;
+use yii\base\BootstrapInterface;
 
-class Module extends \yii\base\Module
+class Module extends \yii\base\Module implements BootstrapInterface
 {
     const I18N_CATEGORY = 'nkostadinov.user';
 
@@ -13,12 +12,11 @@ class Module extends \yii\base\Module
 
     /** @var array The rules to be used in URL management. */
     public static $urlRules = [
-        'profile'                     => 'user/profile/view',
         '<action:(login|logout)>'     => 'user/security/<action>',
-        '<action:(register|resend)>'  => 'user/registration/<action>',
-        'confirm/<code:\w+>' => 'user/registration/confirm',
-        'forgot'                      => 'user/recovery/request',
-        'recover/<code:\w+>'          => 'user/recovery/reset',
+        '<action:(signup|resend)>'    => 'user/registration/<action>',
+        'confirm/<code:\w+>'          => 'user/registration/confirm',
+        'forgotten-password'          => 'user/recovery/request',
+        'reset/<code:[\w-]+>'         => 'user/recovery/reset',
         'change-password'             => 'user/security/change-password',
     ];
 
@@ -55,11 +53,14 @@ class Module extends \yii\base\Module
         ],
     ];
 
-    public function init()
+    public function bootstrap($app)
     {
-        parent::init();
-
-        // custom initialization code goes here!!!
+        if ($app instanceof \yii\console\Application) {
+            $app->controllerMap[$this->id] = [
+                'class' => commands\UserController::className(),
+            ];
+        } else if ($app instanceof \yii\web\Application) {
+            $app->urlManager->addRules(self::$urlRules);
+        }
     }
-
 }

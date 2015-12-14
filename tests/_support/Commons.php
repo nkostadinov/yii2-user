@@ -49,12 +49,12 @@ class Commons
         return $user;
     }
 
-    public static function createTokenForUser($userId)
+    public static function createTokenForUser($userId, $type = Token::TYPE_RECOVERY)
     {
         $token = Yii::createObject([
             'class'   => Token::className(),
             'user_id' => $userId,
-            'type'    => Token::TYPE_RECOVERY
+            'type'    => $type
         ]);
         $token->save(false);
 

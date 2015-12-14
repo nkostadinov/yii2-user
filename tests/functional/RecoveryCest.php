@@ -71,9 +71,9 @@ class RecoveryCest
         $I->amGoingTo('to confirm the email for the user');
         PasswordResetPage::openBy($I, ['code' => $token->code]);
 
-        $I->expectTo('see successful activation');
+        $I->expectTo('see successful reset');
         $I->dontSeeRecord(Token::className(), ['user_id' => $user->id]);
-
+        
         $I->expectTo('see the user is sent to the change password form');
         $I->see('Change password');
         $I->seeElement('#changepasswordform-newpassword');

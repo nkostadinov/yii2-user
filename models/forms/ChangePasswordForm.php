@@ -47,10 +47,10 @@ class ChangePasswordForm extends Model
     public function attributeLabels()
     {
         return [
-            'email' => Yii::t('user', 'Email'),
-            'oldPassword' => Yii::t('user', 'Old password'),
-            'newPassword' => Yii::t('user', 'New password'),
-            'newPasswordRepeat' => Yii::t('user', 'New password repeat'),
+            'email' => Yii::t(Module::I18N_CATEGORY, 'Email'),
+            'oldPassword' => Yii::t(Module::I18N_CATEGORY, 'Old password'),
+            'newPassword' => Yii::t(Module::I18N_CATEGORY, 'New password'),
+            'newPasswordRepeat' => Yii::t(Module::I18N_CATEGORY, 'New password repeat'),
         ];
     }
 

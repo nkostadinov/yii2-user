@@ -51,6 +51,7 @@ class User extends BaseUser
     public $adminRules = [
         [
             'allow' => true,
+            'roles' => ['@']
         ]
     ];
 

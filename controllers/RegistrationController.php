@@ -6,6 +6,7 @@ use nkostadinov\user\helpers\Event;
 use nkostadinov\user\models\Token;
 use nkostadinov\user\Module;
 use Yii;
+use yii\filters\AccessControl;
 use yii\web\NotFoundHttpException;
 
 class RegistrationController extends BaseController
@@ -14,6 +15,21 @@ class RegistrationController extends BaseController
     const EVENT_BEFORE_SIGNUP = 'nkostadinov.user.beforeSignup';
     /** Event is triggered after signing the user. Triggered with \nkostadinov\user\events\ModelEvent. */
     const EVENT_AFTER_SIGNUP = 'nkostadinov.user.afterSignup';
+
+    public function behaviors()
+    {
+        return [
+            'access' => [
+                'class' => AccessControl::className(),
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'roles' => ['?'],
+                    ],
+                ],
+            ],
+        ];
+    }
 
     public function actionConfirm($code)
     {

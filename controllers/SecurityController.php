@@ -43,10 +43,14 @@ class SecurityController extends BaseController
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                'only' => ['logout'],
                 'rules' => [
                     [
-                        'actions' => ['logout'],
+                        'actions' => ['login', 'auth', 'change-password'],
+                        'allow' => true,
+                        'roles' => ['?'],
+                    ],
+                    [
+                        'actions' => ['logout', 'change-password'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -81,12 +85,11 @@ class SecurityController extends BaseController
                     'model' => $model,
                     'module' => $this->module,
                 ]);
-            } else {
-                return $this->render($this->module->loginView, [
-                    'model' => $model,
-                    'module' => $this->module,
-                ]);
             }
+            return $this->render($this->module->loginView, [
+                'model' => $model,
+                'module' => $this->module,
+            ]);
         }
     }
 

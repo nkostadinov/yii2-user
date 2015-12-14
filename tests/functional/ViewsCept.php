@@ -3,7 +3,6 @@
 use nkostadinov\user\tests\_pages\ChangePasswordPage;
 use nkostadinov\user\tests\_pages\LoginPage;
 use nkostadinov\user\tests\_pages\PasswordRecoveryRequestPage;
-use nkostadinov\user\tests\_pages\ProfilePage;
 use nkostadinov\user\tests\_pages\RegisterPage;
 
 $I = new FunctionalTester($scenario);
@@ -22,10 +21,6 @@ $I->seeInTitle('Signup');
 ChangePasswordPage::openBy($I);
 $I->seeInTitle('Change password');
 $I->seeElement('#change-password-form');
-
-// Profile page
-ProfilePage::openBy($I);
-$I->see('profile/view');
 
 // Password recovery page
 PasswordRecoveryRequestPage::openBy($I);
