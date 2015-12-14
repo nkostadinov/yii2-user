@@ -65,7 +65,6 @@ class SignupForm extends Model
             if (!$user) {
                 $user = Yii::createObject([
                     'class' => Yii::$app->user->identityClass,
-                    'scenario' => 'register',
                 ]);
                 $user->email = $this->email;
                 $user->register_ip = Http::getUserIP();
