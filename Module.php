@@ -40,7 +40,7 @@ class Module extends \yii\base\Module
 
     public $adminColumns = [
         //['class' => 'yii\grid\SerialColumn'],
-        'DisplayName',
+        'displayName',
         'email:email',
         'statusName',
         'created_at:datetime',
@@ -49,7 +49,10 @@ class Module extends \yii\base\Module
 //        'last_login:datetime',
 //        'last_login_ip:text',
         'register_ip:text',
-        ['class' => 'yii\grid\ActionColumn'],
+        [
+            'class' => 'yii\grid\ActionColumn',
+            'header' => 'Actions',
+        ],
     ];
 
     public function init()

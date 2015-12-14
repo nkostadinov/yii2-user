@@ -109,3 +109,17 @@ The yii2-user extension has the following additional functionalities that can be
  - [Password history policy] (docs/PASSWORD_HISTORY_POLICY.md)
  - [Account locking policy] (docs/ACCOUNT_LOCKING_POLICY.md)
  - [First login policy] (docs/FIRST_LOGIN_POLICY.md)
+
+# Admin panel
+
+You can find the admin panel on /user/admin/index route. In order to set proper permissions, change the access rules of the controller
+via the `$adminRules` property of the User component. Defaults to:
+
+```
+[
+    [
+        'allow' => true,
+        'roles' => ['@']
+    ]
+]
+```

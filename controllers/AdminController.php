@@ -2,13 +2,11 @@
 
 namespace nkostadinov\user\controllers;
 
-use nkostadinov\user\components\Security;
 use nkostadinov\user\models\user;
 use nkostadinov\user\models\UserSearch;
 use nkostadinov\user\Module;
 use Yii;
 use yii\filters\AccessControl;
-use yii\filters\VerbFilter;
 use yii\web\NotFoundHttpException;
 
 /**
@@ -17,30 +15,13 @@ use yii\web\NotFoundHttpException;
 class AdminController extends BaseController
 {
 
-
     public function behaviors()
     {
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                'rules' => [
-//                    [
-//                        'allow' => $this->module->getSecurity()->hasAccess(Security::USER_ADMINISTRATION_EDIT),
-//                        'actions' => ['update'],
-//                    ],
-                    [
-//                        'allow' => $this->module->getSecurity()->hasAccess(Security::USER_ADMINISTRATION),
-                        'allow'=>true,
-                        'roles' => ['t', Security::USER_ADMINISTRATION],
-                    ],
-                ],
-            ],
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'delete' => ['post'],
-                ],
-            ],
+                'rules' => Yii::$app->user->adminRules,
+            ]
         ];
     }
 
@@ -78,15 +59,14 @@ class AdminController extends BaseController
      */
     public function actionCreate()
     {
-        $model = new user();
-
+        $model = new Yii::$app->user->identityClass();
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            return $this->render('create', [
-                'model' => $model,
-            ]);
         }
+
+        return $this->render('create', [
+            'model' => $model,
+        ]);
     }
 
     /**
@@ -98,14 +78,13 @@ class AdminController extends BaseController
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
-
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            return $this->render('update', [
-                'model' => $model,
-            ]);
         }
+        
+        return $this->render('update', [
+            'model' => $model,
+        ]);
     }
 
     /**
@@ -130,7 +109,8 @@ class AdminController extends BaseController
      */
     protected function findModel($id)
     {
-        if (($model = user::findOne($id)) !== null) {
+        $userSearch = new UserSearch();
+        if (($model = $userSearch->findUserById($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException(Yii::t(Module::I18N_CATEGORY, 'The requested page does not exist.'));

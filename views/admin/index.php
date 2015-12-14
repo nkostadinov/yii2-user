@@ -1,13 +1,18 @@
 <?php
 
-use yii\helpers\Html;
+use nkostadinov\user\models\UserSearch;
+use nkostadinov\user\Module;
+use yii\data\ActiveDataProvider;
 use yii\grid\GridView;
+use yii\helpers\Html;
+use yii\web\View;
+use yii\widgets\Pjax;
 
-/* @var $this yii\web\View */
-/* @var $searchModel nkostadinov\user\models\UserSearch */
-/* @var $dataProvider yii\data\ActiveDataProvider */
+/* @var $this View */
+/* @var $searchModel UserSearch */
+/* @var $dataProvider ActiveDataProvider */
 
-$this->title = Yii::t('app.users', 'Users');
+$this->title = Yii::t(Module::I18N_CATEGORY, 'Users');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="user-index">
@@ -16,17 +21,17 @@ $this->params['breadcrumbs'][] = $this->title;
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <p>
-        <?= Html::a(Yii::t('app.users', 'Create {modelClass}', [
+        <?= Html::a(Yii::t(Module::I18N_CATEGORY, 'Create {modelClass}', [
             'modelClass' => 'User',
         ]), ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
-    <?php \yii\widgets\Pjax::begin() ?>
+    <?php Pjax::begin() ?>
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => $this->context->module->adminColumns,
     ]); ?>
-    <?php \yii\widgets\Pjax::end() ?>
+    <?php Pjax::end() ?>
 
 </div>

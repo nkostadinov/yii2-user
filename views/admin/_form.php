@@ -1,12 +1,14 @@
 <?php
 
 use nkostadinov\user\models\User;
+use nkostadinov\user\Module;
 use yii\helpers\Html;
+use yii\web\View;
 use yii\widgets\ActiveForm;
 
-/* @var $this yii\web\View */
+/* @var $this View */
 /* @var $model nkostadinov\user\models\user */
-/* @var $form yii\widgets\ActiveForm */
+/* @var $form ActiveForm */
 ?>
 
 <div class="user-form row">
@@ -17,12 +19,12 @@ use yii\widgets\ActiveForm;
         <?= $form->field($model, 'username')->textInput() ?>
         <?= $form->field($model, 'email')->textInput() ?>
         <?= $form->field($model, 'status')->dropDownList([
-            User::STATUS_ACTIVE => Yii::t('app.users', 'Active'),
-            User::STATUS_DELETED => Yii::t('app.users', 'Deleted'),
+            User::STATUS_ACTIVE => Yii::t(Module::I18N_CATEGORY, 'Active'),
+            User::STATUS_DELETED => Yii::t(Module::I18N_CATEGORY, 'Deleted'),
         ]); ?>
 
         <div class="form-group">
-            <?= Html::submitButton($model->isNewRecord ? Yii::t('app.users', 'Create') : Yii::t('app.users', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+            <?= Html::submitButton($model->isNewRecord ? Yii::t(Module::I18N_CATEGORY, 'Create') : Yii::t(Module::I18N_CATEGORY, 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
         </div>
 
         <?php ActiveForm::end(); ?>

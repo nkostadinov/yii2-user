@@ -40,7 +40,7 @@ class UserSearch extends User
      */
     public function search($params)
     {
-        $query = call_user_func([$this->getUserClass(), 'find']);
+        $query = call_user_func([Yii::$app->user->identityClass, 'find']);
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -72,13 +72,15 @@ class UserSearch extends User
 
     public function findUserByEmail($email)
     {
-        return call_user_func([$this->getUserClass(), 'findOne'], [
+        return call_user_func([Yii::$app->user->identityClass, 'findOne'], [
            'email' => $email,
         ]);
     }
 
-    public function getUserClass()
+    public function findUserById($id)
     {
-        return \Yii::$app->user->identityClass;
+        return call_user_func([Yii::$app->user->identityClass, 'findOne'], [
+           'id' => $id,
+        ]);
     }
 }

@@ -47,6 +47,12 @@ class User extends BaseUser
     public $minPasswordLength = 6;
     /** @var array Configurations for the password strength validator. Defaults to '['preset' => PasswordStrengthValidator::NORMAL]' */
     public $passwordStrengthConfig = ['preset' => PasswordStrengthValidator::NORMAL];
+    /** @var array The access rules of the admin panel */
+    public $adminRules = [
+        [
+            'allow' => true,
+        ]
+    ];
 
     public $components = [
         'notificator' => 'nkostadinov\user\components\MailNotificator',

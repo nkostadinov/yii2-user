@@ -1,11 +1,14 @@
 <?php
 
+use nkostadinov\user\models\UserSearch;
+use nkostadinov\user\Module;
 use yii\helpers\Html;
+use yii\web\View;
 use yii\widgets\ActiveForm;
 
-/* @var $this yii\web\View */
-/* @var $model nkostadinov\user\models\UserSearch */
-/* @var $form yii\widgets\ActiveForm */
+/* @var $this View */
+/* @var $model UserSearch */
+/* @var $form ActiveForm */
 ?>
 
 <div class="user-search">
@@ -38,8 +41,8 @@ use yii\widgets\ActiveForm;
     <?php // echo $form->field($model, 'confirmed_on') ?>
 
     <div class="form-group">
-        <?= Html::submitButton(Yii::t('app.users', 'Search'), ['class' => 'btn btn-primary']) ?>
-        <?= Html::resetButton(Yii::t('app.users', 'Reset'), ['class' => 'btn btn-default']) ?>
+        <?= Html::submitButton(Yii::t(Module::I18N_CATEGORY, 'Search'), ['class' => 'btn btn-primary']) ?>
+        <?= Html::resetButton(Yii::t(Module::I18N_CATEGORY, 'Reset'), ['class' => 'btn btn-default']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

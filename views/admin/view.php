@@ -1,14 +1,18 @@
 <?php
 
+use nkostadinov\user\Module;
+use yii\data\ArrayDataProvider;
 use yii\grid\GridView;
 use yii\helpers\Html;
+use yii\helpers\VarDumper;
+use yii\web\View;
 use yii\widgets\DetailView;
 
-/* @var $this yii\web\View */
+/* @var $this View */
 /* @var $model nkostadinov\user\models\user */
 
 $this->title = "{$model->DisplayName} #{$model->id}";
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app.users', 'Users'), 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => Yii::t(Module::I18N_CATEGORY, 'Users'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
     <div class="user-view">
@@ -16,11 +20,11 @@ $this->params['breadcrumbs'][] = $this->title;
         <h1><?= Html::encode($this->title) ?></h1>
 
         <p>
-            <?= Html::a(Yii::t('app.users', 'Update'), ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-            <?= Html::a(Yii::t('app.users', 'Delete'), ['delete', 'id' => $model->id], [
+            <?= Html::a(Yii::t(Module::I18N_CATEGORY, 'Update'), ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+            <?= Html::a(Yii::t(Module::I18N_CATEGORY, 'Delete'), ['delete', 'id' => $model->id], [
                 'class' => 'btn btn-danger',
                 'data' => [
-                    'confirm' => Yii::t('app.users', 'Are you sure you want to delete this item?'),
+                    'confirm' => Yii::t(Module::I18N_CATEGORY, 'Are you sure you want to delete this item?'),
                     'method' => 'post',
                 ],
             ]) ?>
@@ -44,7 +48,7 @@ $this->params['breadcrumbs'][] = $this->title;
 <?php if ($model->tokens): ?>
     <h2>Active tokens</h2>
     <?= GridView::widget([
-        'dataProvider' => new \yii\data\ArrayDataProvider([
+        'dataProvider' => new ArrayDataProvider([
             'allModels' => $model->tokens,
         ]),
         'columns' => [
@@ -60,7 +64,7 @@ $this->params['breadcrumbs'][] = $this->title;
 <?php if ($model->userAccounts): ?>
     <h2>Linked accounts</h2>
     <?= GridView::widget([
-        'dataProvider' => new \yii\data\ArrayDataProvider([
+        'dataProvider' => new ArrayDataProvider([
             'allModels' => $model->userAccounts,
         ]),
         'columns' => [
@@ -71,7 +75,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'value' => function($model) {
                     $data = json_decode($model->attributes);
-                    $text = \yii\helpers\VarDumper::dumpAsString((array)$data, 10, true);
+                    $text = VarDumper::dumpAsString((array)$data, 10, true);
                     return $text;
                 },
                 'format' => 'raw',
