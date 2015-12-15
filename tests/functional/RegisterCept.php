@@ -72,7 +72,7 @@ $token_code = $I->grabFromDatabase('token', 'code', ['type' => 0, 'user_id' => $
 //    })
 //, "I see yii\\web\\BadRequestHttpException when opening confirm URL without params.");
 
-$confirmPage = ConfirmPage::openBy($I, [ 'user_id' => $user_id, 'code' => $token_code ]);
+$confirmPage = ConfirmPage::openBy($I, ['code' => $token_code]);
 //$I->assertTrue($confirmPage instanceof ConfirmPage);
 $I->expectTo('see successfully confirmed message!');
 $I->see('Registration confirmed', 'h1');

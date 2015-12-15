@@ -2,6 +2,7 @@
 
 namespace nkostadinov\user;
 
+use nkostadinov\user\commands\UserController;
 use yii\base\BootstrapInterface;
 
 class Module extends \yii\base\Module implements BootstrapInterface
@@ -57,7 +58,7 @@ class Module extends \yii\base\Module implements BootstrapInterface
     {
         if ($app instanceof \yii\console\Application) {
             $app->controllerMap[$this->id] = [
-                'class' => commands\UserController::className(),
+                'class' => UserController::className(),
             ];
         } else if ($app instanceof \yii\web\Application) {
             $app->urlManager->addRules(self::$urlRules);

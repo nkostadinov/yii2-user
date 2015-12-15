@@ -110,8 +110,31 @@ class Token extends ActiveRecord
             ->where(['code' => $code, 'type' => $type])
             ->one();
         
-        if (empty($token) && empty($token->user)) {
-            throw new NotFoundHttpException(Yii::t(Module::I18N_CATEGORY, 'Code not found!'));
+        if (empty($token) || empty($token->user)) {
+            throw new NotFoundHttpException(Yii::t(Module::I18N_CATEGORY, 'Token not found!'));
+        }
+
+        return $token;
+    }
+
+    /**
+     * Finds a token with user by the user's email.
+     *
+     * @param string $email The user's email
+     * @param integer $type The token's type. By default Token::TYPE_CONFIRMATION
+     * @return Token The token if found
+     * @throws NotFoundHttpException If the token is not found
+     */
+    public static function findByUserEmail($email, $type = self::TYPE_CONFIRMATION)
+    {
+        $token = Token::find()
+            ->select('*')
+            ->leftJoin(User::tableName(), 'user.id = token.user_id')
+            ->where(['user.email' => $email, 'type' => $type])
+            ->one();
+        
+        if (empty($token)) {
+            throw new NotFoundHttpException(Yii::t(Module::I18N_CATEGORY, 'Token not found!'));
         }
 
         return $token;

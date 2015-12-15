@@ -104,7 +104,7 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return static::findOne(['email' => $email, 'status' => self::STATUS_ACTIVE]);
     }
-
+    
     /**
      * @inheritdoc
      */
@@ -168,16 +168,11 @@ class User extends ActiveRecord implements IdentityInterface
         return $this->hasMany(PasswordHistory::className(), ['user_id' => 'id']);
     }
 
-    public function confirm($code)
+    public function confirm($token)
     {
-        $token = Token::findOne([
-            'code' => $code,
-            'type' => Token::TYPE_CONFIRMATION,
-            'user_id' => $this->id,
-        ]);
-
-        if (!isset($token) or $token->isExpired)
+        if (empty($token) || $token->isExpired) {
             throw new NotFoundHttpException(Yii::t(Module::I18N_CATEGORY, 'Confirmation code not found or expired!'));
+        }
         
         $token->delete();
         $this->confirmed_on = time();

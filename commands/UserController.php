@@ -7,11 +7,14 @@
 
 namespace nkostadinov\user\commands;
 
-
 use nkostadinov\user\models\forms\SignupForm;
+use nkostadinov\user\models\Token;
+use nkostadinov\user\Module;
 use Yii;
+use yii\base\InvalidConfigException;
 use yii\console\Controller;
 use yii\helpers\Console;
+use yii\web\NotFoundHttpException;
 
 /**
  * Manages users via console interface.
@@ -25,7 +28,7 @@ class UserController extends Controller {
      * @param null $email
      * @param null $username
      * @param null $password
-     * @throws \yii\base\InvalidConfigException
+     * @throws InvalidConfigException
      */
     public function actionCreate($email = null, $username = null, $password = null)
     {
@@ -37,19 +40,37 @@ class UserController extends Controller {
         }
         //try to create user or show error(s) if failed
         if(!$model->signup()) {
-            $this->stdout(\Yii::t('app.user', 'Please fix following errors:') . "\n", Console::FG_RED);
+            $this->stdout(\Yii::t(Module::I18N_CATEGORY, 'Please fix following errors:') . "\n", Console::FG_RED);
             foreach ($model->errors as $errors) {
                 foreach ($errors as $error) {
                     $this->stdout(" - ".$error."\n", Console::FG_RED);
                 }
             }
         } else
-            $this->stdout(\Yii::t('app.user', 'Successfully created user!') . "\n", Console::FG_RED);
+            $this->stdout(\Yii::t(Module::I18N_CATEGORY, 'Successfully created user!') . "\n", Console::FG_RED);
     }
 
-    public function actionConfirm($email)
+    /**
+     * Confirms the account for the user.
+     *
+     * @param type $email The email of the user that is to be confirmed.
+     */
+    public function actionConfirm($email = null)
     {
-        //TODO:implement
+        if (!$email) {
+            $email = $this->prompt(Yii::t(Module::I18N_CATEGORY, 'Please enter the user\'s email:'), ['required' => true]);
+        }
+        
+        try {
+            $token = Token::findByUserEmail($email, Token::TYPE_CONFIRMATION);
+            if ($token->user->confirm($token)) {
+                $this->stdout(Yii::t(Module::I18N_CATEGORY, 'The user is successfuly confirmed!'), Console::FG_GREEN);
+            } else {
+                $this->stderr(Yii::t(Module::I18N_CATEGORY, 'Error while trying to confirm the user!'), Console::FG_RED);
+            }
+        } catch (NotFoundHttpException $ex) {
+            $this->stderr($ex->getMessage(), Console::FG_RED);
+        }
     }
 
     public function actionReset($email)

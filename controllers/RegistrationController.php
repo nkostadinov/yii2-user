@@ -34,7 +34,11 @@ class RegistrationController extends BaseController
     public function actionConfirm($code)
     {
         $token = Token::findByCode($code, Token::TYPE_CONFIRMATION);
-        $token->user->confirm($code);
+        if ($token->user->confirm($token)) {
+            Yii::$app->session->setFlash('success', Yii::t('Your account was successfuly confirmed!', Module::I18N_CATEGORY));
+        } else {
+            Yii::$app->session->setFlash('warning', Yii::t('Error while confirming your account!', Module::I18N_CATEGORY));
+        }
         
         return $this->render($this->module->confirmView);
     }
