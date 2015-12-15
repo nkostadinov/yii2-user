@@ -18,7 +18,6 @@ use yii\web\NotFoundHttpException;
 
 /**
  * Manages users via console interface.
- * @package nkostadinov\user\commands
  */
 class UserController extends Controller {
 
@@ -52,7 +51,13 @@ class UserController extends Controller {
      */
     public function actionConfirm($email = null)
     {
-        $email = $this->prompt(Yii::t(Module::I18N_CATEGORY, 'Please enter the user\'s email:'), ['required' => true]);
+        $model = Yii::createObject(Yii::$app->user->recoveryForm);
+        $this->promptEmail($model);
+        if (!$model->validate()) {
+            $this->printErrors($model);
+            return;
+        }
+
         try {
             $token = Token::findByUserEmail($email, Token::TYPE_CONFIRMATION);
             if ($token->user->confirm($token)) {
@@ -65,10 +70,15 @@ class UserController extends Controller {
         }
     }
 
+    /**
+     * Sends password reset email to the user whoes email belongs.
+     *
+     * @param string $email The user's email
+     */
     public function actionResetRequest($email = null)
     {
         $model = Yii::createObject(Yii::$app->user->recoveryForm);
-        $model->email = $this->prompt(Yii::t(Module::I18N_CATEGORY, 'Please enter your email:'), ['required' => $model->isAttributeRequired('email')]);
+        $this->promptEmail($model);
         if ($model->sendRecoveryMessage()) {
             $this->stdout(Yii::t(Module::I18N_CATEGORY, 'An email has been sent with instructions for password reset'), Console::FG_GREEN);
         } else {
@@ -76,9 +86,26 @@ class UserController extends Controller {
         }
     }
 
-    public function actionDelete($email)
+    /**
+     * Deletes (marks as deleted) a user by the user's email.
+     *
+     * @param string $email The email of the user that is to be deleted
+     */
+    public function actionDelete($email = null)
     {
-        //TODO:implement
+        $model = Yii::createObject(Yii::$app->user->recoveryForm);
+        $this->promptEmail($model);
+        if (!$model->validate()) {
+            $this->printErrors($model);
+            return;
+        }
+
+        $result = call_user_func([Yii::$app->user->identityClass, 'deleteByEmail'], ['email' => $model->email]);
+        if ($result) {
+            $this->stdout(Yii::t(Module::I18N_CATEGORY, 'Account successfuly deleted!'), Console::FG_GREEN);
+        } else {
+            $this->stdout(Yii::t(Module::I18N_CATEGORY, 'Error while deleting the account!'), Console::FG_RED);
+        }
     }
 
     private function printErrors($model)
@@ -89,5 +116,11 @@ class UserController extends Controller {
                 $this->stdout(" - $error\n", Console::FG_RED);
             }
         }
+    }
+
+    private function promptEmail($model)
+    {
+        $model->email = $this->prompt(Yii::t(Module::I18N_CATEGORY, 'Please enter the user\'s email address:'),
+            ['required' => $model->isAttributeRequired('email')]);
     }
 }

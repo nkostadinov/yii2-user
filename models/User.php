@@ -219,4 +219,24 @@ class User extends ActiveRecord implements IdentityInterface
 
         return Yii::$app->user->login($user);
     }
+
+    /**
+     * Deletes a user by email.
+     *
+     * NOTE: The user is not physically deleted, but is marked as unactive!
+     *
+     * @param string $email The email of the user that is to be deleted (marked as deleted)
+     * @return boolean True on success, false otherwise
+     * @throws NotFoundHttpException If the user is not found
+     */
+    public static function deleteByEmail($email)
+    {
+        $user = self::findByEmail($email);
+        if (!$user) {
+            throw new NotFoundHttpException(Yii::t(Module::I18N_CATEGORY, 'User not found!'));
+        }
+
+        $user->status = 0;
+        return $user->save(false);
+    }
 }
