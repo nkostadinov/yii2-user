@@ -89,14 +89,15 @@ class AdminController extends BaseController
 
     /**
      * Deletes an existing user model.
+     *
      * If deletion is successful, the browser will be redirected to the 'index' page.
+     *
      * @param integer $id
      * @return mixed
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
-
+        call_user_func([Yii::$app->user->identityClass, 'deleteById'], ['id' => $id]);
         return $this->redirect(['index']);
     }
 

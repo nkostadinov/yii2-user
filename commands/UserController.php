@@ -19,8 +19,8 @@ use yii\web\NotFoundHttpException;
 /**
  * Manages users via console interface.
  */
-class UserController extends Controller {
-
+class UserController extends Controller
+{
     /**
      * Creates a new user using the RegisterForm instance. Every validation rule is also valid in console mode.
      *

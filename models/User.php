@@ -104,6 +104,23 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return static::findOne(['email' => $email, 'status' => self::STATUS_ACTIVE]);
     }
+
+    /**
+     * Finds a user by id.
+     *
+     * @param integer $id The id of the user
+     * @return User
+     * @throws NotFoundHttpException If the user is not found
+     */
+    public static function findById($id)
+    {
+        $user = self::findOne($id);
+        if (!$user) {
+            throw new NotFoundHttpException('User not found!');
+        }
+
+        return $user;
+    }
     
     /**
      * @inheritdoc
@@ -236,7 +253,22 @@ class User extends ActiveRecord implements IdentityInterface
             throw new NotFoundHttpException(Yii::t(Module::I18N_CATEGORY, 'User not found!'));
         }
 
-        $user->status = 0;
+        $user->status = self::STATUS_DELETED;
+        return $user->save(false);
+    }
+
+    /**
+     * Deletes a user by id.
+     *
+     * NOTE: The user is not physically deleted, but is marked as unactive!
+     *
+     * @param integer $id The id of the user that is to be deleted (marked as deleted)
+     * @return boolean True on success, false otherwise
+     */
+    public static function deleteById($id)
+    {
+        $user = self::findById($id);
+        $user->status = self::STATUS_DELETED;
         return $user->save(false);
     }
 }
