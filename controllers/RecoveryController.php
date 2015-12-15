@@ -38,8 +38,8 @@ class RecoveryController extends BaseController
     public function actionRequest()
     {
         $model = Yii::createObject(Yii::$app->user->recoveryForm);
-        $model->scenario = 'request';
         if ($model->load(Yii::$app->request->post()) && $model->sendRecoveryMessage()) {
+            Yii::$app->session->setFlash('info', Yii::t(Module::I18N_CATEGORY, 'An email has been sent with instructions for resetting your password'));
             return $this->render('message', [
                 'title'  => Yii::t(Module::I18N_CATEGORY, 'Recovery message sent'),
                 'module' => $this->module,

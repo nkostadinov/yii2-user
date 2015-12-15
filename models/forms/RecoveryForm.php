@@ -14,30 +14,8 @@ use yii\base\Model;
 
 class RecoveryForm extends Model
 {
-
     public $email;
-    public $password;
-
     public $user;
-
-    /** @inheritdoc */
-    public function attributeLabels()
-    {
-        return [
-            'email'    => Yii::t(Module::I18N_CATEGORY, 'Email'),
-            'password' => Yii::t(Module::I18N_CATEGORY, 'Password'),
-        ];
-    }
-
-    /** @inheritdoc */
-    public function scenarios()
-    {
-        return [
-            'request' => ['email'],
-            'reset'   => ['password']
-        ];
-    }
-
 
     /** @inheritdoc */
     public function rules()
@@ -56,8 +34,14 @@ class RecoveryForm extends Model
                     $this->addError($attribute, Yii::t(Module::I18N_CATEGORY, 'You need to confirm your email address'));
                 }
             }],
-            ['password', 'required'],
-            ['password', 'string', 'min' => 6],
+        ];
+    }
+
+    /** @inheritdoc */
+    public function attributeLabels()
+    {
+        return [
+            'email'    => Yii::t(Module::I18N_CATEGORY, 'Email'),
         ];
     }
 
@@ -76,8 +60,8 @@ class RecoveryForm extends Model
                 'type'    => Token::TYPE_RECOVERY
             ]);
             $token->save(false);
+
             Yii::$app->user->notificator->sendRecoveryMessage($this->user, $token);
-            Yii::$app->session->setFlash('info', Yii::t(Module::I18N_CATEGORY, 'An email has been sent with instructions for resetting your password'));
             return true;
         }
         return false;

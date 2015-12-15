@@ -40,12 +40,7 @@ class UserController extends Controller {
         }
         //try to create user or show error(s) if failed
         if(!$model->signup()) {
-            $this->stdout(\Yii::t(Module::I18N_CATEGORY, 'Please fix following errors:') . "\n", Console::FG_RED);
-            foreach ($model->errors as $errors) {
-                foreach ($errors as $error) {
-                    $this->stdout(" - ".$error."\n", Console::FG_RED);
-                }
-            }
+            $this->printErrors($model);
         } else
             $this->stdout(\Yii::t(Module::I18N_CATEGORY, 'Successfully created user!') . "\n", Console::FG_RED);
     }
@@ -57,10 +52,7 @@ class UserController extends Controller {
      */
     public function actionConfirm($email = null)
     {
-        if (!$email) {
-            $email = $this->prompt(Yii::t(Module::I18N_CATEGORY, 'Please enter the user\'s email:'), ['required' => true]);
-        }
-        
+        $email = $this->prompt(Yii::t(Module::I18N_CATEGORY, 'Please enter the user\'s email:'), ['required' => true]);
         try {
             $token = Token::findByUserEmail($email, Token::TYPE_CONFIRMATION);
             if ($token->user->confirm($token)) {
@@ -69,17 +61,33 @@ class UserController extends Controller {
                 $this->stderr(Yii::t(Module::I18N_CATEGORY, 'Error while trying to confirm the user!'), Console::FG_RED);
             }
         } catch (NotFoundHttpException $ex) {
-            $this->stderr($ex->getMessage(), Console::FG_RED);
+            $this->stdout($ex->getMessage(), Console::FG_RED);
         }
     }
 
-    public function actionReset($email)
+    public function actionResetRequest($email = null)
     {
-        //TODO:implement
+        $model = Yii::createObject(Yii::$app->user->recoveryForm);
+        $model->email = $this->prompt(Yii::t(Module::I18N_CATEGORY, 'Please enter your email:'), ['required' => $model->isAttributeRequired('email')]);
+        if ($model->sendRecoveryMessage()) {
+            $this->stdout(Yii::t(Module::I18N_CATEGORY, 'An email has been sent with instructions for password reset'), Console::FG_GREEN);
+        } else {
+            $this->printErrors($model);
+        }
     }
 
     public function actionDelete($email)
     {
         //TODO:implement
+    }
+
+    private function printErrors($model)
+    {
+        $this->stdout(\Yii::t(Module::I18N_CATEGORY, 'Please fix following errors:') . "\n", Console::FG_RED);
+        foreach ($model->errors as $errors) {
+            foreach ($errors as $error) {
+                $this->stdout(" - $error\n", Console::FG_RED);
+            }
+        }
     }
 }
