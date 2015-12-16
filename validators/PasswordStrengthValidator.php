@@ -2,7 +2,7 @@
 
 namespace nkostadinov\user\validators;
 
-use nkostadinov\user\assets\NkostadinovUserAsset;
+use nkostadinov\user\validators\UserAsset;
 use nkostadinov\user\Module;
 use Yii;
 use yii\base\InvalidConfigException;
@@ -121,19 +121,58 @@ class PasswordStrengthValidator extends Validator
     /** @var string user-defined error message used when value contains more than [[special]] characters */
     public $specialError;
     /**
-     * @var string preset - one of the preset constants,
-     * @see $_presets
-     * If this is not null, the preset parameters will override
-     * the validator level params
+     * If this is not null, the preset parameters will override the validator level params.
+     * @var string preset One of the preset constants.
      */
     public $preset;
-    /**
-     * @var string presets configuration source file
-     * defaults to [[presets.php]] in the current directory
-     */
-    public $presetsSource;
     /** @var array the list of inbuilt presets and their parameter settings */
-    private $_presets;
+    private $_presets = [
+        self::SIMPLE => [
+            'min' => 6,
+            'upper' => 0,
+            'lower' => 1,
+            'digit' => 1,
+            'special' => 0,
+            'hasUser' => false,
+            'hasEmail' => false
+        ],
+        self::NORMAL => [
+            'min' => 6,
+            'upper' => 1,
+            'lower' => 1,
+            'digit' => 1,
+            'special' => 1,
+            'hasUser' => true,
+            'hasEmail' => true
+        ],
+        self::FAIR => [
+            'min' => 8,
+            'upper' => 1,
+            'lower' => 1,
+            'digit' => 1,
+            'special' => 1,
+            'hasUser' => true,
+            'hasEmail' => true
+        ],
+        self::MEDIUM => [
+            'min' => 10,
+            'upper' => 1,
+            'lower' => 1,
+            'digit' => 2,
+            'special' => 1,
+            'hasUser' => true,
+            'hasEmail' => true
+        ],
+        self::STRONG => [
+            'min' => 12,
+            'upper' => 2,
+            'lower' => 2,
+            'digit' => 2,
+            'special' => 2,
+            'hasUser' => true,
+            'hasEmail' => true
+        ],
+    ];
     
     /**
      * @inheritdoc
@@ -156,13 +195,9 @@ class PasswordStrengthValidator extends Validator
     {
         if (!isset($this->preset)) {
             return;
-        }
-        if (!isset($this->presetsSource)) {
-            $this->presetsSource = __DIR__ . '/presets.php';
-        }
-        $this->_presets = require($this->presetsSource);
+        }        
         if (array_key_exists($this->preset, $this->_presets)) {
-            foreach ($this->_presets[$this->preset] As $param => $value) {
+            foreach ($this->_presets[$this->preset] as $param => $value) {
                 $this->$param = $value;
             }
         } else {
@@ -281,7 +316,8 @@ class PasswordStrengthValidator extends Validator
                 $options[$param] = Html::encode(Yii::t(Module::I18N_CATEGORY, $this->$param, ['attribute' => $label]));
             }
         }
-        NkostadinovUserAsset::register($view);
+
+        UserAsset::register($view);
         return "passwordStrengthValidator.validate(value, messages, " . Json::encode($options) . ");";
     }
 }

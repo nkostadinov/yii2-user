@@ -76,7 +76,7 @@ class LoginForm extends Model
     public function getUser()
     {
         if ($this->_user === false) {
-            $this->_user = User::findByEmail($this->username);
+            $this->_user = call_user_func([Yii::$app->user->identityClass, 'findByEmail'], ['email' => $this->username]);
         }
 
         return $this->_user;

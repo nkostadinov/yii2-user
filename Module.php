@@ -19,6 +19,7 @@ class Module extends \yii\base\Module implements BootstrapInterface
         'forgotten-password'          => 'user/recovery/request',
         'reset/<code:[\w-]+>'         => 'user/recovery/reset',
         'change-password'             => 'user/security/change-password',
+        'acquire-email'               => 'user/security/acquire-email',
     ];
 
     /**
@@ -36,6 +37,7 @@ class Module extends \yii\base\Module implements BootstrapInterface
     public $requestView = '@nkostadinov/user/views/recovery/request';
     public $profileView = '@nkostadinov/user/views/profile/view';
     public $changePasswordView = '@nkostadinov/user/views/security/change_password';
+    public $acquireEmailView = '@nkostadinov/user/views/security/acquire_email';
 
     public $adminColumns = [
         //['class' => 'yii\grid\SerialColumn'],

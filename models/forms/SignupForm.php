@@ -47,7 +47,9 @@ class SignupForm extends Model
 
     public function uniqueEmail($attribute)
     {
-        $user = User::findByEmail($this->$attribute);
+
+        $user = call_user_func([Yii::$app->user->identityClass, 'findByEmail'],
+            ['email' => $this->$attribute]);
         if ($user && $user->password_hash) {
             $this->addError($attribute, Yii::t(Module::I18N_CATEGORY, 'This email address has already been taken.'));
         }
@@ -61,7 +63,8 @@ class SignupForm extends Model
     public function signup()
     {
         if ($this->validate()) {
-            $user = User::findByEmail($this->email);
+            $user = call_user_func([Yii::$app->user->identityClass, 'findByEmail'],
+                ['email' => $this->email]);
             if (!$user) {
                 $user = Yii::createObject([
                     'class' => Yii::$app->user->identityClass,

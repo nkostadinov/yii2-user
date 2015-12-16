@@ -32,7 +32,7 @@ class UnsuccessfulLoginAttemptsBehavior extends Behavior
      */
     public function unsuccessfulAttemptsChecker(Event $event)
     {
-        $user = User::findByEmail($event->sender->username);
+        $user = call_user_func([Yii::$app->user->identityClass, 'findByEmail'], ['email' => $event->sender->username]);
         if (!$user) {
             return;
         }

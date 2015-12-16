@@ -2,10 +2,7 @@
 
 namespace nkostadinov\user\models\forms;
 
-use nkostadinov\user\models\User;
-use Yii;
 use yii\base\Model;
-use yii\web\ForbiddenHttpException;
 
 /**
  * AcquireEmailForm is the model behind the acquire email form.

@@ -54,6 +54,6 @@ class RecoveryController extends BaseController
     public function actionReset($code)
     {
         User::resetPassword($code);
-        return $this->redirect(['/user/security/change-password']);
+        return $this->redirect(["/{$this->module->id}/security/change-password"]);
     }
 }

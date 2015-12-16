@@ -101,7 +101,8 @@ class ChangePasswordForm extends Model
             if (!Yii::$app->user->isGuest) {
                 $this->_user = Yii::$app->user->identity;
             } else {
-                $this->_user = User::findByEmail($this->email);
+                $this->_user = call_user_func([Yii::$app->user->identityClass, 'findByEmail'],
+                    ['email' => $this->email]);
             }
         }
 

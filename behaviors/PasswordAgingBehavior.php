@@ -6,7 +6,6 @@ use nkostadinov\user\components\User;
 use nkostadinov\user\Module;
 use Yii;
 use yii\base\Behavior;
-use yii\web\Application;
 use yii\web\ForbiddenHttpException;
 use yii\web\UserEvent;
 
@@ -50,7 +49,7 @@ class PasswordAgingBehavior extends Behavior
             $event->identity->save(false);
         } else if ((time() - $event->identity->password_changed_at) > $this->passwordChangeInterval) {
             $event->isValid = false;
-            if (Yii::$app instanceof Application) {
+            if (Yii::$app instanceof yii\web\Application) {
                 Yii::$app->response->redirect(['/user/security/change-password']);
             } else {
                 throw new ForbiddenHttpException(Yii::t(Module::I18N_CATEGORY, 'The system requires a password change'));

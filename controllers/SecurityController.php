@@ -45,12 +45,12 @@ class SecurityController extends BaseController
                 'class' => AccessControl::className(),
                 'rules' => [
                     [
-                        'actions' => ['login', 'auth', 'change-password'],
+                        'actions' => ['login', 'auth', 'change-password', 'acquire-email'],
                         'allow' => true,
                         'roles' => ['?'],
                     ],
                     [
-                        'actions' => ['logout', 'change-password'],
+                        'actions' => ['login', 'auth', 'logout', 'change-password'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -123,10 +123,10 @@ class SecurityController extends BaseController
                 $email = $client->getEmail();
                 if (is_null($email)) { // Sometimes the email cannot be fetched from the client
                     Yii::$app->session->set(self::CLIENT_PARAM, $client);
-                    $result = $this->redirect(['/user/security/acquire-email']); // Redirect to a page where the user must add an email
+                    $result = $this->redirect(["/{$this->module->id}/security/acquire-email"]); // Redirect to a page where the user must add an email
+                } else {
+                    $result = $this->createAccount($client, $account, $email);
                 }
-
-                $result = $this->createAccount($client, $account, $email);
             } else { // Link account to user
                 // This means the user is logged in through a regular login or another client. Needs to be linked.
                 $account->link('user', Yii::$app->user->identity);
@@ -150,7 +150,7 @@ class SecurityController extends BaseController
             $client = Yii::$app->session->get(self::CLIENT_PARAM);
             Yii::$app->session->remove(self::CLIENT_PARAM);
             
-            $account = UserAccount::findByClient($client);            
+            $account = UserAccount::findByClient($client);
             $response = $this->createAccount($client, $account, $model->email);
 
             $this->trigger(self::EVENT_AFTER_ACQUIRE_EMAIL, $event);
@@ -182,7 +182,8 @@ class SecurityController extends BaseController
 
     private function createAccount(IUserAccount $client, $account, $email)
     {
-        $user = User::findByEmail($email);
+        $user = call_user_func([Yii::$app->user->identityClass, 'findByEmail'],
+            ['email' => $email]);
         if (!$user) {
             // Create a new user
             $user = new User();
@@ -195,8 +196,8 @@ class SecurityController extends BaseController
         } else {
             // User already exists
             Yii::$app->session->setFlash('warning',
-                Yii::t(Module::I18N_CATEGORY, 'This email is already taken. In order to link your account, please login first!'));
-            return $this->redirect(['/user/security/login']);
+                Yii::t(Module::I18N_CATEGORY, 'This email is already taken. If you want to link your account, please login first!'));
+            return $this->redirect(["/{$this->module->id}/security/login"]);
         }
 
         if (Yii::$app->user->login($user)) {
