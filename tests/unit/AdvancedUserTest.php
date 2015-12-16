@@ -167,12 +167,7 @@ class AdvancedUserTest extends TestCase
         verify('Check that the default value of maxLoginAttempts is set to 5',
             $behavior->maxLoginAttempts)->equals(5);
 
-        verify('Check that lockExpiration field exists', isset($behavior->lockExpiration))->true();
-        verify('Check that the default value of lockExpiration is set to 1 hour (in seconds)',
-            $behavior->lockExpiration)->equals(3600);
-
         $user = Commons::createUser();
-
         // Create one user and check the default values
         verify('Asure that the login_attempts field is empty', $user->login_attempts)->equals(0);
         verify('Asure that the locked_until field is empty', $user->locked_until)->null();

@@ -130,7 +130,7 @@ class Token extends ActiveRecord
         $token = Token::find()
             ->select('*')
             ->leftJoin(User::tableName(), 'user.id = token.user_id')
-            ->where(['user.email' => $email, 'type' => $type])
+            ->where(['user.email' => $email, 'user.status' => User::STATUS_ACTIVE, 'type' => $type])
             ->one();
         
         if (empty($token)) {

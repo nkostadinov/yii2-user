@@ -14,8 +14,15 @@ use yii\base\Model;
 
 class RecoveryForm extends Model
 {
+    const SCENARIO_RECOVERY = 'recovery';
+
     public $email;
     public $user;
+
+    public function init()
+    {
+        $this->scenario = self::SCENARIO_RECOVERY;
+    }
 
     /** @inheritdoc */
     public function rules()
@@ -24,16 +31,17 @@ class RecoveryForm extends Model
             ['email', 'filter', 'filter' => 'trim'],
             ['email', 'required'],
             ['email', 'email'],
-            ['email', 'exist',
-                'targetClass' => Yii::$app->user->identityClass,
-                'message' => Yii::t(Module::I18N_CATEGORY, 'There is no user with this email address')
-            ],
-            ['email', function ($attribute) {
-                $this->user = Yii::$app->user->findUserByEmail($this->email);
-                if ($this->user !== null && Yii::$app->user->enableConfirmation && !$this->user->getIsConfirmed()) {
-                    $this->addError($attribute, Yii::t(Module::I18N_CATEGORY, 'You need to confirm your email address'));
+            ['email', function($attribute) {
+                $this->user = call_user_func([Yii::$app->user->identityClass, 'findByEmail'], ['email' => $this->email]);
+                if (!$this->user) {
+                    $this->addError($attribute, Yii::t(Module::I18N_CATEGORY, 'There is no user with this email address'));
                 }
             }],
+            ['email', function ($attribute) {
+                if (Yii::$app->user->enableConfirmation && !$this->user->getIsConfirmed()) {
+                    $this->addError($attribute, Yii::t(Module::I18N_CATEGORY, 'You need to confirm your email address'));
+                }
+            }, 'on' => self::SCENARIO_RECOVERY],
         ];
     }
 

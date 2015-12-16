@@ -70,13 +70,6 @@ class UserSearch extends User
         return $dataProvider;
     }
 
-    public function findUserByEmail($email)
-    {
-        return call_user_func([Yii::$app->user->identityClass, 'findOne'], [
-           'email' => $email,
-        ]);
-    }
-
     public function findUserById($id)
     {
         return call_user_func([Yii::$app->user->identityClass, 'findOne'], [

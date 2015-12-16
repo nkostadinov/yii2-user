@@ -13,7 +13,6 @@ use nkostadinov\user\interfaces\IUserNotificator;
 use nkostadinov\user\models\Token;
 use nkostadinov\user\models\User as UserModel;
 use nkostadinov\user\models\UserSearch;
-use nkostadinov\user\Module;
 use nkostadinov\user\validators\PasswordStrengthValidator;
 use Yii;
 use yii\di\Instance;
@@ -45,6 +44,8 @@ class User extends BaseUser
     public $loginUrl = ['user/security/login'];
     /** @var integer The minimum length that a password field can have. */
     public $minPasswordLength = 6;
+    /** @var integer The time for which the use is locked. Defaults to 1 hour (in seconds). */
+    public $lockExpiration = 3600;
     /** @var array Configurations for the password strength validator. Defaults to '['preset' => PasswordStrengthValidator::NORMAL]' */
     public $passwordStrengthConfig = ['preset' => PasswordStrengthValidator::NORMAL];
     /** @var array The access rules of the admin panel */
@@ -73,13 +74,6 @@ class User extends BaseUser
         $searchModel = new UserSearch();
         $dataProvider = $searchModel->search($params);
         return $dataProvider;
-    }
-
-    public function findUserByEmail($email)
-    {
-        return UserModel::findOne([
-            'email' => $email,
-        ]);
     }
 
     /**

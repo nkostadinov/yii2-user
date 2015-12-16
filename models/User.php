@@ -271,4 +271,15 @@ class User extends ActiveRecord implements IdentityInterface
         $user->status = self::STATUS_DELETED;
         return $user->save(false);
     }
+
+    /**
+     * Locks the account for Yii::$app->user->lockExpiration seconds.
+     * 
+     * @return boolean True on success, false on failure.
+     */
+    public function lock()
+    {
+        $this->locked_until = time() + Yii::$app->user->lockExpiration;
+        return $this->save(false);
+    }
 }

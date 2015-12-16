@@ -12,6 +12,7 @@ use nkostadinov\user\models\Token;
 use nkostadinov\user\Module;
 use Yii;
 use yii\base\InvalidConfigException;
+use yii\base\Model;
 use yii\console\Controller;
 use yii\helpers\Console;
 use yii\web\NotFoundHttpException;
@@ -51,10 +52,7 @@ class UserController extends Controller
      */
     public function actionConfirm($email = null)
     {
-        $model = Yii::createObject(Yii::$app->user->recoveryForm);
-        $this->promptEmail($model);
-        if (!$model->validate()) {
-            $this->printErrors($model);
+        if (($email = $this->promptEmail($email, $model)) == null) {
             return;
         }
 
@@ -78,7 +76,10 @@ class UserController extends Controller
     public function actionResetRequest($email = null)
     {
         $model = Yii::createObject(Yii::$app->user->recoveryForm);
-        $this->promptEmail($model);
+        if ($this->promptEmail($email, $model) == null) {
+            return;
+        }
+        
         if ($model->sendRecoveryMessage()) {
             $this->stdout(Yii::t(Module::I18N_CATEGORY, 'An email has been sent with instructions for password reset'), Console::FG_GREEN);
         } else {
@@ -93,21 +94,59 @@ class UserController extends Controller
      */
     public function actionDelete($email = null)
     {
-        $model = Yii::createObject(Yii::$app->user->recoveryForm);
-        $this->promptEmail($model);
-        if (!$model->validate()) {
-            $this->printErrors($model);
+        if (($email = $this->promptEmail($email)) == null) {
             return;
         }
-
-        $result = call_user_func([Yii::$app->user->identityClass, 'deleteByEmail'], ['email' => $model->email]);
+        
+        $result = call_user_func([Yii::$app->user->identityClass, 'deleteByEmail'], ['email' => $email]);
         if ($result) {
-            $this->stdout(Yii::t(Module::I18N_CATEGORY, 'Account successfuly deleted!'), Console::FG_GREEN);
+            $this->stdout(Yii::t(Module::I18N_CATEGORY, 'User successfuly deleted!'), Console::FG_GREEN);
         } else {
             $this->stdout(Yii::t(Module::I18N_CATEGORY, 'Error while deleting the account!'), Console::FG_RED);
         }
     }
 
+    /**
+     * Locks the user by email.
+     *
+     * @param string $email The user's email
+     */
+    public function actionLock($email = null)
+    {
+        if (($email = $this->promptEmail($email)) == null) {
+            return;
+        }
+
+        $user = call_user_func([Yii::$app->user->identityClass, 'findByEmail'], ['email' => $email]);
+        if ($user->lock()) { // The user existence is done in the $this->promptEmail() method
+            $this->stdout(Yii::t(Module::I18N_CATEGORY, 'User successfuly locked!'), Console::FG_GREEN);
+        } else {
+            $this->stdout(Yii::t(Module::I18N_CATEGORY, 'User successfuly locked!'), Console::FG_RED);
+        }
+    }
+
+    private function promptEmail($email, $model = null)
+    {
+        if (!$model) {
+            $model = Yii::createObject(Yii::$app->user->recoveryForm);
+            $model->scenario = Model::SCENARIO_DEFAULT;
+        }
+        
+        if ($email) {
+            $model->email = $email;
+        } else {
+            $model->email = $this->prompt(Yii::t(Module::I18N_CATEGORY, 'Please enter the user\'s email address:'),
+                ['required' => $model->isAttributeRequired('email')]);
+        }
+
+        if (!$model->validate()) {
+            $this->printErrors($model);
+            return null;
+        }
+
+        return $model->email;
+    }
+    
     private function printErrors($model)
     {
         $this->stdout(\Yii::t(Module::I18N_CATEGORY, 'Please fix following errors:') . "\n", Console::FG_RED);
@@ -116,11 +155,5 @@ class UserController extends Controller
                 $this->stdout(" - $error\n", Console::FG_RED);
             }
         }
-    }
-
-    private function promptEmail($model)
-    {
-        $model->email = $this->prompt(Yii::t(Module::I18N_CATEGORY, 'Please enter the user\'s email address:'),
-            ['required' => $model->isAttributeRequired('email')]);
     }
 }

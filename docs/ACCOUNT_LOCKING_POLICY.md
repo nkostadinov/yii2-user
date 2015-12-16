@@ -32,12 +32,12 @@ Configurations:
 ```
 'user' => [
     'class' => 'nkostadinov\user\components\User',
+    'lockExpiration' => 7200, // Locked for 2 hours (in seconds)
     'loginForm' => [
         'class' => 'nkostadinov\user\models\forms\LoginForm',
         'as unsuccessfulLoginAttempts' => [ // Or whatever name you choose
             'class' => 'nkostadinov\user\behaviors\UnsuccessfulLoginAttemptsBehavior',
             'maxLoginAttempts' => 10, // Locked after 10 unsuccessful attempts
-            'lockExpiration' => 7200, // Locked for 2 hours (in seconds)
         ],
     ],
 ],

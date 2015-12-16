@@ -12,15 +12,12 @@ use yii\web\ForbiddenHttpException;
 
 /**
  * A behavior that locks the user if a wrong password is added in 5 consequent times.
- * The account is locked for an hour.
+ * The account is locked for the period of Yii::$app->user->lockExpiration (currently one hour by default).
  */
 class UnsuccessfulLoginAttemptsBehavior extends Behavior
 {
     /** @var integer The number of attempts that user has before being locked. */
     public $maxLoginAttempts = 5;
-
-    /** @var integer The time for which the use is locked. Defaults to 1 hour (in seconds). */
-    public $lockExpiration = 3600;
 
     public function events()
     {
@@ -53,9 +50,7 @@ class UnsuccessfulLoginAttemptsBehavior extends Behavior
             $user->login_attempts++;
             if ($user->login_attempts == $this->maxLoginAttempts) {
                 // Lock the account
-                $user->locked_until = $currentTime + $this->lockExpiration;
-                $user->save(false);
-
+                $user->lock();
                 throw new ForbiddenHttpException(Yii::t(Module::I18N_CATEGORY, 'Your account is locked!'));
             }
         } else if ($user->login_attempts > 0) {
