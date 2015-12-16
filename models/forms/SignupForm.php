@@ -47,7 +47,6 @@ class SignupForm extends Model
 
     public function uniqueEmail($attribute)
     {
-
         $user = call_user_func([Yii::$app->user->identityClass, 'findByEmail'],
             ['email' => $this->$attribute]);
         if ($user && $user->password_hash) {
@@ -62,7 +61,9 @@ class SignupForm extends Model
      */
     public function signup()
     {
+        Yii::info("User is trying to register", __CLASS__);
         if ($this->validate()) {
+            Yii::info("User [$this->email] passed the registration validation", __CLASS__);
             $user = call_user_func([Yii::$app->user->identityClass, 'findByEmail'],
                 ['email' => $this->email]);
             if (!$user) {

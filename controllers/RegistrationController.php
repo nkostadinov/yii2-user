@@ -33,11 +33,15 @@ class RegistrationController extends BaseController
 
     public function actionConfirm($code)
     {
+        Yii::info('User is entering the confirmation page', __CLASS__);
+
         $token = Token::findByCode($code, Token::TYPE_CONFIRMATION);
         if ($token->user->confirm($token)) {
-            Yii::$app->session->setFlash('success', Yii::t('Your account was successfuly confirmed!', Module::I18N_CATEGORY));
+            Yii::info("User [{$token->user->email}] successfuly confirmed", __CLASS__);
+            Yii::$app->session->setFlash('success', Yii::t(Module::I18N_CATEGORY, 'Your account was successfuly confirmed!'));
         } else {
-            Yii::$app->session->setFlash('warning', Yii::t('Error while confirming your account!', Module::I18N_CATEGORY));
+            Yii::error("Error while confirming user [{$token->user->email}]", __CLASS__);
+            Yii::$app->session->setFlash('warning', Yii::t(Module::I18N_CATEGORY, 'Error while confirming your account!'));
         }
         
         return $this->render($this->module->confirmView);
@@ -45,6 +49,8 @@ class RegistrationController extends BaseController
 
     public function actionSignup()
     {
+        Yii::info('User is entering the signup page', __CLASS__);
+        
         if (!$this->module->allowRegistration)
             throw new NotFoundHttpException(Yii::t(Module::I18N_CATEGORY, 'Registration disabled!'));
 
@@ -52,7 +58,7 @@ class RegistrationController extends BaseController
 
         $event = Event::createModelEvent($model);
         $this->trigger(self::EVENT_BEFORE_SIGNUP, $event);
-
+        
         if ($model->load(Yii::$app->request->post()) && $model->signup()) {
             $this->trigger(self::EVENT_AFTER_SIGNUP, $event);
             if(Yii::$app->user->enableConfirmation)

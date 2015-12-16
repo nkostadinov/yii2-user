@@ -20,8 +20,6 @@ use yii\web\User as BaseUser;
 
 class User extends BaseUser
 {
-    const LOG_CATEGORY = 'nkostadinov.user';
-
     /** Event triggered before registration. Triggered with UserEvent. */
     const EVENT_BEFORE_REGISTER = 'nkostadinov.user.beforeRegister';
     /** Event triggered after registration. Triggered with UserEvent. */
@@ -96,6 +94,7 @@ class User extends BaseUser
      */
     public function register(UserModel $model)
     {
+        Yii::info("Registering user [$model->email]", __CLASS__);
         if ($this->enableConfirmation == false) {
             $model->confirmed_on = time();
         }
@@ -103,23 +102,28 @@ class User extends BaseUser
         $event = Event::createUserEvent($model);
         $this->trigger(self::EVENT_BEFORE_REGISTER, $event);
 
+        Yii::info("Saving user [$model->email] to the database", __CLASS__);
         if ($model->save()) {
-            //Raise event that the user is persisted
+            Yii::info("User [$model->email] successfuly registered!", __CLASS__);
+            // Raise event that the user is persisted
             $this->trigger(self::EVENT_AFTER_REGISTER, $event);
             //Add confirmation token(if enabled) and notify user
             if ($this->enableConfirmation) {
+                Yii::info("Creating token of user [$model->email]", __CLASS__);
                 $token = Yii::createObject([
                     'class' => Token::className(),
                     'type' => Token::TYPE_CONFIRMATION,
                 ]);
                 $token->link('user', $model);
+                
+                Yii::info("Sending confirmation email to [$model->email]", __CLASS__);
                 $this->getNotificator()->sendConfirmationMessage($model, $token);
             }
             
             return true;
         }
         
-        Yii::error('An error occurred while registering user account', self::LOG_CATEGORY . '.register');
+        Yii::error("An error occurred while registering user [$model->email][$model->register_ip]", __CLASS__);
         return false;
     }
 

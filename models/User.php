@@ -187,7 +187,9 @@ class User extends ActiveRecord implements IdentityInterface
 
     public function confirm($token)
     {
+        Yii::info('User is trying to confirm the registration', __CLASS__);
         if (empty($token) || $token->isExpired) {
+            Yii::info('User\'s confirmation code not found or expired', __CLASS__);
             throw new NotFoundHttpException(Yii::t(Module::I18N_CATEGORY, 'Confirmation code not found or expired!'));
         }
         

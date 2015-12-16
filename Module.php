@@ -15,7 +15,7 @@ class Module extends \yii\base\Module implements BootstrapInterface
     public static $urlRules = [
         '<action:(login|logout)>'     => 'user/security/<action>',
         '<action:(signup|resend)>'    => 'user/registration/<action>',
-        'confirm/<code:\w+>'          => 'user/registration/confirm',
+        'confirm/<code:[\w-]+>'       => 'user/registration/confirm',
         'forgotten-password'          => 'user/recovery/request',
         'reset/<code:[\w-]+>'         => 'user/recovery/reset',
         'change-password'             => 'user/security/change-password',
