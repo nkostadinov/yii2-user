@@ -5,7 +5,8 @@ Those values are configurable.
 
 # Installation
 
-First of all, run the migrations:
+In order for this extension to work, the `login_attempts` and `locked_until` fields must be present in the user's table. 
+Because of that, if you haven't run the advanced migrations so far, please do it now:
 
 ```
 $ ./yii migrate --migrationPath=@vendor/nkostadinov/yii2-user/migrations/advanced 

@@ -12,7 +12,8 @@ Here is the life cycle of the functionality:
 
 # Installation
 
-Run the migrations:
+In order for this extension to work, the `password_changed_at` field must be present in the user's table. 
+Because of that, if you haven't run the advanced migrations so far, please do it now:
 
 ```
 $ ./yii migrate --migrationPath=@vendor/nkostadinov/yii2-user/migrations/advanced

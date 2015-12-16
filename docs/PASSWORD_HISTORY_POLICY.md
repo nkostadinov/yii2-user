@@ -5,7 +5,8 @@ This functionality checks the last 5 password changes. The value is configurable
 
 # Installation
 
-First of all, run the migrations:
+In order for this extension to work, the `password_history` table must be created. 
+Because of that, if you haven't run the advanced migrations so far, please do it now:
 
 ```
 $ ./yii migrate --migrationPath=@vendor/nkostadinov/yii2-user/migrations/advanced

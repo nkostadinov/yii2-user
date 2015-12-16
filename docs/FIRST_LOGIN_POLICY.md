@@ -4,7 +4,8 @@ Requires the user to change password before the first login or when required.
 
 # Installation
 
-First of all, run the migrations:
+In order for this extension to work, the `require_password_change` field must be present in the user's table. 
+Because of that, if you haven't run the advanced migrations so far, please do it now:
 
 ```
 $ ./yii migrate --migrationPath=@vendor/nkostadinov/yii2-user/migrations/advanced 
