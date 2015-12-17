@@ -37,8 +37,11 @@ class RecoveryController extends BaseController
 
     public function actionRequest()
     {
+        Yii::info("User is entering the recovery page", __CLASS__);
+        
         $model = Yii::createObject(Yii::$app->user->recoveryForm);
         if ($model->load(Yii::$app->request->post()) && $model->sendRecoveryMessage()) {
+            Yii::info("Message successfuly sent to [$model->email]", __CLASS__);
             Yii::$app->session->setFlash('info', Yii::t(Module::I18N_CATEGORY, 'An email has been sent with instructions for resetting your password'));
             return $this->render('message', [
                 'title'  => Yii::t(Module::I18N_CATEGORY, 'Recovery message sent'),
@@ -53,7 +56,9 @@ class RecoveryController extends BaseController
 
     public function actionReset($code)
     {
+        Yii::info("User is trying to reset password by using [$code]", __CLASS__);
         User::resetPassword($code);
+        Yii::info("Redirecting user to change password page", __CLASS__);
         return $this->redirect(["/{$this->module->id}/security/change-password"]);
     }
 }

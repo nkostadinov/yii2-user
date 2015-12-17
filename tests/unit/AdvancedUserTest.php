@@ -102,9 +102,9 @@ class AdvancedUserTest extends TestCase
         // Try to change the password for a first time by adding the same password
         Commons::createUser();
         $changePasswordForm->email = Commons::TEST_EMAIL;
-        $changePasswordForm->oldPassword = 'test123';
-        $changePasswordForm->newPassword = 'test123';
-        $changePasswordForm->newPasswordRepeat = 'test123';
+        $changePasswordForm->oldPassword = 'Ni$test123';
+        $changePasswordForm->newPassword = 'Ni$test123';
+        $changePasswordForm->newPasswordRepeat = 'Ni$test123';
 
         verify('Assure that the password cannot be changed, because it is the same as the previous one', $changePasswordForm->changePassword())->false();
         verify('Assure that exactly the new password field has errors', $changePasswordForm->hasErrors('newPassword'))->true();
@@ -113,8 +113,8 @@ class AdvancedUserTest extends TestCase
 
         // Change the password this time for real
         $userId = $changePasswordForm->getUser()->id;        
-        $changePasswordForm->newPassword = 'BabaGusi';
-        $changePasswordForm->newPasswordRepeat = 'BabaGusi';
+        $changePasswordForm->newPassword = 'Ni$test1233';
+        $changePasswordForm->newPasswordRepeat = 'Ni$test1233';
         verify('Assure that the password is successfuly changed', $changePasswordForm->changePassword())->true();
 
         $previousPasswords = PasswordHistory::findAllByUserId($userId);
@@ -122,9 +122,9 @@ class AdvancedUserTest extends TestCase
             count($previousPasswords))->equals(2);
 
         // Try to change the password by adding a password that has already been used in the past
-        $changePasswordForm->oldPassword = 'BabaGusi';
-        $changePasswordForm->newPassword = 'test123';
-        $changePasswordForm->newPasswordRepeat = 'test123';
+        $changePasswordForm->oldPassword = 'Ni$test1233';
+        $changePasswordForm->newPassword = 'Ni$test123';
+        $changePasswordForm->newPasswordRepeat = 'Ni$test123';
 
         verify('Assure that the password cannot be changed, because it is the same as a password added in the past',
             $changePasswordForm->changePassword())->false();
@@ -133,9 +133,9 @@ class AdvancedUserTest extends TestCase
             $changePasswordForm->getErrors('newPassword')[0])->equals('Your password is the same as a previous password of yours. For security reasons, please add another password.');
 
         // Change the password for a second time (this time for real)
-        $changePasswordForm->oldPassword = 'BabaGusi';
-        $changePasswordForm->newPassword = 'AllahuAkbar';
-        $changePasswordForm->newPasswordRepeat = 'AllahuAkbar';
+        $changePasswordForm->oldPassword = 'Ni$test1233';
+        $changePasswordForm->newPassword = 'Ni$test!23';
+        $changePasswordForm->newPasswordRepeat = 'Ni$test!23';
         verify('Assure that the password is successfuly changed', $changePasswordForm->changePassword())->true();
 
         $previousPasswords = PasswordHistory::findAllByUserId($userId);
@@ -199,7 +199,7 @@ class AdvancedUserTest extends TestCase
         $user->locked_until = strtotime('-2 weeks');
         $user->save(false);
 
-        $loginForm->password = 'test123';
+        $loginForm->password = Commons::TEST_PASSWORD;
         verify('Check that the login is successful', $loginForm->login())->true();
 
         $user->refresh();
@@ -215,7 +215,7 @@ class AdvancedUserTest extends TestCase
         verify('Check that the locked_until field is still null', $user->locked_until)->null();
 
         // Login and check the defaults, in order to prove that only consequent attempts are being counted
-        $loginForm->password = 'test123';
+        $loginForm->password = Commons::TEST_PASSWORD;
         verify('Check that the login is successful', $loginForm->login())->true();
 
         $user->refresh();
@@ -251,9 +251,9 @@ class AdvancedUserTest extends TestCase
         // Change the password of the user and check the user is logged in
         $changePasswordForm = new ChangePasswordForm();
         $changePasswordForm->email = Commons::TEST_EMAIL;
-        $changePasswordForm->oldPassword = 'test123';
-        $changePasswordForm->newPassword = 'Risto-Bageristo';
-        $changePasswordForm->newPasswordRepeat = 'Risto-Bageristo';
+        $changePasswordForm->oldPassword = Commons::TEST_PASSWORD;
+        $changePasswordForm->newPassword = 'Risto-Bageristo1';
+        $changePasswordForm->newPasswordRepeat = 'Risto-Bageristo1';
         $changePasswordForm->changePassword(); // The user is logged in after a password change
 
         $user->refresh();

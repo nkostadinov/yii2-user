@@ -230,11 +230,19 @@ class User extends ActiveRecord implements IdentityInterface
 
     public static function resetPassword($code)
     {
+        Yii::info("Trying to find code [$code] for token", __CLASS__);
+
         $token = Token::findByCode($code);
         $user = $token->user;
+        
+        Yii::info("Generating password for user", __CLASS__);
         $user->setPassword(Yii::$app->security->generateRandomString());
-        if ($user->save(false))
+        
+        Yii::info("Trying to save user [$user->email] after resetting password", __CLASS__);
+        if ($user->save(false)) {            
             $token->delete();
+            Yii::info("Password successfuly reset of user [$user->email]", __CLASS__);
+        }
 
         return Yii::$app->user->login($user);
     }

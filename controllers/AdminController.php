@@ -31,6 +31,8 @@ class AdminController extends BaseController
      */
     public function actionIndex()
     {
+        Yii::info('Admin ['. Yii::$app->user->identity->email .'] is entering the admin/index page', __CLASS__);
+
         $searchModel = new UserSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
@@ -47,6 +49,7 @@ class AdminController extends BaseController
      */
     public function actionView($id)
     {
+        Yii::info('Admin ['. Yii::$app->user->identity->email ."] is entering the admin/view/$id page", __CLASS__);
         return $this->render('view', [
             'model' => $this->findModel($id),
         ]);
@@ -59,8 +62,11 @@ class AdminController extends BaseController
      */
     public function actionCreate()
     {
+        Yii::info('Admin ['. Yii::$app->user->identity->email .'] is entering the admin/create page', __CLASS__);
+        
         $model = new Yii::$app->user->identityClass();
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            Yii::info('Admin ['. Yii::$app->user->identity->email ."] successfuly created user [$model->email]", __CLASS__);
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
@@ -72,13 +78,17 @@ class AdminController extends BaseController
     /**
      * Updates an existing user model.
      * If update is successful, the browser will be redirected to the 'view' page.
+     * 
      * @param integer $id
      * @return mixed
      */
     public function actionUpdate($id)
     {
+        Yii::info('Admin ['. Yii::$app->user->identity->email ."] is entering the admin/update/$id page", __CLASS__);
+
         $model = $this->findModel($id);
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            Yii::info('Admin ['. Yii::$app->user->identity->email ."] successfuly updated user [$model->email]", __CLASS__);
             return $this->redirect(['view', 'id' => $model->id]);
         }
         
@@ -97,7 +107,10 @@ class AdminController extends BaseController
      */
     public function actionDelete($id)
     {
+        Yii::info('Admin ['. Yii::$app->user->identity->email ."] is deleting user [$id]", __CLASS__);
         call_user_func([Yii::$app->user->identityClass, 'deleteById'], ['id' => $id]);
+        Yii::info('Admin ['. Yii::$app->user->identity->email ."] successfuly deleted user [$id]", __CLASS__);
+        
         return $this->redirect(['index']);
     }
 

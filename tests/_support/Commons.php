@@ -13,7 +13,7 @@ define('ADVANCED_DIR_PATH', __DIR__ . '/../../migrations/advanced');
 class Commons
 {
     const TEST_EMAIL = 'test@innologica.com';
-    const TEST_PASSWORD = 'test123';
+    const TEST_PASSWORD = 'Ni$test123';
 
     const ADVANCED_MIGRATIONS_DIR = ADVANCED_DIR_PATH;
 

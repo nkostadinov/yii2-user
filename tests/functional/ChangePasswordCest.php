@@ -51,7 +51,7 @@ class ChangePasswordCest
         $I->see('New password repeat should contain at least 6 characters');
 
         $I->amGoingTo('change the password of the user properly');
-        $changePasswordPage->changePassword('123123', '123123');
+        $changePasswordPage->changePassword('Nik)lay!23', 'Nik)lay!23');
 
         $I->expect('that this time everything will be ok and the user will be redirected to the home page');
         $user->refresh();

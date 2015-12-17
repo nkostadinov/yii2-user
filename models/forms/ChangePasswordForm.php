@@ -4,6 +4,7 @@ namespace nkostadinov\user\models\forms;
 
 use nkostadinov\user\models\User;
 use nkostadinov\user\Module;
+use nkostadinov\user\validators\PasswordStrengthValidator;
 use Yii;
 use yii\base\Model;
 
@@ -37,6 +38,8 @@ class ChangePasswordForm extends Model
             [['newPassword', 'newPasswordRepeat'], 'string', 'min' => Yii::$app->user->minPasswordLength],
             [['newPassword', 'newPasswordRepeat'], 'required'],
             [['newPassword', 'newPasswordRepeat'], 'validateNewPasswords'],
+            array_merge(['newPassword', PasswordStrengthValidator::className()],
+                Yii::$app->user->passwordStrengthConfig),
 
             ['email', 'required', 'on' => self::SCENARIO_REQUIRE_PASSWORD_CHANGE],
             ['oldPassword', 'required', 'on' => self::SCENARIO_REQUIRE_PASSWORD_CHANGE],
@@ -72,8 +75,9 @@ class ChangePasswordForm extends Model
 
     public function changePassword()
     {
+        $user = $this->getUser();
+        Yii::info("User [$user->email] is trying the change password", __CLASS__);
         if ($this->validate()) {
-            $user = $this->getUser();
             $user->setPassword($this->newPassword);
 
             if ($user->hasAttribute('password_changed_at'))
@@ -83,12 +87,16 @@ class ChangePasswordForm extends Model
                 $user->require_password_change = 0;
 
             if ($user->save()) {
+                Yii::info("User [$user->email] has successfuly changed password", __CLASS__);
                 if (Yii::$app->user->isGuest) {
+                    Yii::info("Trying to login user [$user->email] after a password change", __CLASS__);
                     return Yii::$app->user->login($user);
                 }
                 return true;
             }
         }
+        Yii::info("Password change validation failed for user [$user->email]", __CLASS__);
+
         return false;
     }
 

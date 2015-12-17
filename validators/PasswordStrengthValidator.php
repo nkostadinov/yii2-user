@@ -142,7 +142,7 @@ class PasswordStrengthValidator extends Validator
             'lower' => 1,
             'digit' => 1,
             'special' => 1,
-            'hasUser' => true,
+            'hasUser' => false,
             'hasEmail' => true
         ],
         self::FAIR => [

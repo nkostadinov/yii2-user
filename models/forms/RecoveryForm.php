@@ -60,7 +60,9 @@ class RecoveryForm extends Model
      */
     public function sendRecoveryMessage()
     {
+        Yii::info(sprintf('User%s is starting the password recovery process', ($this->email ? " [$this->email]" : ''))  , __CLASS__);
         if ($this->validate()) {
+            Yii::info("Creating recovery token of user [$this->email]", __CLASS__);
             /** @var Token $token */
             $token = Yii::createObject([
                 'class'   => Token::className(),
@@ -69,9 +71,12 @@ class RecoveryForm extends Model
             ]);
             $token->save(false);
 
+            Yii::info("Sending recovery message to [$this->email]", __CLASS__);
             Yii::$app->user->notificator->sendRecoveryMessage($this->user, $token);
             return true;
         }
+        Yii::info(sprintf('Validation failed after submitting the recovery form of user %s', ($this->email ? "[$this->email]" : ''))  , __CLASS__);
+        
         return false;
     }
 }

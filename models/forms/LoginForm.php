@@ -59,13 +59,17 @@ class LoginForm extends Model
      */
     public function login()
     {
+        Yii::info('User is trying to login', __CLASS__);
         if ($this->validate()) {
-            if(!$this->user->isConfirmed and !Yii::$app->user->allowUncofirmedLogin)
+            if(!$this->user->isConfirmed and !Yii::$app->user->allowUncofirmedLogin) {
+                Yii::info("User [$this->email] is not confirmed", __CLASS__);
                 throw new ForbiddenHttpException(Yii::t(Module::I18N_CATEGORY, 'Unconfirmed account are not allowed to login'));
+            }
             return Yii::$app->user->login($this->getUser(), $this->rememberMe ? 3600*24*30 : 0);
-        } else {
-            return false;
         }
+        Yii::info("User [$this->username] is unable to, because of invalid data", __CLASS__);
+        
+        return false;
     }
 
     /**
