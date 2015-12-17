@@ -50,7 +50,7 @@ class SecurityController extends BaseController
                         'roles' => ['?'],
                     ],
                     [
-                        'actions' => ['login', 'auth', 'logout', 'change-password'],
+                        'actions' => ['auth', 'logout', 'change-password'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],

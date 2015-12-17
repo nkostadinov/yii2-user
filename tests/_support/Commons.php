@@ -13,6 +13,7 @@ define('ADVANCED_DIR_PATH', __DIR__ . '/../../migrations/advanced');
 class Commons
 {
     const TEST_EMAIL = 'test@innologica.com';
+    const TEST_USERNAME = 'innologica';
     const TEST_PASSWORD = 'Ni$test123';
 
     const ADVANCED_MIGRATIONS_DIR = ADVANCED_DIR_PATH;
@@ -25,7 +26,7 @@ class Commons
      * @param type $status Whether the password is active or not. Defaults to 'active'.
      * @return User
      */
-    public static function createUser($email = self::TEST_EMAIL, $password = self::TEST_PASSWORD, $status = 1)
+    public static function createUser($email = self::TEST_EMAIL, $password = self::TEST_PASSWORD, $status = User::STATUS_ACTIVE)
     {
         $user = new User();
         $user->email = $email;
@@ -59,5 +60,20 @@ class Commons
         $token->save(false);
 
         return $token;
+    }
+
+    public static function createUserWithUsername($email = self::TEST_EMAIL, $password = self::TEST_PASSWORD, $username = self::TEST_USERNAME)
+    {
+        $user = new User();
+        $user->email = $email;
+        $user->username = $username;
+        $user->status = 1;
+        $user->confirmed_on = time();
+        $user->setPassword($password);
+        $user->save(false);
+
+        $user->refresh(); // To load the defaults set by the database
+
+        return $user;
     }
 }

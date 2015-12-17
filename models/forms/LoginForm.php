@@ -7,6 +7,7 @@ use nkostadinov\user\Module;
 use Yii;
 use yii\base\Model;
 use yii\web\ForbiddenHttpException;
+use yii\web\NotFoundHttpException;
 
 /**
  * LoginForm is the model behind the login form.
@@ -17,7 +18,7 @@ class LoginForm extends Model
     public $password;
     public $rememberMe = true;
 
-    private $_user = false;
+    private $_user = null;
 
 
     /**
@@ -67,7 +68,7 @@ class LoginForm extends Model
             }
             return Yii::$app->user->login($this->getUser(), $this->rememberMe ? 3600*24*30 : 0);
         }
-        Yii::info("User [$this->username] is unable to, because of invalid data", __CLASS__);
+        Yii::info("User [$this->username] is unable to login, because of invalid data", __CLASS__);
         
         return false;
     }
@@ -79,8 +80,11 @@ class LoginForm extends Model
      */
     public function getUser()
     {
-        if ($this->_user === false) {
-            $this->_user = call_user_func([Yii::$app->user->identityClass, 'findByEmail'], ['email' => $this->username]);
+        if (!$this->_user) {
+            try {
+                $this->_user = call_user_func([Yii::$app->user->identityClass, 'findByEmailOrUsername'],
+                    ['value' => $this->username]);
+            } catch (NotFoundHttpException $ex) {}
         }
 
         return $this->_user;

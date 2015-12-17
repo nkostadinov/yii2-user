@@ -292,4 +292,26 @@ class User extends ActiveRecord implements IdentityInterface
         $this->locked_until = time() + Yii::$app->user->lockExpiration;
         return $this->save(false);
     }
+
+    /**
+     * Finds an active user by email or username.
+     *
+     * @param string $value The email or the username of the user.
+     * @return User The User model if found.
+     * @throws NotFoundHttpException If the user is not found.
+     */
+    public function findByEmailOrUsername($value)
+    {
+        $user = self::find()
+            ->where(['email' => $value])
+            ->orWhere(['username' => $value])
+            ->andWhere(['status' => self::STATUS_ACTIVE])
+            ->one();
+
+        if (!$user) {
+            throw new NotFoundHttpException(Yii::t(Module::I18N_CATEGORY, 'User not found!'));
+        }
+
+        return $user;
+    }
 }

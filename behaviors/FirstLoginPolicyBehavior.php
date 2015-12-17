@@ -28,6 +28,8 @@ class FirstLoginPolicyBehavior extends Behavior
     public function passwordChangeChecker(UserEvent $event)
     {
         if ($event->identity->require_password_change) {
+            Yii::info('The user is required to change password', __CLASS__);
+            
             $event->isValid = false;
             if (Yii::$app instanceof \yii\web\Application) {
                 Yii::$app->response->redirect(['/user/security/change-password']);

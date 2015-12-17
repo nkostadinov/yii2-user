@@ -44,10 +44,15 @@ class PasswordAgingBehavior extends Behavior
      */
     public function execute(UserEvent $event)
     {
-        if (empty($event->identity->password_changed_at)) {
-            $event->identity->password_changed_at = time();
-            $event->identity->save(false);
-        } else if ((time() - $event->identity->password_changed_at) > $this->passwordChangeInterval) {
+        $identity = $event->identity;
+        if (empty($identity->password_changed_at)) {
+            Yii::info("Setting password_changed_at to user $identity->email", __CLASS__);
+            
+            $identity->password_changed_at = time();
+            $identity->save(false);
+        } else if ((time() - $identity->password_changed_at) > $this->passwordChangeInterval) {
+            Yii::info("It is time for user $identity->email to change password", __CLASS__);
+
             $event->isValid = false;
             if (Yii::$app instanceof \yii\web\Application) {
                 Yii::$app->response->redirect(['/user/security/change-password']);

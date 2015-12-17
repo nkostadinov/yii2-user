@@ -2,7 +2,6 @@
 
 namespace nkostadinov\user\behaviors;
 
-use nkostadinov\user\models\User;
 use nkostadinov\user\Module;
 use Yii;
 use yii\base\Behavior;
@@ -32,29 +31,37 @@ class UnsuccessfulLoginAttemptsBehavior extends Behavior
      */
     public function unsuccessfulAttemptsChecker(Event $event)
     {
-        $user = call_user_func([Yii::$app->user->identityClass, 'findByEmail'], ['email' => $event->sender->username]);
+        $user = call_user_func([Yii::$app->user->identityClass, 'findByEmail'],
+            ['email' => $event->sender->username]);
         if (!$user) {
             return;
         }
         
         $currentTime = time();
         if ($user->locked_until > $currentTime) {
+            Yii::info("The user [$user->email] is locked!", __CLASS__);
+            
             throw new ForbiddenHttpException(Yii::t(Module::I18N_CATEGORY, 'Your account is locked!'));
         } else if(isset($user->locked_until) && $user->locked_until < $currentTime) {
-            // Unlock the account
+            Yii::info("Unlocking user [$user->email]!", __CLASS__);
+            
             $user->login_attempts = 0;
             $user->locked_until = null;
         }
 
         if ($event->sender->hasErrors('password')) {
             $user->login_attempts++;
+            
+            Yii::info("User [$user->email] has entered a wrong password. Login attempts count: $user->login_attempts", __CLASS__);
             if ($user->login_attempts == $this->maxLoginAttempts) {
-                // Lock the account
+                Yii::info("Locking user [$user->email]!", __CLASS__);
+                
                 $user->lock();
                 throw new ForbiddenHttpException(Yii::t(Module::I18N_CATEGORY, 'Your account is locked!'));
             }
         } else if ($user->login_attempts > 0) {
-            // Clear the attempts
+            Yii::info("Clear login attempts of user [$user->email]", __CLASS__);
+            
             $user->login_attempts = 0;
         }
 
