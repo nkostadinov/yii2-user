@@ -20,6 +20,7 @@ class Module extends \yii\base\Module implements BootstrapInterface
         'reset/<code:[\w-]+>'         => 'user/recovery/reset',
         'change-password'             => 'user/security/change-password',
         'acquire-email'               => 'user/security/acquire-email',
+        'profile'                     => 'user/profile/view',
     ];
 
     /**
