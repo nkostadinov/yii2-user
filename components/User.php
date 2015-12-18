@@ -8,22 +8,35 @@
 namespace nkostadinov\user\components;
 
 use nkostadinov\user\behaviors\LastLoginBehavior;
+use nkostadinov\user\exceptions\DuplicatedUserException;
+use nkostadinov\user\exceptions\MissingEmailException;
 use nkostadinov\user\helpers\Event;
+use nkostadinov\user\helpers\Http;
+use nkostadinov\user\interfaces\IUserAccount;
 use nkostadinov\user\interfaces\IUserNotificator;
 use nkostadinov\user\models\Token;
 use nkostadinov\user\models\User as UserModel;
+use nkostadinov\user\models\UserAccount;
 use nkostadinov\user\models\UserSearch;
 use nkostadinov\user\validators\PasswordStrengthValidator;
 use Yii;
+use yii\authclient\ClientInterface;
+use yii\base\NotSupportedException;
 use yii\di\Instance;
 use yii\web\User as BaseUser;
 
 class User extends BaseUser
-{
+{    
     /** Event triggered before registration. Triggered with UserEvent. */
     const EVENT_BEFORE_REGISTER = 'nkostadinov.user.beforeRegister';
     /** Event triggered after registration. Triggered with UserEvent. */
     const EVENT_AFTER_REGISTER = 'nkostadinov.user.afterRegister';
+    /** Event is triggered before authenticating the user by an OAuth2 authentication. Triggered with \nkostadinov\user\events\AuthEvent. */
+    const EVENT_BEFORE_OAUTH = 'nkostadinov.user.beforeOAuth';
+    /** Event is triggered after authenticating the user by an OAuth2 authentication. Triggered with \nkostadinov\user\events\AuthEvent. */
+    const EVENT_AFTER_OAUTH = 'nkostadinov.user.afterOAuth';
+
+    const CLIENT_PARAM = 'oAuthClient';
 
     public $loginForm = 'nkostadinov\user\models\forms\LoginForm';
     public $registerForm = 'nkostadinov\user\models\forms\SignupForm';
@@ -127,11 +140,92 @@ class User extends BaseUser
         return false;
     }
 
+    /**
+     *
+     * @param \nkostadinov\user\components\ClientInterface $client
+     * @return type
+     * @throws NotSupportedException
+     */
+    public function oAuthAuthentication(ClientInterface $client)
+    {
+        if(!$client instanceof IUserAccount) {
+            throw new NotSupportedException('Your client must extend the IUserInterface.');
+        }
+
+        $account = UserAccount::findByClient($client);
+        if(empty($account)) { // If account doesn't exist, create it
+            Yii::info("Creating user account for user [$client->id][$client->userId]", __CLASS__);
+            $account = UserAccount::createAndSave($client);
+        }
+
+        $event = Event::createAuthEvent($account, $client);
+        $this->trigger(self::EVENT_BEFORE_OAUTH, $event);
+
+        $result = true;
+        if(!$account->user) { // Create a new user or link account to an existing user
+            if (Yii::$app->user->isGuest) { // This means the user comes for a first time or has a user created by a regular login or another client
+                $email = $client->getEmail();
+                if (is_null($email)) { // Sometimes the email cannot be fetched from the client
+                    Yii::info("Unable to fetch the email of account [$client->id][$client->userId]", __CLASS__);
+                    throw new MissingEmailException();
+                } else {
+                    try {
+                        $result = $this->createUserByOAuthIfNotExists($client, $account, $email);
+                    } catch (DuplicatedUserException $exception) {
+                        throw $exception;
+                    }
+                }
+            } else { // Link account to user
+                // This means the user is logged in through a regular login or another client. Needs to be linked.
+                $email = Yii::$app->user->identity->email;
+                Yii::info("Linking user [$email] to account [$client->id][$client->userId]", __CLASS__);
+                $account->link('user', Yii::$app->user->identity);
+            }
+        } else if (Yii::$app->user->isGuest) {
+            Yii::info("Logging in user [{$account->user->email}]", __CLASS__);
+            $result = Yii::$app->user->login($account->user);
+        }
+
+        $this->trigger(self::EVENT_AFTER_OAUTH, $event);
+        return $result;
+    }
+
     public function getName()
     {
         if($this->isGuest)
             return 'Guest';
         return $this->identity->getDisplayName();
+    }
+
+    public function createUserByOAuthIfNotExists(IUserAccount $client, $account, $email)
+    {
+        Yii::info("Trying to create a new user for account [$client->id][$client->userId][$email]", __CLASS__);
+
+        $user = call_user_func([$this->identityClass, 'findByEmail'], ['email' => $email]);
+        if (!$user) {
+            Yii::info("Creating a new user for account [$client->id][$client->userId][$email]", __CLASS__);
+
+            $user = new $this->identityClass();
+            $user->email = $email;
+            $user->name = $client->getRealName();
+            $user->register_ip = Http::getUserIP();
+            $user->save(false);
+
+            Yii::info("User successfuly created for account [$client->id][$client->userId][$email]", __CLASS__);
+        } else if ($user->password_hash) {
+            throw new DuplicatedUserException();
+        }
+
+        Yii::info("Linking user [$email] to account [$client->id][$client->userId]", __CLASS__);
+        $account->link('user', $user);
+
+        if (Yii::$app->user->login($user)) {
+            Yii::info("Logging in user [$client->id][$client->userId][$email]", __CLASS__);
+            return true;
+        }
+
+        Yii::error("Unable to login user [$client->id][$client->userId][$email]", __CLASS__);
+        return false;
     }
 
 }
