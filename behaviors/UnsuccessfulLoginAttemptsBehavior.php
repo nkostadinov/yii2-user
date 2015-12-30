@@ -37,16 +37,13 @@ class UnsuccessfulLoginAttemptsBehavior extends Behavior
             return;
         }
         
-        $currentTime = time();
-        if ($user->locked_until > $currentTime) {
+        if ($user->locked_until > time()) {
             Yii::info("The user [$user->email] is locked!", __CLASS__);
-            
             throw new ForbiddenHttpException(Yii::t(Module::I18N_CATEGORY, 'Your account is locked!'));
-        } else if(isset($user->locked_until) && $user->locked_until < $currentTime) {
+        } else if($user->isLocked()) {
             Yii::info("Unlocking user [$user->email]!", __CLASS__);
             
-            $user->login_attempts = 0;
-            $user->locked_until = null;
+            $user->unlock();
         }
 
         if ($event->sender->hasErrors('password')) {
@@ -55,16 +52,17 @@ class UnsuccessfulLoginAttemptsBehavior extends Behavior
             Yii::info("User [$user->email] has entered a wrong password. Login attempts count: $user->login_attempts", __CLASS__);
             if ($user->login_attempts == $this->maxLoginAttempts) {
                 Yii::info("Locking user [$user->email]!", __CLASS__);
-                
+
                 $user->lock();
                 throw new ForbiddenHttpException(Yii::t(Module::I18N_CATEGORY, 'Your account is locked!'));
             }
+
+            $user->save(false);
         } else if ($user->login_attempts > 0) {
             Yii::info("Clear login attempts of user [$user->email]", __CLASS__);
-            
-            $user->login_attempts = 0;
-        }
 
-        $user->save(false);
+            $user->login_attempts = 0;
+            $user->save(false);
+        }
     }
 }

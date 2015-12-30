@@ -185,6 +185,13 @@ class User extends ActiveRecord implements IdentityInterface
         return $this->hasMany(PasswordHistory::className(), ['user_id' => 'id']);
     }
 
+    /**
+     * Confirms the registration of the user by the given token.
+     *
+     * @param Token $token
+     * @return boolean True on success, false otherwise.
+     * @throws NotFoundHttpException
+     */
     public function confirm($token)
     {
         Yii::info('User is trying to confirm the registration', __CLASS__);
@@ -283,13 +290,35 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * Locks the account for Yii::$app->user->lockExpiration seconds.
+     * Locks the user for Yii::$app->user->lockExpiration seconds.
      * 
      * @return boolean True on success, false on failure.
      */
     public function lock()
     {
         $this->locked_until = time() + Yii::$app->user->lockExpiration;
+        return $this->save(false);
+    }
+
+    /**
+     * Checks whether the user is locked.
+     *
+     * @return boolean True if locked, false otherwise.
+     */
+    public function isLocked()
+    {
+        return isset($this->locked_until) && $this->locked_until > time();
+    }
+
+    /**
+     * Unlocks the user.
+     *
+     * @return boolean True on success, false otherwise.
+     */
+    public function unlock()
+    {
+        $this->login_attempts = 0;
+        $this->locked_until = null;
         return $this->save(false);
     }
 
