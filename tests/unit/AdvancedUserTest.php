@@ -1,6 +1,5 @@
 <?php
 
-use nkostadinov\user\behaviors\PasswordHistoryPolicyBehavior;
 use nkostadinov\user\models\forms\ChangePasswordForm;
 use nkostadinov\user\models\PasswordHistory;
 use nkostadinov\user\models\User;
