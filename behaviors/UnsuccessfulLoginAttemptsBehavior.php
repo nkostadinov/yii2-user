@@ -37,12 +37,14 @@ class UnsuccessfulLoginAttemptsBehavior extends Behavior
             return;
         }
         
-        if ($user->locked_until > time()) {
+        if ($user->isLocked()) {
             Yii::info("User [$user->email] is locked!", __CLASS__);
             throw new ForbiddenHttpException(Yii::t(Module::I18N_CATEGORY, 'Your account is locked!'));
-        } else if($user->isLocked()) {
+        }
+
+        // Is it time to unlock the user?
+        if (isset($user->locked_until) && $user->locked_until < time()) {
             Yii::info("Unlocking user [$user->email]!", __CLASS__);
-            
             $user->unlock();
         }
 
