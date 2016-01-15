@@ -40,6 +40,11 @@ class SecurityController extends BaseController
         return [
             'access' => [
                 'class' => AccessControl::className(),
+                'denyCallback' => function($rule, $action) {
+                    if (!Yii::$app->user->isGuest && $action->id == 'login') {
+                        $this->redirect(Yii::$app->homeUrl);
+                    }
+                },
                 'rules' => [
                     [
                         'actions' => ['login', 'auth', 'change-password', 'acquire-email', 'acquire-password'],
