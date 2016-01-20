@@ -305,7 +305,7 @@ class User extends ActiveRecord implements IdentityInterface
      *
      * @return boolean True if locked, false otherwise.
      */
-    public function isLocked()
+    public function getIsLocked()
     {
         return isset($this->locked_until) && $this->locked_until > time();
     }
