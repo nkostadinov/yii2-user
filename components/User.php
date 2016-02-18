@@ -23,6 +23,7 @@ use Yii;
 use yii\authclient\ClientInterface;
 use yii\base\NotSupportedException;
 use yii\di\Instance;
+use yii\helpers\VarDumper;
 use yii\web\User as BaseUser;
 
 class User extends BaseUser
@@ -136,7 +137,8 @@ class User extends BaseUser
             return true;
         }
         
-        Yii::error("An error occurred while registering user [$model->email][$model->register_ip]", __CLASS__);
+        Yii::error("An error occurred while registering user [$model->email][$model->register_ip].\n" .
+            VarDumper::dumpAsString($model->getErrors()), __CLASS__);
         return false;
     }
 
