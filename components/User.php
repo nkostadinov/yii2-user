@@ -230,4 +230,22 @@ class User extends BaseUser
         return false;
     }
 
+    public function lockUser(UserModel $model)
+    {
+        Yii::info("Locking user '$model->id'", __CLASS__);
+        
+        $model->locked_until = time() + $this->lockExpiration;
+        
+        return $model->save(false);
+    }
+
+    public function unlockUser(UserModel $model)
+    {
+        Yii::info("Unlocking user '$model->id'", __CLASS__);
+
+        $model->login_attempts = 0;
+        $model->locked_until = null;
+        
+        return $model->save(false);
+    }
 }

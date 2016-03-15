@@ -296,8 +296,17 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function lock()
     {
-        $this->locked_until = time() + Yii::$app->user->lockExpiration;
-        return $this->save(false);
+        return Yii::$app->user->lockUser($this);
+    }
+
+    /**
+     * Unlocks the user.
+     *
+     * @return boolean True on success, false otherwise.
+     */
+    public function unlock()
+    {
+        return Yii::$app->user->unlockUser($this);
     }
 
     /**
@@ -310,18 +319,6 @@ class User extends ActiveRecord implements IdentityInterface
         return isset($this->locked_until) && $this->locked_until > time();
     }
     
-    /**
-     * Unlocks the user.
-     *
-     * @return boolean True on success, false otherwise.
-     */
-    public function unlock()
-    {
-        $this->login_attempts = 0;
-        $this->locked_until = null;
-        return $this->save(false);
-    }
-
     /**
      * Finds an active user by email or username.
      *
