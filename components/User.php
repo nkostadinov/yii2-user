@@ -17,7 +17,6 @@ use nkostadinov\user\interfaces\IUserNotificator;
 use nkostadinov\user\models\Token;
 use nkostadinov\user\models\User as UserModel;
 use nkostadinov\user\models\UserAccount;
-use nkostadinov\user\models\UserSearch;
 use nkostadinov\user\validators\PasswordStrengthValidator;
 use Yii;
 use yii\authclient\ClientInterface;
@@ -81,11 +80,9 @@ class User extends BaseUser
         ];
     }
     
-    public function listUsers($params)
+    public function listUsers()
     {
-        $searchModel = new UserSearch();
-        $dataProvider = $searchModel->search($params);
-        return $dataProvider;
+        return call_user_func([ $this->identityClass, 'find' ]);
     }
 
     /**

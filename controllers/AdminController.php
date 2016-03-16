@@ -3,9 +3,9 @@
 namespace nkostadinov\user\controllers;
 
 use nkostadinov\user\models\user;
-use nkostadinov\user\models\UserSearch;
 use nkostadinov\user\Module;
 use Yii;
+use yii\data\ActiveDataProvider;
 use yii\filters\AccessControl;
 use yii\web\NotFoundHttpException;
 
@@ -33,11 +33,12 @@ class AdminController extends BaseController
     {
         Yii::info('Admin ['. Yii::$app->user->identity->email .'] is entering the admin/index page', __CLASS__);
 
-        $searchModel = new UserSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider = new ActiveDataProvider([
+            'query' => Yii::$app->user->listUsers()
+        ]);
 
         return $this->render('index', [
-            'searchModel' => $searchModel,
+            //'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
     }
@@ -123,8 +124,7 @@ class AdminController extends BaseController
      */
     protected function findModel($id)
     {
-        $userSearch = new UserSearch();
-        if (($model = $userSearch->findUserById($id)) !== null) {
+        if (($model = Yii::$app->user->listUsers()->andWhere(['id' => $id])->one()) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException(Yii::t(Module::I18N_CATEGORY, 'The requested page does not exist.'));

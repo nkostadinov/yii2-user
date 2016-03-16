@@ -1,6 +1,5 @@
 <?php
 
-use nkostadinov\user\models\UserSearch;
 use nkostadinov\user\Module;
 use yii\data\ActiveDataProvider;
 use yii\grid\GridView;
@@ -9,7 +8,6 @@ use yii\web\View;
 use yii\widgets\Pjax;
 
 /* @var $this View */
-/* @var $searchModel UserSearch */
 /* @var $dataProvider ActiveDataProvider */
 
 $this->title = Yii::t(Module::I18N_CATEGORY, 'Users');
@@ -29,7 +27,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <?php Pjax::begin() ?>
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
+        //'filterModel' => $searchModel,
         'columns' => $this->context->module->adminColumns,
     ]); ?>
     <?php Pjax::end() ?>

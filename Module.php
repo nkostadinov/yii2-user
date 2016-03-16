@@ -4,6 +4,7 @@ namespace nkostadinov\user;
 
 use nkostadinov\user\commands\UserController;
 use yii\base\BootstrapInterface;
+use yii\i18n\PhpMessageSource;
 
 class Module extends \yii\base\Module implements BootstrapInterface
 {
@@ -67,6 +68,13 @@ class Module extends \yii\base\Module implements BootstrapInterface
             ];
         } else if ($app instanceof \yii\web\Application) {
             $app->urlManager->addRules(self::$urlRules);
+
+            if (!isset($app->get('i18n')->translations[self::I18N_CATEGORY])) {
+                $app->get('i18n')->translations[self::I18N_CATEGORY] = [
+                    'class'    => PhpMessageSource::className(),
+                    'basePath' => __DIR__ . '/messages',
+                ];
+            }
         }
     }
 }

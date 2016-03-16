@@ -1,13 +1,11 @@
 <?php
 
-use nkostadinov\user\models\UserSearch;
 use nkostadinov\user\Module;
 use yii\helpers\Html;
 use yii\web\View;
 use yii\widgets\ActiveForm;
 
 /* @var $this View */
-/* @var $model UserSearch */
 /* @var $form ActiveForm */
 ?>
 
