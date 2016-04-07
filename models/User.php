@@ -1,6 +1,7 @@
 <?php
 namespace nkostadinov\user\models;
 
+use nkostadinov\user\helpers\Http;
 use nkostadinov\user\Module;
 use ReflectionClass;
 use Yii;
@@ -22,6 +23,7 @@ use yii\web\UnauthorizedHttpException;
  * @property integer $created_at
  * @property integer $updated_at
  * @property integer $confirmed_on
+ * @property string $register_ip
  *
  * @property string $password write-only password
  *
@@ -345,4 +347,16 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return new UserQuery(get_called_class());
     }
+
+    public function beforeSave($insert)
+    {
+        if($insert) {
+            $this->auth_key = $this->generateAuthKey();
+            $this->register_ip = Http::getUserIP();
+        }
+
+        return parent::beforeSave($insert);
+    }
+
+
 }

@@ -67,11 +67,12 @@ class SignupForm extends Model
             $user = call_user_func([Yii::$app->user->identityClass, 'findByEmail'],
                 ['email' => $this->email]);
             if (!$user) {
+                /** @var User $user */
                 $user = Yii::createObject([
                     'class' => Yii::$app->user->identityClass,
                 ]);
-                $user->email = $this->email;
-                $user->register_ip = Http::getUserIP();
+                //assign all safe attributes from the form input to the user model
+                $user->setAttributes($this->getAttributes());
             }
             $user->setPassword($this->password);
 
