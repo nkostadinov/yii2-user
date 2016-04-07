@@ -351,8 +351,7 @@ class User extends ActiveRecord implements IdentityInterface
     public function beforeSave($insert)
     {
         if($insert) {
-            $key = $this->generateAuthKey();
-            $this->auth_key = $key ? $key : '';
+            $this->generateAuthKey();
             $this->register_ip = Http::getUserIP();
         }
 
