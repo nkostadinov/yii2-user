@@ -139,4 +139,13 @@ class Token extends ActiveRecord
 
         return $token;
     }
+    
+    /**
+     * Defining composite primary key
+     * @return array
+     */
+    static function primaryKey() {
+        return ['user_id', 'code', 'type'];        
+    }
+
 }
