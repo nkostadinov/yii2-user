@@ -123,7 +123,7 @@ class User extends ActiveRecord implements IdentityInterface
 
         return $user;
     }
-    
+
     /**
      * @inheritdoc
      */
@@ -201,10 +201,10 @@ class User extends ActiveRecord implements IdentityInterface
             Yii::info('User\'s confirmation code not found or expired', __CLASS__);
             throw new NotFoundHttpException(Yii::t(Module::I18N_CATEGORY, 'Confirmation code not found or expired!'));
         }
-        
+
         $token->delete();
         $this->confirmed_on = time();
-        
+
         return $this->save(false);
     }
 
@@ -226,15 +226,15 @@ class User extends ActiveRecord implements IdentityInterface
     public function getStatusName()
     {
         //reverse constant lookup :)
-        foreach((new ReflectionClass(get_class()))->getConstants() as $name => $value) {
-            if($value == $this->status && strpos($name, 'STATUS_') === 0)
+        foreach ((new ReflectionClass(get_class()))->getConstants() as $name => $value) {
+            if ($value == $this->status && strpos($name, 'STATUS_') === 0)
                 return substr($name, 7, 255);
         }
     }
 
     public function getLastLoginText()
     {
-        return Yii::$app->formatter->asDatetime($this->last_login)."\n{$this->last_login_ip}";
+        return Yii::$app->formatter->asDatetime($this->last_login) . "\n{$this->last_login_ip}";
     }
 
     public static function resetPassword($code)
@@ -243,12 +243,12 @@ class User extends ActiveRecord implements IdentityInterface
 
         $token = Token::findByCode($code);
         $user = $token->user;
-        
+
         Yii::info("Generating password for user", __CLASS__);
         $user->setPassword(Yii::$app->security->generateRandomString());
-        
+
         Yii::info("Trying to save user [$user->email] after resetting password", __CLASS__);
-        if ($user->save(false)) {            
+        if ($user->save(false)) {
             $token->delete();
             Yii::info("Password successfuly reset of user [$user->email]", __CLASS__);
         }
@@ -293,7 +293,7 @@ class User extends ActiveRecord implements IdentityInterface
 
     /**
      * Locks the user for Yii::$app->user->lockExpiration seconds.
-     * 
+     *
      * @return boolean True on success, false on failure.
      */
     public function lock()
@@ -320,7 +320,7 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return isset($this->locked_until) && $this->locked_until > time();
     }
-    
+
     /**
      * Finds an active user by email or username.
      *
@@ -350,7 +350,7 @@ class User extends ActiveRecord implements IdentityInterface
 
     public function beforeSave($insert)
     {
-        if($insert) {
+        if ($insert) {
             $this->generateAuthKey();
             $this->register_ip = Http::getUserIP();
         }
@@ -358,5 +358,12 @@ class User extends ActiveRecord implements IdentityInterface
         return parent::beforeSave($insert);
     }
 
-
+    /**
+     * Defining composite primary key
+     * @return array
+     */
+    public function getPrimaryKey($asArray = false)
+    {
+        return ['user_id', 'code', 'type'];
+    }
 }
