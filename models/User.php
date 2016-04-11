@@ -357,13 +357,4 @@ class User extends ActiveRecord implements IdentityInterface
 
         return parent::beforeSave($insert);
     }
-
-    /**
-     * Defining composite primary key
-     * @return array
-     */
-    public function getPrimaryKey($asArray = false)
-    {
-        return ['user_id', 'code', 'type'];
-    }
 }
