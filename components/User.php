@@ -11,7 +11,6 @@ use nkostadinov\user\behaviors\LastLoginBehavior;
 use nkostadinov\user\exceptions\DuplicatedUserException;
 use nkostadinov\user\exceptions\MissingEmailException;
 use nkostadinov\user\helpers\Event;
-use nkostadinov\user\helpers\Http;
 use nkostadinov\user\interfaces\IUserAccount;
 use nkostadinov\user\interfaces\IUserNotificator;
 use nkostadinov\user\models\Token;
@@ -80,9 +79,10 @@ class User extends BaseUser
         ];
     }
     
-    public function listUsers()
+    public function listUsers($params = [])
     {
-        return call_user_func([ $this->identityClass, 'find' ]);
+        return call_user_func([ $this->identityClass, 'find'])
+            ->andFilterWhere($params);
     }
 
     /**
