@@ -68,6 +68,9 @@ class User extends ActiveRecord implements IdentityInterface
             ['name', 'safe'],
         ];
 
+        if(\Yii::$app->user->requireUsername === true)
+            $rules[] = ['username', 'required'];
+
         return $rules;
     }
 

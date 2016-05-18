@@ -39,7 +39,7 @@ class SignupForm extends Model
             $rules[] = ['username', 'required'];
             $rules[] =  ['username', 'string', 'min' => 2, 'max' => 255];
             $rules[] =  ['username', 'filter', 'filter' => 'trim'];
-            //['username', 'unique', 'targetClass' => 'nkostadinov\user\models\User', 'message' => 'This username has already been taken.'],
+            $rules[] =  ['username', 'unique', 'targetClass' => 'nkostadinov\user\models\User', 'message' => 'This username has already been taken.'];
         }
 
         return $rules;
