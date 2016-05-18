@@ -9,6 +9,9 @@ if(getenv('TRAVIS_BUILD_DIR'))
 else
     defined('VENDOR_DIR') or define('VENDOR_DIR', __DIR__ . '/../vendor');
 
+require_once(__DIR__ . '/_support/Commons.php');
+require_once(__DIR__ . '/_support/Utils.php');
+
 require_once(VENDOR_DIR . '/autoload.php');
 require_once(VENDOR_DIR . '/yiisoft/yii2/Yii.php');
 
