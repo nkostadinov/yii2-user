@@ -10,8 +10,8 @@ php:
 
 matrix:
   fast_finish: true
-  allow_failures:
-    - php: 'hhvm'
+#  allow_failures:
+#    - php: 'hhvm'
 
 # cache vendor dirs
 #cache:
@@ -22,9 +22,10 @@ matrix:
 install:
   - travis_retry composer self-update
   - travis_retry composer global require "fxp/composer-asset-plugin:^1.0"
+
+  - travis_retry composer install --dev --prefer-dist --no-interaction
   # codeception
-  - travis_retry composer global require "codeception/codeception=*" "codeception/verify=*" --prefer-source
-  - travis_retry composer install --dev --prefer-source --no-interaction
+  - travis_retry composer global require "codeception/codeception=2.0.*" "codeception/specify=*" "codeception/verify=*"
 
 before_script:
   - export VENDOR_DIR="~/build/nkostadinov/yii2-user/vendor"
