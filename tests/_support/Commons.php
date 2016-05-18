@@ -1,5 +1,4 @@
 <?php
-namespace Codeception\Module;
 
 use nkostadinov\user\models\Token;
 use nkostadinov\user\models\User;

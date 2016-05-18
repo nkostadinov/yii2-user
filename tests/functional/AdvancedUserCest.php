@@ -1,8 +1,9 @@
 <?php
 
-use Codeception\Module\Commons;
 use nkostadinov\user\models\User;
 use nkostadinov\user\tests\_pages\RegisterPage;
+
+require_once(__DIR__ . '/../_support/Commons.php');
 
 class AdvancedUserCest
 {
