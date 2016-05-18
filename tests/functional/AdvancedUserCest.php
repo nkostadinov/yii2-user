@@ -1,5 +1,6 @@
 <?php
 
+use Codeception\Module\Commons;
 use nkostadinov\user\models\User;
 use nkostadinov\user\tests\_pages\RegisterPage;
 
