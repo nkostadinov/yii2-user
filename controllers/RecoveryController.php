@@ -7,6 +7,7 @@
 
 namespace nkostadinov\user\controllers;
 
+use nkostadinov\user\models\forms\ResetPasswordForm;
 use nkostadinov\user\models\Token;
 use nkostadinov\user\Module;
 use Yii;
@@ -67,6 +68,7 @@ class RecoveryController extends BaseController
             throw new NotFoundHttpException('Token not found!');
         }
 
+        /** @var ResetPasswordForm $model */
         $model = Yii::createObject([
             'class' => Yii::$app->user->resetPasswordForm,
             'user' => $user,
