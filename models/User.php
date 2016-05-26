@@ -195,20 +195,10 @@ class User extends ActiveRecord implements IdentityInterface
      *
      * @param Token $token
      * @return boolean True on success, false otherwise.
-     * @throws NotFoundHttpException
      */
     public function confirm($token)
     {
-        Yii::info('User is trying to confirm the registration', __CLASS__);
-        if (empty($token) || $token->isExpired) {
-            Yii::info('User\'s confirmation code not found or expired', __CLASS__);
-            throw new NotFoundHttpException(Yii::t(Module::I18N_CATEGORY, 'Confirmation code not found or expired!'));
-        }
-
-        $token->delete();
-        $this->confirmed_on = time();
-
-        return $this->save(false);
+        return Yii::$app->user->confirmUser($this, $token);
     }
 
     public function getIsConfirmed()
@@ -238,25 +228,6 @@ class User extends ActiveRecord implements IdentityInterface
     public function getLastLoginText()
     {
         return Yii::$app->formatter->asDatetime($this->last_login) . "\n{$this->last_login_ip}";
-    }
-
-    public static function resetPassword($code)
-    {
-        Yii::info("Trying to find code [$code] for token", __CLASS__);
-
-        $token = Token::findByCode($code);
-        $user = $token->user;
-
-        Yii::info("Generating password for user", __CLASS__);
-        $user->setPassword(Yii::$app->security->generateRandomString());
-
-        Yii::info("Trying to save user [$user->email] after resetting password", __CLASS__);
-        if ($user->save(false)) {
-            $token->delete();
-            Yii::info("Password successfuly reset of user [$user->email]", __CLASS__);
-        }
-
-        return Yii::$app->user->login($user);
     }
 
     /**

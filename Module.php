@@ -42,6 +42,7 @@ class Module extends \yii\base\Module implements BootstrapInterface
     public $changePasswordView = '@nkostadinov/user/views/security/change_password';
     public $acquireEmailView = '@nkostadinov/user/views/security/acquire_email';
     public $acquirePasswordView = '@nkostadinov/user/views/security/acquire_password';
+    public $resetPasswordView = '@nkostadinov/user/views/recovery/reset';
 
     public $adminColumns = [
         //['class' => 'yii\grid\SerialColumn'],

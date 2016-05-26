@@ -218,5 +218,5 @@ class SecurityController extends BaseController
         return $this->render($this->module->changePasswordView, [
             'model' => $model,
         ]);
-    }    
+    }
 }

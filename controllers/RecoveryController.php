@@ -7,10 +7,12 @@
 
 namespace nkostadinov\user\controllers;
 
-use nkostadinov\user\models\User;
+use nkostadinov\user\models\Token;
 use nkostadinov\user\Module;
 use Yii;
 use yii\filters\AccessControl;
+use yii\helpers\Url;
+use yii\web\NotFoundHttpException;
 
 /**
  * Recovery controller is used to recover forgotten password. It is sent via email.
@@ -57,8 +59,21 @@ class RecoveryController extends BaseController
     public function actionReset($code)
     {
         Yii::info("User is trying to reset password by using [$code]", __CLASS__);
-        User::resetPassword($code);
-        Yii::info("Redirecting user to change password page", __CLASS__);
-        return $this->redirect(["/{$this->module->id}/security/change-password"]);
+
+        $user = Yii::$app->user->listUsers(['code' => $code, 'type' => Token::TYPE_RECOVERY])
+            ->joinWith('tokens')
+            ->one();
+        if (!$user) {
+            throw new NotFoundHttpException('Token not found!');
+        }
+
+        $model = Yii::createObject([
+            'class' => Yii::$app->user->resetPasswordForm,
+            'user' => $user,
+        ]);
+        if ($model->reset()) {
+            return $this->redirect(Url::to(['/']));
+        }
+        return $this->render($this->module->resetPasswordView, ['model' => $model]);
     }
 }

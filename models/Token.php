@@ -148,4 +148,20 @@ class Token extends ActiveRecord
     {
         return ['user_id', 'code', 'type'];
     }
+
+    public static function createRecoveryToken($userId)
+    {
+        return static::createToken($userId, self::TYPE_RECOVERY);
+    }
+
+    private static function createToken($userId, $type)
+    {
+        $token = Yii::createObject([
+            'class' => static::className(),
+            'user_id' => $userId,
+            'type' => $type,
+        ]);
+        $token->save(false);
+        return $token;
+    }
 }

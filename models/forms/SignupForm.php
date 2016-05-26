@@ -2,7 +2,6 @@
 
 namespace nkostadinov\user\models\forms;
 
-use nkostadinov\user\helpers\Http;
 use nkostadinov\user\models\User;
 use nkostadinov\user\Module;
 use nkostadinov\user\validators\PasswordStrengthValidator;

@@ -21,7 +21,9 @@ use Yii;
 use yii\authclient\ClientInterface;
 use yii\base\NotSupportedException;
 use yii\di\Instance;
+use yii\gii\Module;
 use yii\helpers\VarDumper;
+use yii\web\NotFoundHttpException;
 use yii\web\User as BaseUser;
 
 class User extends BaseUser
@@ -44,12 +46,15 @@ class User extends BaseUser
     public $changePasswordForm = 'nkostadinov\user\models\forms\ChangePasswordForm';
     /** @var string The class name of the form used for acquiring the user's email when it cannot be fetched via a social network. */
     public $acquireEmailForm = 'nkostadinov\user\models\forms\AcquireEmailForm';
+    /** @var string The class name of the form used for reseting the user's password. */
+    public $resetPasswordForm = 'nkostadinov\user\models\forms\ResetPasswordForm';
 
     public $enableConfirmation = true;
     public $allowUncofirmedLogin = false;
     public $requireUsername = false;
 
     public $identityClass = 'nkostadinov\user\models\User';
+    public $tokenClass = 'nkostadinov\user\models\Token';
     public $enableAutoLogin = true;
     public $loginUrl = ['user/security/login'];
     /** @var integer The minimum length that a password field can have. */
@@ -126,11 +131,10 @@ class User extends BaseUser
                     'type' => Token::TYPE_CONFIRMATION,
                 ]);
                 $token->link('user', $model);
-                
+
                 Yii::info("Sending confirmation email to [$model->email]", __CLASS__);
                 $this->getNotificator()->sendConfirmationMessage($model, $token);
             }
-            
             return true;
         }
         
@@ -243,5 +247,40 @@ class User extends BaseUser
         $model->locked_until = null;
         
         return $model->save(false);
+    }
+
+    /**
+     * Confirms the registration of the user by the given token.
+     *
+     * @param Token $token
+     * @return boolean True on success, false otherwise.
+     * @throws NotFoundHttpException
+     */
+    public function confirmUser($user, $token)
+    {
+        Yii::info('User is trying to confirm the registration', __CLASS__);
+        if (empty($token) || $token->isExpired) {
+            Yii::info('User\'s confirmation code not found or expired', __CLASS__);
+            throw new NotFoundHttpException(Yii::t(Module::I18N_CATEGORY, 'Confirmation code not found or expired!'));
+        }
+
+        $token->delete();
+        $user->confirmed_on = time();
+
+        return $user->save(false);
+    }
+
+    public function resetPassword($user, $newPassword)
+    {
+        Yii::info("Setting new password", __CLASS__);
+        $user->setPassword($newPassword);
+
+        Yii::info("Trying to save user [$user->email] after password change", __CLASS__);
+        if ($user->save(false) && $user->tokens[0]->delete()) {
+            Yii::info("Password of user [$user->email] successfuly changed", __CLASS__);
+        }
+        
+        Yii::info("Logging in user [$user->email] after a password change", __CLASS__);
+        return Yii::$app->user->login($user);
     }
 }
