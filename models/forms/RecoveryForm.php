@@ -64,7 +64,7 @@ class RecoveryForm extends Model
         if ($this->validate()) {
             Yii::info("Creating recovery token of user [$this->email]", __CLASS__);
             /** @var Token $token */
-            $token = call_user_func([Yii::$app->user->tokenClass, 'createRecoveryToken'], ['userId' => $this->user->id]);
+            $token = call_user_func_array([Yii::$app->user->tokenClass, 'createRecoveryToken'], ['userId' => $this->user->id]);
 
             Yii::info("Sending recovery message to [$this->email]", __CLASS__);
             Yii::$app->user->notificator->sendRecoveryMessage($this->user, $token);

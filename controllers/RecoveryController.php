@@ -7,6 +7,7 @@
 
 namespace nkostadinov\user\controllers;
 
+use nkostadinov\user\models\forms\ResetPasswordForm;
 use nkostadinov\user\models\Token;
 use nkostadinov\user\Module;
 use Yii;
