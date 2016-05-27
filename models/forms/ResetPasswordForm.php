@@ -14,7 +14,7 @@ class ResetPasswordForm extends Model
 {
     public $newPassword;
     public $newPasswordRepeat;
-    public $user;
+    public $token;
 
     /**
      * @return array the validation rules.
@@ -41,14 +41,14 @@ class ResetPasswordForm extends Model
     public function validateNewPasswords($attribute, $params)
     {
         if ($this->newPassword != $this->newPasswordRepeat) {
-            $this->addError($attribute, Yii::t(Module::I18N_CATEGORY, 'The new passwords are not the same.'));
+            $this->addError($attribute, Yii::t(Module::I18N_CATEGORY, 'Passwords are not the same.'));
         }
     }
 
     public function reset()
     {
         if ($this->load(Yii::$app->request->post()) && $this->validate()) {
-            return Yii::$app->user->resetPassword($this->user, $this->newPassword);
+            return Yii::$app->user->resetPassword($this->token, $this->newPassword);
         }
         return false;
     }

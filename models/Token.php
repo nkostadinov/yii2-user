@@ -28,7 +28,6 @@ class Token extends ActiveRecord
     const TYPE_CONFIRM_OLD_EMAIL = 3;
     const TYPE_API_AUTH          = 4;
 
-
     /**
      * @inheritdoc
      */
@@ -106,14 +105,19 @@ class Token extends ActiveRecord
      */
     public static function findByCode($code, $type = self::TYPE_RECOVERY)
     {
-        $token = Token::find()->with('user')
+        $token = Token::find()->joinWith('user')
             ->where(['code' => $code, 'type' => $type])
             ->one();
-        
+
         if (empty($token) || empty($token->user)) {
             throw new NotFoundHttpException(Yii::t(Module::I18N_CATEGORY, 'Token not found!'));
         }
 
+        if ($token->getIsExpired()) {
+            $token->delete();
+            throw new NotFoundHttpException(Yii::t(Module::I18N_CATEGORY, 'Token not found!'));
+        }
+        
         return $token;
     }
 

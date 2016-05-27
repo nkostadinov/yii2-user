@@ -270,17 +270,20 @@ class User extends BaseUser
         return $user->save(false);
     }
 
-    public function resetPassword($user, $newPassword)
+    public function resetPassword($tokenCode, $newPassword)
     {
+        Yii::info("Fetching token", __CLASS__);
+        $token = Token::findByCode($tokenCode);
+        
         Yii::info("Setting new password", __CLASS__);
-        $user->setPassword($newPassword);
+        $token->user->setPassword($newPassword);
 
-        Yii::info("Trying to save user [$user->email] after password change", __CLASS__);
-        if ($user->save(false) && $user->tokens[0]->delete()) {
-            Yii::info("Password of user [$user->email] successfuly changed", __CLASS__);
+        Yii::info("Trying to save user [{$token->user->email}] after password change", __CLASS__);
+        if ($token->user->save(false) && $token->delete()) {
+            Yii::info("Password of user [{$token->user->email}] successfuly changed", __CLASS__);
         }
         
-        Yii::info("Logging in user [$user->email] after a password change", __CLASS__);
-        return Yii::$app->user->login($user);
+        Yii::info("Logging in user [{$token->user->email}] after a password change", __CLASS__);
+        return Yii::$app->user->login($token->user);
     }
 }

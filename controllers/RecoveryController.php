@@ -59,17 +59,9 @@ class RecoveryController extends BaseController
     public function actionReset($code)
     {
         Yii::info("User is trying to reset password by using [$code]", __CLASS__);
-
-        $user = Yii::$app->user->listUsers(['code' => $code, 'type' => Token::TYPE_RECOVERY])
-            ->joinWith('tokens')
-            ->one();
-        if (!$user) {
-            throw new NotFoundHttpException('Token not found!');
-        }
-
         $model = Yii::createObject([
             'class' => Yii::$app->user->resetPasswordForm,
-            'user' => $user,
+            'token' => $code,
         ]);
         if ($model->reset()) {
             return $this->redirect(Url::to(['/']));
