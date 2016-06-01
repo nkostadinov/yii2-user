@@ -8,6 +8,7 @@ use nkostadinov\user\Module;
 use Yii;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
+use yii\web\NotFoundHttpException;
 
 /**
  * This is the model class for table "user_account".
@@ -98,5 +99,17 @@ class UserAccount extends ActiveRecord
                 'provider' => $client->id,
                 'client_id' => $client->getUserId(),
             ])->one();
+    }
+
+    public static function fetchAccessToken($clientId, $userId)
+    {
+        $userAccount = UserAccount::findOne([
+            'provider' => $clientId,
+            'client_id' => $userId,
+        ]);
+        if (!$userAccount) {
+            throw new NotFoundHttpException();
+        }
+        return $userAccount->access_token;
     }
 }

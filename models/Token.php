@@ -44,7 +44,7 @@ class Token extends ActiveRecord
         return [
             [['user_id', 'code', 'created_at', 'type', 'expires_on'], 'required'],
             [['user_id', 'created_at', 'type', 'expires_on'], 'integer'],
-            [['code'], 'string', 'max' => 32],
+            [['code'], 'string', 'max' => 40],
             [['user_id', 'code', 'type'], 'unique', 'targetAttribute' => ['user_id', 'code', 'type'], 'message' => Yii::t(Module::I18N_CATEGORY, 'The combination of User ID, Code and Type has already been taken.')]
         ];
     }
@@ -76,7 +76,9 @@ class Token extends ActiveRecord
     {
         if ($insert) {
             $this->setAttribute('created_at', time());
-            $this->setAttribute('code', \Yii::$app->security->generateRandomString());
+            if ($this->type != self::TYPE_API_AUTH) {
+                $this->setAttribute('code', \Yii::$app->security->generateRandomString());
+            }
         }
         return parent::beforeSave($insert);
     }
@@ -155,17 +157,23 @@ class Token extends ActiveRecord
 
     public static function createRecoveryToken($userId)
     {
-        return static::createToken($userId, self::TYPE_RECOVERY);
+        $token = Yii::createObject([
+            'class' => static::className(),
+            'user_id' => $userId,
+            'type' => self::TYPE_RECOVERY,
+        ]);
+        return $token->save(false) ? $token : false;
     }
-
-    private static function createToken($userId, $type)
+    
+    public static function createApiAuthToken($userId, $code, $expiresOn)
     {
         $token = Yii::createObject([
             'class' => static::className(),
             'user_id' => $userId,
-            'type' => $type,
+            'type' => self::TYPE_API_AUTH,
+            'code' => $code,
+            'expires_on' => $expiresOn,
         ]);
-        $token->save(false);
-        return $token;
+        return $token->save(false) ? $token : false;
     }
 }

@@ -87,16 +87,14 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public static function findIdentityByAccessToken($token, $type = null)
     {
-        $token = Token::findOne([
+        $tokenModel = Token::findOne([
             'code' => $token,
             'type' => Token::TYPE_API_AUTH
         ]);
-
-        if (!isset($token) or $token->isExpired)
+        if (!isset($tokenModel) or $tokenModel->isExpired)
             throw new UnauthorizedHttpException(Yii::t(Module::I18N_CATEGORY, 'Auth code not found or expired!'));
 
-        return static::findOne($token->user_id);
-        //throw new NotSupportedException('"findIdentityByAccessToken" is not implemented.');
+        return static::findOne($tokenModel->user_id);
     }
 
     /**
