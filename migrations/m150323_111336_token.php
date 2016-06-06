@@ -9,7 +9,7 @@ class m150323_111336_token extends Migration
     {
         $this->createTable('{{%token}}', [
             'user_id'    => Schema::TYPE_INTEGER . ' NOT NULL',
-            'code'       => Schema::TYPE_STRING . '(32) NOT NULL',
+            'code'       => Schema::TYPE_STRING . '(40) NOT NULL',
             'created_at' => Schema::TYPE_INTEGER . ' NOT NULL',
             'type'       => Schema::TYPE_SMALLINT . ' NOT NULL',
             'expires_on' => Schema::TYPE_INTEGER . ' NOT NULL',
