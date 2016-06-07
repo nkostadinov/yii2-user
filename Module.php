@@ -64,9 +64,10 @@ class Module extends \yii\base\Module implements BootstrapInterface
     public function bootstrap($app)
     {
         if ($app instanceof \yii\console\Application) {
-            $app->controllerMap[$this->id] = [
-                'class' => UserController::className(),
-            ];
+            if(!isset($app->controllerMap[$this->id]))
+                $app->controllerMap[$this->id] = [
+                    'class' => UserController::className(),
+                ];
         } else if ($app instanceof \yii\web\Application) {
             $app->urlManager->addRules(self::$urlRules);
         }
