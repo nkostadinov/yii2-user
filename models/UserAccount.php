@@ -85,8 +85,7 @@ class UserAccount extends ActiveRecord
         $account->access_token = $token->token;
         $account->expires = $token->createTimestamp + $token->expireDuration;
         $account->token_create_time = $token->createTimestamp;
-        $account->user_id = $client->getUserId();
-        $account->client_id = $client->getName();
+        $account->client_id = $client->getUserId();
         $account->save(false);
 
         return $account;
