@@ -20,6 +20,8 @@ use nkostadinov\user\validators\PasswordStrengthValidator;
 use Yii;
 use yii\authclient\ClientInterface;
 use yii\base\NotSupportedException;
+use yii\db\ActiveQuery;
+use yii\db\ActiveQueryInterface;
 use yii\di\Instance;
 use yii\gii\Module;
 use yii\helpers\VarDumper;
@@ -83,7 +85,11 @@ class User extends BaseUser
             'last_login' => LastLoginBehavior::className()
         ];
     }
-    
+
+    /**
+     * @param array $params
+     * @return ActiveQueryInterface
+     */
     public function listUsers($params = [])
     {
         return call_user_func([ $this->identityClass, 'find'])
