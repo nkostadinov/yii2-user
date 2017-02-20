@@ -287,6 +287,9 @@ class User extends BaseUser
         Yii::info("Trying to save user [{$token->user->email}] after password change", __CLASS__);
         if ($token->user->save(false) && $token->delete()) {
             Yii::info("Password of user [{$token->user->email}] successfuly changed", __CLASS__);
+            //check if user is locked and unlock
+            if($token->user->isLocked)
+                $token->user->unlock();
         }
         
         Yii::info("Logging in user [{$token->user->email}] after a password change", __CLASS__);
