@@ -294,6 +294,16 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
+     * Checks whether the user is active.
+     * 
+     * @return boolean True if active, false if deleted.
+     */
+    public function isActive()
+    {
+        return $this->status == self::STATUS_ACTIVE;
+    }
+
+    /**
      * Finds an active user by email or username.
      *
      * @param string $value The email or the username of the user.
