@@ -2,9 +2,9 @@
 namespace nkostadinov\user\accounts;
 
 use nkostadinov\user\interfaces\IUserAccount;
-use yii\authclient\clients\GoogleOAuth;
+use yii\authclient\clients\Google;
 
-class GoogleAccount extends GoogleOAuth implements IUserAccount
+class GoogleAccount extends Google implements IUserAccount
 {
     /** @return integer User's id */
     public function getUserId()
