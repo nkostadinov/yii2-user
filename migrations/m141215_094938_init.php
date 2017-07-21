@@ -38,7 +38,7 @@ class m141215_094938_init extends Migration
             'token_create_time' => Schema::TYPE_INTEGER,
             'client_id' => Schema::TYPE_STRING . '(25) NOT NULL',
             'created_at' => Schema::TYPE_TIMESTAMP . ' DEFAULT CURRENT_TIMESTAMP',
-            'updated_at' => Schema::TYPE_TIMESTAMP,
+            'updated_at' => Schema::TYPE_TIMESTAMP . ' DEFAULT CURRENT_TIMESTAMP',
         ], $this->getTableOptions());
         //FK to user
         $this->addForeignKey('fk_useraccount_user', '{{%user_account}}', 'user_id', '{{%user}}', 'id');
