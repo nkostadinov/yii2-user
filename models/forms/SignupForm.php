@@ -14,6 +14,7 @@ use yii\base\Model;
 class SignupForm extends Model
 {
     public $username;
+    public $name;
     public $email;
     public $password;
 
@@ -27,6 +28,7 @@ class SignupForm extends Model
             ['email', 'required'],
             ['email', 'email'],
             ['email', 'uniqueEmail'],
+            ['name', 'safe'],
 
             ['password', 'required'],
             ['password', 'string', 'min' => Yii::$app->user->minPasswordLength],
@@ -75,7 +77,7 @@ class SignupForm extends Model
             }
             $user->setPassword($this->password);
 
-            return Yii::$app->user->register($user);
+            return Yii::$app->user->register($user) ? $user : false;
         }
 
         return false;
