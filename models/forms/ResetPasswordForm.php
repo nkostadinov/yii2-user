@@ -52,4 +52,18 @@ class ResetPasswordForm extends Model
         }
         return false;
     }
+
+    /**
+     * Used to reset the password with specified data. To be used with e.g. JSON api
+     *
+     * @param $data
+     * @return bool
+     */
+    public function resetData($data)
+    {
+        if ($this->load($data, '') && $this->validate()) {
+            return Yii::$app->user->resetPassword($this->token, $this->newPassword);
+        }
+        return false;
+    }
 }
