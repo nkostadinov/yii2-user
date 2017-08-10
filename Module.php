@@ -26,6 +26,11 @@ class Module extends \yii\base\Module implements BootstrapInterface
     ];
 
     /**
+     * @var bool Whether to register URL rules for this module (defined in static var $urlRules)
+     */
+    public $registerUrls = true;
+
+    /**
      * @var bool Whether to allow new user to register.
      */
     public $allowRegistration = true;
@@ -69,7 +74,9 @@ class Module extends \yii\base\Module implements BootstrapInterface
                     'class' => UserController::className(),
                 ];
         } else if ($app instanceof \yii\web\Application) {
-            $app->urlManager->addRules(self::$urlRules);
+            $module = $app->getModule('user');
+            if(($module instanceof self) && $module->registerUrls)
+                $app->urlManager->addRules(self::$urlRules);
         }
 
         if (!isset($app->get('i18n')->translations[self::I18N_CATEGORY])) {
