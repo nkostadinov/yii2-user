@@ -217,7 +217,8 @@ class User extends BaseUser
             $user = new $this->identityClass();
             $user->email = $email;
             $user->name = $client->getRealName();
-            $user->save(false);
+            //$user->save(false);
+            $this->register($user);
 
             Yii::info("User successfuly created for account [$client->id][$client->userId][$email]", __CLASS__);
         } else if ($user->password_hash) {
