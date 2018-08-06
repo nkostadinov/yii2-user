@@ -310,7 +310,7 @@ class User extends ActiveRecord implements IdentityInterface
      * @return User The User model if found.
      * @throws NotFoundHttpException If the user is not found.
      */
-    public function findByEmailOrUsername($value)
+    public static function findByEmailOrUsername($value)
     {
         $user = self::find()
             ->where(['email' => $value])
