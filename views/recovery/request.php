@@ -28,7 +28,8 @@ $this->params['breadcrumbs'][] = $this->title;
 
                 <?= $form->field($model, 'email')->textInput(['autofocus' => true]) ?>
 
-                <?= Html::submitButton(Yii::t(Module::I18N_CATEGORY, 'Continue'), ['class' => 'btn btn-primary btn-block', 'name' => 'password-recovery-button']) ?><br>
+                <?= Html::submitButton(Yii::t(Module::I18N_CATEGORY, 'Continue'), ['class' => 'btn btn-primary btn-block', 'name' => 'password-recovery-button']) ?>
+                <?= Html::submitButton(Yii::t(Module::I18N_CATEGORY, 'Resend confirmation email'), ['class' => 'btn btn-secondary btn-block', 'name' => 'resend-confirmation']) ?><br>
 
                 <?php ActiveForm::end(); ?>
             </div>
