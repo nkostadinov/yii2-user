@@ -19,6 +19,9 @@ class LoginForm extends Model
     public $password;
     public $rememberMe = true;
 
+    public $login_duration = 0;
+    public $login_duration_rememberme = 3600*24*30;
+
     private $_user = null;
 
 
@@ -67,7 +70,7 @@ class LoginForm extends Model
                 Yii::info("User [$this->username] is not confirmed", __CLASS__);
                 throw new UncofirmedLoginNotAllowedException(Yii::t(Module::I18N_CATEGORY, 'Unconfirmed account are not allowed to login'));
             }
-            return Yii::$app->user->login($this->getUser(), $this->rememberMe ? 3600*24*30 : 0);
+            return Yii::$app->user->login($this->getUser(), $this->rememberMe ? $this->login_duration_rememberme : $this->login_duration);
         }
         Yii::info("User [$this->username] is unable to login, because of invalid data", __CLASS__);
         
